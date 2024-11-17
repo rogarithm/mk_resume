@@ -52,11 +52,7 @@ Prawn::Document.generate(
   [{level: 4, text: "Introduction"}].each do |heading|
     draw_heading(heading, FONT_SIZE)
 
-    intro_info = [
-      "사용자 관점에서 소프트웨어 제작을 추구합니다. 개인적으로 경험했던 불편함을 해소할 수 있는 프로그램을 만들고, 써보며 개선합니다. 최근엔 가계부 입력 및 분석을 도와주는 프로그램을 만들고 있습니다.",
-      "저뿐만 아니라 동료가 읽기 좋은 코드를 작성하고자 노력하고, 테스트를 이용해 오류 발생을 막는 습관을 가지고 있습니다.",
-      "지속적인 커뮤니티 활동을 통해 상호 성장하는 것을 가치 있게 생각합니다. 사내에서 버전 관리 세미나를 한 경험이 있고, 매주 관심있는 기술을 이야기하는 모임을 6개월 이상 지속한 적이 있습니다. 현재는 개발 관련 모임에 지속적으로 참여하고 있습니다."
-    ]
+    intro_info = File.readlines(File.join(File.dirname(__FILE__), "src/introduction")).map(&:chomp)
 
     intro_info.each do |item|
       indent(width_of("- ")) do
@@ -77,11 +73,11 @@ Prawn::Document.generate(
   [{ level: 4, text: "Education" }].each do |heading|
     draw_heading(heading, FONT_SIZE)
 
-    education_info = [
-      ["에프랩 백엔드 멘토링 과정 수료", "2022.06 ~ 2022.12"],
-      ["인천 대학교 대학원 건설환경공학과 석사", "2017.09 ~ 2019.02"],
-      ["인천 대학교 건설환경공학과 졸업", "2011.03 ~ 2017.08"]
-    ]
+    education_info = File.readlines(File.join(File.dirname(__FILE__), "src/education"))
+                       .map! { |cols|
+                         cols.split(",")
+                             .each { |col| col.strip! }
+                       }
 
     left_col_width = 180 # Adjust based on content and page layout needs
     right_col_start = left_col_width + 10 # Spacing between columns
