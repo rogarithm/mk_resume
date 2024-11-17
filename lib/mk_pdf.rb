@@ -52,7 +52,7 @@ Prawn::Document.generate(
   [{level: 4, text: "Introduction"}].each do |heading|
     draw_heading(heading, FONT_SIZE)
 
-    intro_info = File.readlines(File.join(File.dirname(__FILE__), "src/introduction")).map(&:chomp)
+    intro_info = File.readlines(File.join(File.dirname(__FILE__), "../src/introduction")).map(&:chomp)
 
     intro_info.each do |item|
       indent(width_of("- ")) do
@@ -73,7 +73,7 @@ Prawn::Document.generate(
   [{ level: 4, text: "Education" }].each do |heading|
     draw_heading(heading, FONT_SIZE)
 
-    education_info = File.readlines(File.join(File.dirname(__FILE__), "src/education"))
+    education_info = File.readlines(File.join(File.dirname(__FILE__), "../src/education"))
                        .map! { |cols|
                          cols.split(",")
                              .each { |col| col.strip! }
