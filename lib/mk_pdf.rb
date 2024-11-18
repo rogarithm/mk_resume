@@ -1,5 +1,6 @@
 require 'prawn'
 require 'prawn/measurement_extensions'
+require_relative 'preproc'
 
 # 플레인 텍스트 형식으로 적은 이력서를 pdf로 변환하기 위한 스크립트
 
@@ -109,39 +110,9 @@ Prawn::Document.generate(
   [{ level: 4, text: "Work Experience" }].each do |heading|
     draw_heading(heading, FONT_SIZE)
 
-    work_info = [{
-      :company_nm => "(주) 두잇",
-      :work_from_to => "2021.05 ~ 2022.05",
-      :solved => [
-        {
-          :what => "건축 분야 알고리즘 기반 솔루션 개발 참여",
-          :details => [
-            [
-              "트레일러 3D 모델을 보여주는 혼합현실 애플리케이션 개발 (C#, Unity, MRTK)",
-              "수치값으로만 확인할 수 있었던 알고리즘 연산 결과를 3D 형태로 시각화해 부재 정보를 편하게 확인",
-              "기존에 Unity 기반 2D 방식으로 구현되었으나, 시각적 제한을 개선하기 위해 혼합현실 기술을 도입",
-              "사용자 편의성을 고려해 렌더링되는 트레일러의 위치와 조작 방식을 개선하고, 작업자가 현장에서 실제 트레일러와 3D 모델을 비교해볼 수 있도록 3D 모델 확대 기능을 구현"
-            ],
-            [
-              "캐드 소프트웨어 플러그인 개발 (C#, Revit API)",
-              "알고리즘 연산에 필요한 입력값을 캐드 프로그램에서 입력하고 추출해 쓸 수 있도록 도와주는 플러그인",
-              "캐드 외부에서 부재의 3D 모델을 활용할 수 있도록 건축 부재의 3D 모델링 정보 추출 기능을 구현",
-              "기존 건축 설계 과정(설계도 제작) 중에 알고리즘 데이터 입력을 가능하도록 해 사용성을 개선"
-            ]
-          ]
-        },
-        {
-          :what => "사내 버전 관리 문화 도입",
-          :details => [
-            [
-              "사내 개발 인력 증가로 개별 작업한 프로젝트 소스 코드의 통합 문제가 우려되어 버전 관리를 도입",
-              "GitLab 서버 설치, 유지 보수 담당 및 사내 팀원에게 Git을 통한 형상 관리 세미나 진행",
-              "여러 인원이 참여하는 프로젝트에서 소스 코드 통합 문제 해결에 기여"
-            ]
-          ]
-        }
-      ]
-    }]
+    pp = Preproc.new
+    work_info = []
+    work_info << pp.group_by_company(File.read(File.join(File.dirname(__FILE__), "../src/work_experience")))
 
     work_info.each do |wi|
         text(
@@ -158,29 +129,42 @@ Prawn::Document.generate(
           indent_paragraphs: 0
         )
         space_after_list_item
-        wi[:solved].each do |solved_item|
+
+        wi[:solved].keys.each do |solve|
           text(
-            solved_item[:what],
+            solve,
             size: FONT_SIZE[:body],
             leading: 8,
             indent_paragraphs: 0
           )
 
-          solved_item[:details].map do |detail|
-            detail.each do |detail_item|
-              indent(width_of("- ")) do
+          what_n_details_list = wi[:solved][solve]
+          what_n_details_list.each do |what_n_details|
+            what_n_details.each_key {|what|
+              indent(width_of("  ")) do
                 text(
-                  "- #{detail_item}",
+                  what,
                   size: FONT_SIZE[:body],
                   leading: 8,
                   indent_paragraphs: 0
                 )
+              end if what != :EMPTY_WHAT
+              details = what_n_details[what]
+              details.each do |detail_item|
+                indent(width_of("- ")) do
+                  text(
+                    "- #{detail_item}",
+                    size: FONT_SIZE[:body],
+                    leading: 8,
+                    indent_paragraphs: 0
+                  )
+                end
+                space_after_list_item
               end
               space_after_list_item
-            end
-            space_after_list_item
-            space_after_list_item
-            space_after_list_item
+              space_after_list_item
+              space_after_list_item
+            }
           end
         end
     end
