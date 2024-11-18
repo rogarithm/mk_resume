@@ -112,7 +112,10 @@ Prawn::Document.generate(
 
     pp = Preproc.new
     work_info = []
-    work_info << pp.group_by_company(File.read(File.join(File.dirname(__FILE__), "../src/work_experience")))
+    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), "../src/work_experience")))
+    wis.each do |wi|
+      work_info << pp.group_by_company(wi.join("\n"))
+    end
 
     work_info.each do |wi|
         text(
