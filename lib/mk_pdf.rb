@@ -60,7 +60,7 @@ Prawn::Document.generate(
         text(
           "- #{item}",
           size: FONT_SIZE[:body],
-          leading: 8,
+          leading: 6,
           indent_paragraphs: 0
         )
       end
@@ -105,6 +105,7 @@ Prawn::Document.generate(
     end
   end
 
+  space_after_list_item
   space_after_paragraph
 
   [{ level: 4, text: "Work Experience" }].each do |heading|
@@ -121,14 +122,14 @@ Prawn::Document.generate(
         text(
           wi[:company_nm],
           size: FONT_SIZE[:body],
-          leading: 8,
+          leading: 6,
           indent_paragraphs: 0
         )
         space_after_list_item
         text(
           wi[:work_from_to],
           size: FONT_SIZE[:body],
-          leading: 8,
+          leading: 12,
           indent_paragraphs: 0
         )
         space_after_list_item
@@ -137,28 +138,28 @@ Prawn::Document.generate(
           text(
             solve,
             size: FONT_SIZE[:body],
-            leading: 8,
+            leading: 6,
             indent_paragraphs: 0
           )
 
           what_n_details_list = wi[:project][solve]
           what_n_details_list.each do |what_n_details|
             what_n_details.each_key {|what|
-              indent(width_of("  ")) do
+              indent(width_of("      ")) do
                 text(
                   what,
                   size: FONT_SIZE[:body],
-                  leading: 8,
+                  leading: 6,
                   indent_paragraphs: 0
                 )
               end if what != :EMPTY_WHAT
               details = what_n_details[what]
               details.each do |detail_item|
-                indent(width_of("- ")) do
+                indent(width_of("      ")) do
                   text(
                     "- #{detail_item}",
                     size: FONT_SIZE[:body],
-                    leading: 8,
+                    leading: 6,
                     indent_paragraphs: 0
                   )
                 end
