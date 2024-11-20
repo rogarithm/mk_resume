@@ -40,7 +40,7 @@ def draw_heading heading, font_size
 end
 
 DOC_MARGIN = {:top => 2.cm, :right => 3.05.cm, :bottom => 2.cm, :left => 3.05.cm}
-FONT_SIZE = {:heading => 9.5, :body => 9.5}
+FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
 
 Prawn::Document.generate(
   "output.pdf",
@@ -49,6 +49,28 @@ Prawn::Document.generate(
 ) do
 
   load_font
+
+  ["personal_info"].each do |heading|
+    personal_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. docs resume inText personalInfo])).map(&:chomp)
+
+    text(
+      personal_info[0],
+      size: FONT_SIZE[:name],
+      style: :bold,
+      leading: 8
+    )
+
+    personal_info[1..-1].each do |item|
+        text(
+          item,
+          size: FONT_SIZE[:channel],
+          leading: 5,
+          inline_format: true
+        )
+    end
+  end
+
+  space_after_paragraph
 
   [{level: 4, text: "Introduction"}].each do |heading|
     draw_heading(heading, FONT_SIZE)
