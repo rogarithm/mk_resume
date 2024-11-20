@@ -39,6 +39,8 @@ def draw_heading heading, font_size
   )
 end
 
+link_style = "<color rgb='888888'><u>%s</u></color>"
+
 DOC_MARGIN = {:top => 2.cm, :right => 3.05.cm, :bottom => 2.cm, :left => 3.05.cm}
 FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
 
@@ -195,7 +197,65 @@ Prawn::Document.generate(
     end
   end
 
-  headings = [
-    # { level: 4, text: "Portfolio" }
-  ]
+  space_after_list_item
+  space_after_paragraph
+
+  [{ level: 4, text: "Toy Project" }].each do |heading|
+    draw_heading(heading, FONT_SIZE)
+
+    pp = Preproc.new
+    toy_project_info = []
+    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *%W[.. .. docs resume inText toyProject])))
+    wis.each do |wi|
+      toy_project_info << pp.group_by_company(wi.join("\n"))
+    end
+
+    toy_project_info.each do |tpi|
+      text(
+        tpi[:company_nm],
+        size: FONT_SIZE[:body],
+        leading: 6,
+        indent_paragraphs: 0
+      )
+      space_after_list_item
+      tpi[:project].keys.each do |project|
+        text(
+          link_style % project,
+          size: FONT_SIZE[:body],
+          leading: 6,
+          indent_paragraphs: 16,
+          inline_format: true
+        )
+
+        what_n_details_list = tpi[:project][project]
+        what_n_details_list.each do |what_n_details|
+          what_n_details.each_key {|what|
+            indent(width_of("      ")) do
+              text(
+                what,
+                size: FONT_SIZE[:body],
+                leading: 6,
+                indent_paragraphs: 0
+              )
+            end if what != :EMPTY_WHAT
+            details = what_n_details[what]
+            details.each do |detail_item|
+              indent(width_of("      ")) do
+                text(
+                  "- #{detail_item}",
+                  size: FONT_SIZE[:body],
+                  leading: 6,
+                  indent_paragraphs: 0
+                )
+              end
+              space_after_list_item
+            end
+            space_after_list_item
+            space_after_list_item
+            space_after_list_item
+          }
+        end
+      end
+    end
+  end
 end

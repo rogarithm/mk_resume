@@ -66,7 +66,8 @@ class Preproc
     lines.each do |l|
       case
       when project?(l) then
-        nm = l.split(":")[1].strip
+        nmish = l.split(":")
+        nm = nmish.size == 2 ? nmish[1] : l.split(":")[1..-1].join(":").strip
         project[nm] = []
       when solved?(l) then
         solved_what = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_WHAT
