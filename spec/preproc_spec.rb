@@ -43,7 +43,7 @@ describe Preproc do
       ]
     }
 
-    expect(@pp.group_solved(File.read(src_path_sp))).to eq(expected)
+    expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
   end
 
   it "한 일에 대해 작성한 여러 내용을 모을 수 있다" do
@@ -56,7 +56,7 @@ describe Preproc do
       ]
     }
 
-    expect(@pp.group_solved(File.read(src_path_sp))).to eq(expected)
+    expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
   end
 
   it "여러 일에 대해 작성한 내용을 모을 수 있다" do
@@ -71,7 +71,7 @@ describe Preproc do
       ]
     }
 
-    expect(@pp.group_solved(File.read(src_path_sp))).to eq(expected)
+    expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
   end
 
   it "여러 일에 대해 작성한 여러 내용을 모을 수 있다" do
@@ -88,7 +88,7 @@ describe Preproc do
       ]
     }
 
-    expect(@pp.group_solved(File.read(src_path_sp))).to eq(expected)
+    expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
   end
 
   it "회사명, 일한 기간, 한 일을 파싱할 수 있다" do
