@@ -9,6 +9,9 @@ class Preproc
   def solved?(l)
     l =~ /^\s*(solved:)/
   end
+  def project?(l)
+    l =~ /^\s*(project:)/
+  end
   def what?(l)
     l =~ /^\s*(what:)/
   end
@@ -38,7 +41,7 @@ class Preproc
     lines = work_exp.split("\n")
 
     group = {}
-    solve = []
+    plain_text_project = []
     lines.each do |l|
       case
       when company_nm?(l) then
@@ -47,34 +50,34 @@ class Preproc
       when work_from_to?(l) then
         group[:work_from_to] = l.split(":")[1].strip
       else
-        solve << l
+        plain_text_project << l
       end
     end
-    group[:solved] = group_solved solve.join("\n") if solve != []
+    group[:project] = group_project plain_text_project.join("\n") if plain_text_project != []
     group
   end
 
-  def group_solved sol
-    lines = sol.split("\n")
+  def group_project plain_text_project
+    lines = plain_text_project.split("\n")
 
-    solved_tasks = {}
-    solved_task_nm = nil
-    solve_what = nil
+    project = {}
+    nm = nil
+    solved_what = nil
     lines.each do |l|
       case
+      when project?(l) then
+        nm = l.split(":")[1].strip
+        project[nm] = []
       when solved?(l) then
-        solved_task_nm = l.split(":")[1].strip
-        solved_tasks[solved_task_nm] = []
-      when what?(l) then
-        solve_what = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_WHAT
-        solved_tasks[solved_task_nm] << {solve_what => []}
+        solved_what = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_WHAT
+        project[nm] << {solved_what => []}
       when details?(l) then
         ""
       else
-        idx = solved_tasks[solved_task_nm].find_index {|e| e[solve_what] != nil}
-        solved_tasks[solved_task_nm][idx][solve_what] << l.strip
+        idx = project[nm].find_index {|e| e[solved_what] != nil}
+        project[nm][idx][solved_what] << l.strip
       end
     end
-    solved_tasks
+    project
   end
 end

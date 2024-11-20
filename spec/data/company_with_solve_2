@@ -1,12 +1,12 @@
 company_nm: c1
 work_from_to: f ~ t
-solved: s
- what: w
+project: s
+ solved: w
   details:
   d1
   d2
   d3
- what: w2
+ solved: w2
   details:
   d4
   d5

@@ -52,15 +52,14 @@ Prawn::Document.generate(
 
   [{level: 4, text: "Introduction"}].each do |heading|
     draw_heading(heading, FONT_SIZE)
-
-    intro_info = File.readlines(File.join(File.dirname(__FILE__), "../src/introduction")).map(&:chomp)
+    intro_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. docs resume inText introduction])).map(&:chomp)
 
     intro_info.each do |item|
       indent(width_of("- ")) do
         text(
           "- #{item}",
           size: FONT_SIZE[:body],
-          leading: 8,
+          leading: 6,
           indent_paragraphs: 0
         )
       end
@@ -74,7 +73,7 @@ Prawn::Document.generate(
   [{ level: 4, text: "Education" }].each do |heading|
     draw_heading(heading, FONT_SIZE)
 
-    education_info = File.readlines(File.join(File.dirname(__FILE__), "../src/education"))
+    education_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. docs resume inText education]))
                        .map! { |cols|
                          cols.split(",")
                              .each { |col| col.strip! }
@@ -105,6 +104,7 @@ Prawn::Document.generate(
     end
   end
 
+  space_after_list_item
   space_after_paragraph
 
   [{ level: 4, text: "Work Experience" }].each do |heading|
@@ -112,7 +112,7 @@ Prawn::Document.generate(
 
     pp = Preproc.new
     work_info = []
-    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), "../src/work_experience")))
+    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *%W[.. .. docs resume inText workExperience])))
     wis.each do |wi|
       work_info << pp.group_by_company(wi.join("\n"))
     end
@@ -121,44 +121,44 @@ Prawn::Document.generate(
         text(
           wi[:company_nm],
           size: FONT_SIZE[:body],
-          leading: 8,
+          leading: 6,
           indent_paragraphs: 0
         )
         space_after_list_item
         text(
           wi[:work_from_to],
           size: FONT_SIZE[:body],
-          leading: 8,
+          leading: 12,
           indent_paragraphs: 0
         )
         space_after_list_item
 
-        wi[:solved].keys.each do |solve|
+        wi[:project].keys.each do |solve|
           text(
             solve,
             size: FONT_SIZE[:body],
-            leading: 8,
+            leading: 6,
             indent_paragraphs: 0
           )
 
-          what_n_details_list = wi[:solved][solve]
+          what_n_details_list = wi[:project][solve]
           what_n_details_list.each do |what_n_details|
             what_n_details.each_key {|what|
-              indent(width_of("  ")) do
+              indent(width_of("      ")) do
                 text(
                   what,
                   size: FONT_SIZE[:body],
-                  leading: 8,
+                  leading: 6,
                   indent_paragraphs: 0
                 )
               end if what != :EMPTY_WHAT
               details = what_n_details[what]
               details.each do |detail_item|
-                indent(width_of("- ")) do
+                indent(width_of("      ")) do
                   text(
                     "- #{detail_item}",
                     size: FONT_SIZE[:body],
-                    leading: 8,
+                    leading: 6,
                     indent_paragraphs: 0
                   )
                 end
