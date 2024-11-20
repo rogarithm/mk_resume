@@ -62,14 +62,20 @@ Prawn::Document.generate(
       leading: 8
     )
 
-    personal_info[1..-1].each do |item|
+    personal_info[1..2].each do |item|
         text(
           item,
           size: FONT_SIZE[:channel],
           leading: 5,
-          inline_format: true
         )
     end
+
+    text(
+      link_style % personal_info[3],
+      size: FONT_SIZE[:channel],
+      leading: 5,
+      inline_format: true
+    )
   end
 
   space_after_paragraph
