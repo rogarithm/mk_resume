@@ -9,6 +9,9 @@ class Preproc
   def solved?(l)
     l =~ /^\s*(solved:)/
   end
+  def project?(l)
+    l =~ /^\s*(project:)/
+  end
   def what?(l)
     l =~ /^\s*(what:)/
   end
@@ -50,7 +53,7 @@ class Preproc
         solve << l
       end
     end
-    group[:solved] = group_solved solve.join("\n") if solve != []
+    group[:project] = group_solved solve.join("\n") if solve != []
     group
   end
 
@@ -62,7 +65,7 @@ class Preproc
     solve_what = nil
     lines.each do |l|
       case
-      when solved?(l) then
+      when project?(l) then
         solved_task_nm = l.split(":")[1].strip
         solved_tasks[solved_task_nm] = []
       when what?(l) then

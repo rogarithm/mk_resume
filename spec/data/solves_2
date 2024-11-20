@@ -1,4 +1,4 @@
-solved: s
+project: s
  what: w
   details:
   d1
@@ -9,7 +9,7 @@ solved: s
   d4
   d5
   d6
-solved: s2
+project: s2
  what: w
   details:
   d1

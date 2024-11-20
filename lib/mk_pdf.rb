@@ -133,7 +133,7 @@ Prawn::Document.generate(
         )
         space_after_list_item
 
-        wi[:solved].keys.each do |solve|
+        wi[:project].keys.each do |solve|
           text(
             solve,
             size: FONT_SIZE[:body],
@@ -141,7 +141,7 @@ Prawn::Document.generate(
             indent_paragraphs: 0
           )
 
-          what_n_details_list = wi[:solved][solve]
+          what_n_details_list = wi[:project][solve]
           what_n_details_list.each do |what_n_details|
             what_n_details.each_key {|what|
               indent(width_of("  ")) do

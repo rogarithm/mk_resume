@@ -97,7 +97,7 @@ describe Preproc do
     expected = {
       :company_nm => "c1",
       :work_from_to => "f ~ t",
-      :solved => {
+      :project => {
         "s" => [
           { "w" => ["d1", "d2", "d3"] }
         ]
@@ -113,7 +113,7 @@ describe Preproc do
     expected = {
       :company_nm => "c1",
       :work_from_to => "f ~ t",
-      :solved => {
+      :project => {
         "s" => [
           { "w" => ["d1", "d2", "d3"] }
         ]
@@ -129,7 +129,7 @@ describe Preproc do
     expected = {
       :company_nm => "c1",
       :work_from_to => "f ~ t",
-      :solved => {
+      :project => {
         "s" => [
           { "w" => ["d1", "d2", "d3"] },
           { "w2" => ["d4", "d5", "d6"] }
@@ -144,7 +144,7 @@ describe Preproc do
     src_path_sp = File.join(TEST_DATA_DIR, *%w[no_what])
 
     expected = {
-      :solved => {
+      :project => {
         "s" => [
           { :EMPTY_WHAT => ["d1", "d2", "d3"] },
         ]
@@ -160,7 +160,7 @@ describe Preproc do
     expected = {
       :company_nm => "(주) 두잇",
       :work_from_to => "2021.05 ~ 2022.05",
-      :solved => {
+      :project => {
         "건축 분야 알고리즘 기반 솔루션 개발 참여" => [
           {
             "트레일러 3D 모델을 보여주는 혼합현실 애플리케이션 개발 (C#, Unity, MRTK)" => [
@@ -189,7 +189,7 @@ describe Preproc do
     expected = {
       :company_nm => "(주) 두잇",
       :work_from_to => "2021.05 ~ 2022.05",
-      :solved => {
+      :project => {
         "건축 분야 알고리즘 기반 솔루션 개발 참여" => [
           {
             "트레일러 3D 모델을 보여주는 혼합현실 애플리케이션 개발 (C#, Unity, MRTK)" => [
