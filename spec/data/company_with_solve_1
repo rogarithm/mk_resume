@@ -1,7 +1,7 @@
 company_nm: c1
 work_from_to: f ~ t
 project: s
- what: w
+ solved: w
   details:
   d1
   d2

@@ -62,20 +62,20 @@ class Preproc
 
     project = {}
     nm = nil
-    solve_what = nil
+    solved_what = nil
     lines.each do |l|
       case
       when project?(l) then
         nm = l.split(":")[1].strip
         project[nm] = []
-      when what?(l) then
-        solve_what = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_WHAT
-        project[nm] << {solve_what => []}
+      when solved?(l) then
+        solved_what = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_WHAT
+        project[nm] << {solved_what => []}
       when details?(l) then
         ""
       else
-        idx = project[nm].find_index {|e| e[solve_what] != nil}
-        project[nm][idx][solve_what] << l.strip
+        idx = project[nm].find_index {|e| e[solved_what] != nil}
+        project[nm][idx][solved_what] << l.strip
       end
     end
     project

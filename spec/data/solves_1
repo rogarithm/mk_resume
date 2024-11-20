@@ -1,11 +1,11 @@
 project: s
- what: w
+ solved: w
   details:
   d1
   d2
   d3
 project: s2
- what: w
+ solved: w
   details:
   d1
   d2

@@ -1,21 +1,21 @@
 project: s
- what: w
+ solved: w
   details:
   d1
   d2
   d3
- what: w2
+ solved: w2
   details:
   d4
   d5
   d6
 project: s2
- what: w
+ solved: w
   details:
   d1
   d2
   d3
- what: w3
+ solved: w3
   details:
   d4
   d5
