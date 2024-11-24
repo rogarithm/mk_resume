@@ -156,12 +156,12 @@ Prawn::Document.generate(
         )
         space_after_list_item
         text(
-          wi[:work_from_to],
+          wi[:skill_set],
           size: FONT_SIZE[:body],
           leading: 12,
           indent_paragraphs: 0
-        )
-        space_after_list_item
+        ) if wi[:skill_set]
+        space_after_list_item if wi[:skill_set]
 
         wi[:project].keys.each do |solve|
           text(
@@ -206,12 +206,12 @@ Prawn::Document.generate(
   space_after_list_item
   space_after_paragraph
 
-  [{ level: 4, text: "Toy Project" }].each do |heading|
+  [{ level: 4, text: "Side Project" }].each do |heading|
     draw_heading(heading, FONT_SIZE)
 
     pp = Preproc.new
     toy_project_info = []
-    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *%W[.. .. docs resume inText toyProject])))
+    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *%W[.. .. docs resume inText sideProject])))
     wis.each do |wi|
       toy_project_info << pp.group_by_company(wi.join("\n"))
     end

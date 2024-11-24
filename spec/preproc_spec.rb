@@ -16,8 +16,8 @@ describe Preproc do
     src_path_sp = File.join(TEST_DATA_DIR, *%w[company_2])
 
     expected = [
-      ["company_nm: c1", "work_from_to: f ~ t", ""],
-      ["company_nm: c2", "work_from_to: f ~ t"]
+      ["company_nm: c1", ""],
+      ["company_nm: c2"]
     ]
 
     expect(@pp.split_by_company(File.read(src_path_sp))).to eq(expected)
@@ -27,8 +27,7 @@ describe Preproc do
     src_path_sp = File.join(TEST_DATA_DIR, *%w[company_1])
 
     expected = {
-      :company_nm => "c1",
-      :work_from_to => "f ~ t"
+      :company_nm => "c1"
     }
 
     expect(@pp.group_by_company(File.read(src_path_sp))).to eq(expected)
@@ -95,8 +94,7 @@ describe Preproc do
     src_path_sp = File.join(TEST_DATA_DIR, *%w[company_with_solve_1])
 
     expected = {
-      :company_nm => "c1",
-      :work_from_to => "f ~ t",
+      :company_nm => "c1 (f ~ t)",
       :project => {
         "s" => [
           { "w" => ["d1", "d2", "d3"] }
@@ -111,8 +109,7 @@ describe Preproc do
     src_path_sp = File.join(TEST_DATA_DIR, *%w[company_with_solve_1])
 
     expected = {
-      :company_nm => "c1",
-      :work_from_to => "f ~ t",
+      :company_nm => "c1 (f ~ t)",
       :project => {
         "s" => [
           { "w" => ["d1", "d2", "d3"] }
@@ -127,8 +124,7 @@ describe Preproc do
     src_path_sp = File.join(TEST_DATA_DIR, *%w[company_with_solve_2])
 
     expected = {
-      :company_nm => "c1",
-      :work_from_to => "f ~ t",
+      :company_nm => "c1 (f ~ t)",
       :project => {
         "s" => [
           { "w" => ["d1", "d2", "d3"] },
@@ -158,8 +154,7 @@ describe Preproc do
     src_path_sp = File.join(TEST_DATA_DIR, *%w[actual])
 
     expected = {
-      :company_nm => "(주) 두잇",
-      :work_from_to => "2021.05 ~ 2022.05",
+      :company_nm => "(주) 두잇 (2021.05 ~ 2022.05)",
       :project => {
         "건축 분야 알고리즘 기반 솔루션 개발 참여" => [
           {
@@ -187,8 +182,7 @@ describe Preproc do
     src_path_sp = File.join(TEST_DATA_DIR, *%w[real_actual])
 
     expected = {
-      :company_nm => "(주) 두잇",
-      :work_from_to => "2021.05 ~ 2022.05",
+      :company_nm => "(주) 두잇 (2021.05 ~ 2022.05)",
       :project => {
         "건축 분야 알고리즘 기반 솔루션 개발 참여" => [
           {
