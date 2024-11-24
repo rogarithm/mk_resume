@@ -67,7 +67,7 @@ class Preproc
       case
       when project?(l) then
         nmish = l.split(":")
-        nm = nmish.size == 2 ? nmish[1] : l.split(":")[1..-1].join(":").strip
+        nm = nmish.size == 2 ? nmish[1].strip : l.split(":")[1..-1].join(":").strip
         project[nm] = []
       when solved?(l) then
         solved_what = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_WHAT

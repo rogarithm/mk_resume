@@ -1,5 +1,4 @@
-company_nm: c1
-work_from_to: f ~ t
+company_nm: c1 (f ~ t)
 project: s
  solved: w
   details:
