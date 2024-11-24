@@ -3,8 +3,8 @@ class Preproc
   def company_nm?(l)
     l =~ /^\s*(company_nm:)/
   end
-  def work_from_to?(l)
-    l =~ /^\s*(work_from_to:)/
+  def skill_set?(l)
+    l =~ /^\s*(skill_set:)/
   end
   def solved?(l)
     l =~ /^\s*(solved:)/
@@ -47,8 +47,8 @@ class Preproc
       when company_nm?(l) then
         group = {}
         group[:company_nm] = l.split(":")[1].strip
-      when work_from_to?(l) then
-        group[:work_from_to] = l.split(":")[1].strip
+      when skill_set?(l) then
+        group[:skill_set] = l.split(":")[1].strip
       else
         plain_text_project << l
       end

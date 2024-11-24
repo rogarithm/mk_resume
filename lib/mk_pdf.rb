@@ -156,12 +156,12 @@ Prawn::Document.generate(
         )
         space_after_list_item
         text(
-          wi[:work_from_to],
+          wi[:skill_set],
           size: FONT_SIZE[:body],
           leading: 12,
           indent_paragraphs: 0
-        )
-        space_after_list_item
+        ) if wi[:skill_set]
+        space_after_list_item if wi[:skill_set]
 
         wi[:project].keys.each do |solve|
           text(
