@@ -147,7 +147,7 @@ Prawn::Document.generate(
       work_info << pp.group_by_company(wi.join("\n"))
     end
 
-    work_info.each do |wi|
+    work_info.each.with_index do |wi, idx|
         text(
           wi[:company_nm],
           size: FONT_SIZE[:body],
@@ -156,7 +156,7 @@ Prawn::Document.generate(
         )
         space_after_list_item
         text(
-          wi[:skill_set],
+          "사용기술: #{wi[:skill_set]}",
           size: FONT_SIZE[:body],
           leading: 12,
           indent_paragraphs: 0
