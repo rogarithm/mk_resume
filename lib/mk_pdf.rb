@@ -217,21 +217,26 @@ Prawn::Document.generate(
     end
 
     toy_project_info.each do |tpi|
-      text(
-        tpi[:company_nm],
-        size: FONT_SIZE[:body],
-        leading: 6,
-        indent_paragraphs: 0
-      )
-      space_after_list_item
       tpi[:project].keys.each do |project|
-        text(
-          link_style % project,
-          size: FONT_SIZE[:body],
-          leading: 6,
-          indent_paragraphs: 16,
-          inline_format: true
-        )
+
+        if project.match(/<link href='([^']*)'>([^<]*)<\/link>/)
+          link_url = Regexp.last_match(1)
+          link_text = Regexp.last_match(2)
+
+          formatted_text([
+            { text: tpi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
+            { text: " ", size: FONT_SIZE[:body] },
+            { text: "(#{link_text})", size: FONT_SIZE[:body], leading: 6, styles: [:underline], color: "888888", link: link_url }
+          ], indent_paragraphs: 0)
+        else
+          formatted_text([
+            { text: tpi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
+            { text: " ", size: FONT_SIZE[:body] },
+            { text: project, size: FONT_SIZE[:body], leading: 6 }
+          ], indent_paragraphs: 0)
+        end
+
+        space_after_list_item
 
         what_n_details_list = tpi[:project][project]
         what_n_details_list.each do |what_n_details|
