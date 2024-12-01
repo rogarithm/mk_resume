@@ -200,6 +200,7 @@ Prawn::Document.generate(
             }
           end
         end
+        start_new_page if idx == 0
     end
   end
 
@@ -225,8 +226,9 @@ Prawn::Document.generate(
 
           formatted_text([
             { text: tpi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
-            { text: " ", size: FONT_SIZE[:body] },
-            { text: "(#{link_text})", size: FONT_SIZE[:body], leading: 6, styles: [:underline], color: "888888", link: link_url }
+            { text: " (", size: FONT_SIZE[:body] },
+            { text: "#{link_text}", size: FONT_SIZE[:body], leading: 6, styles: [:underline], color: "888888", link: link_url },
+            { text: ")", size: FONT_SIZE[:body] },
           ], indent_paragraphs: 0)
         else
           formatted_text([
