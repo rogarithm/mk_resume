@@ -53,7 +53,7 @@ Prawn::Document.generate(
   load_font
 
   ["personal_info"].each do |heading|
-    personal_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src personalInfo])).map(&:chomp)
+    personal_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src], *%W[personalInfo])).map(&:chomp)
 
     text(
       personal_info[0],
@@ -90,7 +90,7 @@ Prawn::Document.generate(
 
   [{level: 4, text: "Introduction"}].each do |heading|
     draw_heading(heading, FONT_SIZE)
-    intro_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src introduction])).map(&:chomp)
+    intro_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src], *%W[introduction])).map(&:chomp)
 
     intro_info.each do |item|
       indent(width_of("- ")) do
@@ -113,7 +113,7 @@ Prawn::Document.generate(
 
     pp = Preproc.new
     work_info = []
-    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *%W[.. .. src workExperience])))
+    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *%W[.. .. src], *%W[workExperience])))
     wis.each do |wi|
       work_info << pp.group_by_company(wi.join("\n"))
     end
@@ -183,7 +183,7 @@ Prawn::Document.generate(
 
     pp = Preproc.new
     toy_project_info = []
-    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *%W[.. .. src sideProject])))
+    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *%W[.. .. src], *%W[sideProject])))
     wis.each do |wi|
       toy_project_info << pp.group_by_company(wi.join("\n"))
     end
@@ -249,7 +249,7 @@ Prawn::Document.generate(
   [{ level: 4, text: "Education" }].each do |heading|
     draw_heading(heading, FONT_SIZE)
 
-    education_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src education]))
+    education_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src], *%W[education]))
                          .map! { |cols|
                            cols.split(",")
                                .each { |col| col.strip! }
