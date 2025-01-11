@@ -100,43 +100,6 @@ Prawn::Document.generate(
 
   space_after_paragraph
 
-  [{ level: 4, text: "Education" }].each do |heading|
-    draw_heading(heading, FONT_SIZE)
-
-    education_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src education]))
-                       .map! { |cols|
-                         cols.split(",")
-                             .each { |col| col.strip! }
-                       }
-
-    left_col_width = 180 # Adjust based on content and page layout needs
-    right_col_start = left_col_width + 10 # Spacing between columns
-    education_info.each do |left_text, right_text|
-      # Draw left column text
-      text_box(
-        left_text,
-        size: FONT_SIZE[:body],
-        at: [0, cursor],
-        width: left_col_width,
-        align: :left
-      )
-
-      # Draw right column text, positioned to start at the right_col_start
-      text_box(
-        right_text,
-        size: FONT_SIZE[:body],
-        at: [right_col_start, cursor],
-        width: bounds.width - right_col_start,
-        align: :left
-      )
-
-      move_down 15 # Space between rows; adjust as needed
-    end
-  end
-
-  space_after_list_item
-  space_after_paragraph
-
   [{ level: 4, text: "Work Experience" }].each do |heading|
     draw_heading(heading, FONT_SIZE)
 
@@ -269,6 +232,43 @@ Prawn::Document.generate(
           }
         end
       end
+    end
+  end
+
+  space_after_list_item
+  space_after_paragraph
+
+  [{ level: 4, text: "Education" }].each do |heading|
+    draw_heading(heading, FONT_SIZE)
+
+    education_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src education]))
+                         .map! { |cols|
+                           cols.split(",")
+                               .each { |col| col.strip! }
+                         }
+
+    left_col_width = 180 # Adjust based on content and page layout needs
+    right_col_start = left_col_width + 10 # Spacing between columns
+    education_info.each do |left_text, right_text|
+      # Draw left column text
+      text_box(
+        left_text,
+        size: FONT_SIZE[:body],
+        at: [0, cursor],
+        width: left_col_width,
+        align: :left
+      )
+
+      # Draw right column text, positioned to start at the right_col_start
+      text_box(
+        right_text,
+        size: FONT_SIZE[:body],
+        at: [right_col_start, cursor],
+        width: bounds.width - right_col_start,
+        align: :left
+      )
+
+      move_down 15 # Space between rows; adjust as needed
     end
   end
 end
