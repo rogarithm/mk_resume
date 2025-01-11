@@ -76,6 +76,14 @@ Prawn::Document.generate(
       leading: 5,
       inline_format: true
     )
+
+    # blog 링크
+    text(
+      link_style % personal_info[4],
+      size: FONT_SIZE[:channel],
+      leading: 5,
+      inline_format: true
+    )
   end
 
   space_after_paragraph
