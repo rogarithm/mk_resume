@@ -39,86 +39,87 @@ def draw_heading heading, font_size
   )
 end
 
-link_style = "<color rgb='888888'><u>%s</u></color>"
-
 DOC_MARGIN = {:top => 2.cm, :right => 3.05.cm, :bottom => 2.cm, :left => 3.05.cm}
 FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
 
-Prawn::Document.generate(
-  "output.pdf",
-  page_size: "A4",
-  margin: [DOC_MARGIN[:top], DOC_MARGIN[:right], DOC_MARGIN[:bottom], DOC_MARGIN[:left]]
-) do
+def run(relative_path)
+  link_style = "<color rgb='888888'><u>%s</u></color>"
 
-  load_font
+  Prawn::Document.generate(
+    "output.pdf",
+    page_size: "A4",
+    margin: [DOC_MARGIN[:top], DOC_MARGIN[:right], DOC_MARGIN[:bottom], DOC_MARGIN[:left]]
+  ) do
 
-  ["personal_info"].each do |heading|
-    personal_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src], *%W[personalInfo])).map(&:chomp)
+    load_font
 
-    text(
-      personal_info[0],
-      size: FONT_SIZE[:name],
-      style: :bold,
-      leading: 8
-    )
+    ["personal_info"].each do |heading|
+      personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
 
-    personal_info[1..2].each do |item|
+      text(
+        personal_info[0],
+        size: FONT_SIZE[:name],
+        style: :bold,
+        leading: 8
+      )
+
+      personal_info[1..2].each do |item|
         text(
           item,
           size: FONT_SIZE[:channel],
           leading: 5,
         )
-    end
-
-    text(
-      link_style % personal_info[3],
-      size: FONT_SIZE[:channel],
-      leading: 5,
-      inline_format: true
-    )
-
-    # blog 링크
-    text(
-      link_style % personal_info[4],
-      size: FONT_SIZE[:channel],
-      leading: 5,
-      inline_format: true
-    )
-  end
-
-  space_after_paragraph
-
-  [{level: 4, text: "Introduction"}].each do |heading|
-    draw_heading(heading, FONT_SIZE)
-    intro_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src], *%W[introduction])).map(&:chomp)
-
-    intro_info.each do |item|
-      indent(width_of("- ")) do
-        text(
-          "- #{item}",
-          size: FONT_SIZE[:body],
-          leading: 6,
-          indent_paragraphs: 0
-        )
       end
 
-      space_after_list_item
+      text(
+        link_style % personal_info[3],
+        size: FONT_SIZE[:channel],
+        leading: 5,
+        inline_format: true
+      )
+
+      # blog 링크
+      text(
+        link_style % personal_info[4],
+        size: FONT_SIZE[:channel],
+        leading: 5,
+        inline_format: true
+      )
     end
-  end
 
-  space_after_paragraph
+    space_after_paragraph
 
-  [{ level: 4, text: "Work Experience" }].each do |heading|
-    draw_heading(heading, FONT_SIZE)
+    [{level: 4, text: "Introduction"}].each do |heading|
+      draw_heading(heading, FONT_SIZE)
+      intro_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[introduction])).map(&:chomp)
 
-    pp = Preproc.new
-    work_info = []
-    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *%W[.. .. src], *%W[workExperience])))
-    wis.each do |wi|
-      work_info << pp.group_by_company(wi.join("\n"))
+      intro_info.each do |item|
+        indent(width_of("- ")) do
+          text(
+            "- #{item}",
+            size: FONT_SIZE[:body],
+            leading: 6,
+            indent_paragraphs: 0
+          )
+        end
+
+        space_after_list_item
+      end
     end
 
-    work_info.each.with_index do |wi, idx|
+    space_after_paragraph
+
+    [{ level: 4, text: "Work Experience" }].each do |heading|
+      draw_heading(heading, FONT_SIZE)
+
+      pp = Preproc.new
+      work_info = []
+      wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[workExperience])))
+      wis.each do |wi|
+        work_info << pp.group_by_company(wi.join("\n"))
+      end
+
+      work_info.each.with_index do |wi, idx|
         text(
           wi[:company_nm],
           size: FONT_SIZE[:body],
@@ -171,112 +172,112 @@ Prawn::Document.generate(
             }
           end
         end
-        start_new_page if idx == 0
-    end
-  end
-
-  space_after_list_item
-  space_after_paragraph
-
-  [{ level: 4, text: "Side Project" }].each do |heading|
-    draw_heading(heading, FONT_SIZE)
-
-    pp = Preproc.new
-    toy_project_info = []
-    wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *%W[.. .. src], *%W[sideProject])))
-    wis.each do |wi|
-      toy_project_info << pp.group_by_company(wi.join("\n"))
+      end
     end
 
-    toy_project_info.each do |tpi|
-      tpi[:project].keys.each do |project|
+    space_after_list_item
+    space_after_paragraph
 
-        if project.match(/<link href='([^']*)'>([^<]*)<\/link>/)
-          link_url = Regexp.last_match(1)
-          link_text = Regexp.last_match(2)
+    [{ level: 4, text: "Side Project" }].each do |heading|
+      draw_heading(heading, FONT_SIZE)
 
-          formatted_text([
-            { text: tpi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
-            { text: " (", size: FONT_SIZE[:body] },
-            { text: "#{link_text}", size: FONT_SIZE[:body], leading: 6, styles: [:underline], color: "888888", link: link_url },
-            { text: ")", size: FONT_SIZE[:body] },
-          ], indent_paragraphs: 0)
-        else
-          formatted_text([
-            { text: tpi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
-            { text: " ", size: FONT_SIZE[:body] },
-            { text: project, size: FONT_SIZE[:body], leading: 6 }
-          ], indent_paragraphs: 0)
-        end
+      pp = Preproc.new
+      toy_project_info = []
+      wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[sideProject])))
+      wis.each do |wi|
+        toy_project_info << pp.group_by_company(wi.join("\n"))
+      end
 
-        space_after_list_item
+      toy_project_info.each do |tpi|
+        tpi[:project].keys.each do |project|
 
-        what_n_details_list = tpi[:project][project]
-        what_n_details_list.each do |what_n_details|
-          what_n_details.each_key {|what|
-            indent(width_of("      ")) do
-              text(
-                what,
-                size: FONT_SIZE[:body],
-                leading: 6,
-                indent_paragraphs: 0
-              )
-            end if what != :EMPTY_WHAT
-            details = what_n_details[what]
-            details.each do |detail_item|
+          if project.match(/<link href='([^']*)'>([^<]*)<\/link>/)
+            link_url = Regexp.last_match(1)
+            link_text = Regexp.last_match(2)
+
+            formatted_text([
+              { text: tpi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
+              { text: " (", size: FONT_SIZE[:body] },
+              { text: "#{link_text}", size: FONT_SIZE[:body], leading: 6, styles: [:underline], color: "888888", link: link_url },
+              { text: ")", size: FONT_SIZE[:body] },
+            ], indent_paragraphs: 0)
+          else
+            formatted_text([
+              { text: tpi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
+              { text: " ", size: FONT_SIZE[:body] },
+              { text: project, size: FONT_SIZE[:body], leading: 6 }
+            ], indent_paragraphs: 0)
+          end
+
+          space_after_list_item
+
+          what_n_details_list = tpi[:project][project]
+          what_n_details_list.each do |what_n_details|
+            what_n_details.each_key {|what|
               indent(width_of("      ")) do
                 text(
-                  "- #{detail_item}",
+                  what,
                   size: FONT_SIZE[:body],
                   leading: 6,
                   indent_paragraphs: 0
                 )
+              end if what != :EMPTY_WHAT
+              details = what_n_details[what]
+              details.each do |detail_item|
+                indent(width_of("      ")) do
+                  text(
+                    "- #{detail_item}",
+                    size: FONT_SIZE[:body],
+                    leading: 6,
+                    indent_paragraphs: 0
+                  )
+                end
+                space_after_list_item
               end
               space_after_list_item
-            end
-            space_after_list_item
-            space_after_list_item
-            space_after_list_item
-          }
+              space_after_list_item
+              space_after_list_item
+            }
+          end
         end
       end
     end
-  end
 
-  space_after_list_item
-  space_after_paragraph
+    space_after_list_item
+    space_after_paragraph
 
-  [{ level: 4, text: "Education" }].each do |heading|
-    draw_heading(heading, FONT_SIZE)
+    [{ level: 4, text: "Education" }].each do |heading|
+      draw_heading(heading, FONT_SIZE)
 
-    education_info = File.readlines(File.join(File.dirname(__FILE__), *%W[.. .. src], *%W[education]))
-                         .map! { |cols|
-                           cols.split(",")
-                               .each { |col| col.strip! }
-                         }
+      education_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[education]))
+                           .map! { |cols|
+                             cols.split(",")
+                                 .each { |col| col.strip! }
+                           }
 
-    left_col_width = 180 # Adjust based on content and page layout needs
-    right_col_start = left_col_width + 10 # Spacing between columns
-    education_info.each do |left_text, right_text|
-      # Draw left column text
-      text_box(
-        left_text,
-        size: FONT_SIZE[:body],
-        at: [0, cursor],
-        width: left_col_width,
-        align: :left
-      )
+      left_col_width = 180 # Adjust based on content and page layout needs
+      right_col_start = left_col_width + 10 # Spacing between columns
+      education_info.each do |left_text, right_text|
+        # Draw left column text
+        text_box(
+          left_text,
+          size: FONT_SIZE[:body],
+          at: [0, cursor],
+          width: left_col_width,
+          align: :left
+        )
 
-      # Draw right column text, positioned to start at the right_col_start
-      text_box(
-        right_text,
-        size: FONT_SIZE[:body],
-        at: [right_col_start, cursor],
-        width: bounds.width - right_col_start,
-        align: :left
-      )
+        # Draw right column text, positioned to start at the right_col_start
+        text_box(
+          right_text,
+          size: FONT_SIZE[:body],
+          at: [right_col_start, cursor],
+          width: bounds.width - right_col_start,
+          align: :left
+        )
 
-      move_down 15 # Space between rows; adjust as needed
+        move_down 15 # Space between rows; adjust as needed
+      end
     end
   end
 end
