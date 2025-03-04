@@ -7,6 +7,19 @@ require_relative 'preproc'
 DOC_MARGIN = {:top => 2.cm, :right => 3.05.cm, :bottom => 2.cm, :left => 3.05.cm}
 FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
 
+class FontManager
+  def load_font(pdf_doc)
+    Prawn::Font::AFM.hide_m17n_warning = true
+    pdf_doc.font_families.update(
+      "NotoSans" => {
+        normal: "./fonts/NotoSansKR-Regular.ttf",
+        bold: "./fonts/NotoSansKR-Bold.ttf"
+      }
+    )
+    pdf_doc.font "NotoSans"
+  end
+end
+
 def run(relative_path)
   link_style = "<color rgb='888888'><u>%s</u></color>"
 
@@ -16,14 +29,8 @@ def run(relative_path)
     margin: [DOC_MARGIN[:top], DOC_MARGIN[:right], DOC_MARGIN[:bottom], DOC_MARGIN[:left]]
   ) do |doc|
 
-    Prawn::Font::AFM.hide_m17n_warning = true
-    doc.font_families.update(
-      "NotoSans" => {
-        normal: "./fonts/NotoSansKR-Regular.ttf",
-        bold: "./fonts/NotoSansKR-Bold.ttf"
-      }
-    )
-    doc.font "NotoSans"
+    font_manager = FontManager.new
+    font_manager.load_font(doc)
 
     ["personal_info"].each do |heading|
       personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
