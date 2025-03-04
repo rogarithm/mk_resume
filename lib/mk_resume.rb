@@ -5,9 +5,10 @@ require_relative 'preproc'
 # 플레인 텍스트 형식으로 적은 이력서를 pdf로 변환하기 위한 스크립트
 
 DOC_MARGIN = {:top => 2.cm, :right => 3.05.cm, :bottom => 2.cm, :left => 3.05.cm}
-FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
 
 class FontManager
+  FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
+
   def load_font(pdf_doc)
     Prawn::Font::AFM.hide_m17n_warning = true
     pdf_doc.font_families.update(
@@ -17,6 +18,10 @@ class FontManager
       }
     )
     pdf_doc.font "NotoSans"
+  end
+
+  def find_font_size usage
+    FONT_SIZE[usage]
   end
 end
 
@@ -37,7 +42,7 @@ def run(relative_path)
 
       doc.text(
         personal_info[0],
-        size: FONT_SIZE[:name],
+        size: font_manager.find_font_size(:name),
         style: :bold,
         leading: 8
       )
@@ -45,14 +50,14 @@ def run(relative_path)
       personal_info[1..2].each do |item|
         doc.text(
           item,
-          size: FONT_SIZE[:channel],
+          size: font_manager.find_font_size(:channel),
           leading: 5,
         )
       end
 
       doc.text(
         link_style % personal_info[3],
-        size: FONT_SIZE[:channel],
+        size: font_manager.find_font_size(:channel),
         leading: 5,
         inline_format: true
       )
@@ -60,7 +65,7 @@ def run(relative_path)
       # blog 링크
       doc.text(
         link_style % personal_info[4],
-        size: FONT_SIZE[:channel],
+        size: font_manager.find_font_size(:channel),
         leading: 5,
         inline_format: true
       )
@@ -74,9 +79,9 @@ def run(relative_path)
       line_height = 1.45
       doc.text(
         heading[:text],
-        size: FONT_SIZE[:heading],
+        size: font_manager.find_font_size(:heading),
         style: :bold,
-        leading: line_height * FONT_SIZE[:heading]
+        leading: line_height * font_manager.find_font_size(:heading)
       )
       intro_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[introduction])).map(&:chomp)
 
@@ -84,7 +89,7 @@ def run(relative_path)
         doc.indent(doc.width_of("- ")) do
           doc.text(
             "- #{item}",
-            size: FONT_SIZE[:body],
+            size: font_manager.find_font_size(:body),
             leading: 6,
             indent_paragraphs: 0
           )
@@ -102,9 +107,9 @@ def run(relative_path)
       line_height = 1.45
       doc.text(
         heading[:text],
-        size: FONT_SIZE[:heading],
+        size: font_manager.find_font_size(:heading),
         style: :bold,
-        leading: line_height * FONT_SIZE[:heading]
+        leading: line_height * font_manager.find_font_size(:heading)
       )
 
       pp = Preproc.new
@@ -117,14 +122,14 @@ def run(relative_path)
       work_info.each.with_index do |wi, idx|
         doc.text(
           wi[:company_nm],
-          size: FONT_SIZE[:body],
+          size: font_manager.find_font_size(:body),
           leading: 6,
           indent_paragraphs: 0
         )
         doc.move_down 2
         doc.text(
           "사용기술: #{wi[:skill_set]}",
-          size: FONT_SIZE[:body],
+          size: font_manager.find_font_size(:body),
           leading: 12,
           indent_paragraphs: 0
         ) if wi[:skill_set]
@@ -133,7 +138,7 @@ def run(relative_path)
         wi[:project].keys.each do |solve|
           doc.text(
             solve,
-            size: FONT_SIZE[:body],
+            size: font_manager.find_font_size(:body),
             leading: 6,
             indent_paragraphs: 0
           )
@@ -144,7 +149,7 @@ def run(relative_path)
               doc.indent(doc.width_of("      ")) do
                 doc.text(
                   what,
-                  size: FONT_SIZE[:body],
+                  size: font_manager.find_font_size(:body),
                   leading: 6,
                   indent_paragraphs: 0
                 )
@@ -154,7 +159,7 @@ def run(relative_path)
                 doc.indent(doc.width_of("      ")) do
                   doc.text(
                     "- #{detail_item}",
-                    size: FONT_SIZE[:body],
+                    size: font_manager.find_font_size(:body),
                     leading: 6,
                     indent_paragraphs: 0
                   )
@@ -179,9 +184,9 @@ def run(relative_path)
       line_height = 1.45
       doc.text(
         heading[:text],
-        size: FONT_SIZE[:heading],
+        size: font_manager.find_font_size(:heading),
         style: :bold,
-        leading: line_height * FONT_SIZE[:heading]
+        leading: line_height * font_manager.find_font_size(:heading)
       )
 
       pp = Preproc.new
@@ -199,16 +204,16 @@ def run(relative_path)
             link_text = Regexp.last_match(2)
 
             doc.formatted_text([
-              { text: spi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
-              { text: " (", size: FONT_SIZE[:body] },
-              { text: "#{link_text}", size: FONT_SIZE[:body], leading: 6, styles: [:underline], color: "888888", link: link_url },
-              { text: ")", size: FONT_SIZE[:body] },
+              { text: spi[:company_nm], size: font_manager.find_font_size(:body), leading: 6 },
+              { text: " (", size: font_manager.find_font_size(:body) },
+              { text: "#{link_text}", size: font_manager.find_font_size(:body), leading: 6, styles: [:underline], color: "888888", link: link_url },
+              { text: ")", size: font_manager.find_font_size(:body) },
             ], indent_paragraphs: 0)
           else
             doc.formatted_text([
-              { text: spi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
-              { text: " ", size: FONT_SIZE[:body] },
-              { text: project, size: FONT_SIZE[:body], leading: 6 }
+              { text: spi[:company_nm], size: font_manager.find_font_size(:body), leading: 6 },
+              { text: " ", size: font_manager.find_font_size(:body) },
+              { text: project, size: font_manager.find_font_size(:body), leading: 6 }
             ], indent_paragraphs: 0)
           end
 
@@ -220,7 +225,7 @@ def run(relative_path)
               doc.indent(doc.width_of("      ")) do
                 doc.text(
                   what,
-                  size: FONT_SIZE[:body],
+                  size: font_manager.find_font_size(:body),
                   leading: 6,
                   indent_paragraphs: 0
                 )
@@ -230,7 +235,7 @@ def run(relative_path)
                 doc.indent(doc.width_of("      ")) do
                   doc.text(
                     "- #{detail_item}",
-                    size: FONT_SIZE[:body],
+                    size: font_manager.find_font_size(:body),
                     leading: 6,
                     indent_paragraphs: 0
                   )
@@ -255,9 +260,9 @@ def run(relative_path)
       line_height = 1.45
       doc.text(
         heading[:text],
-        size: FONT_SIZE[:heading],
+        size: font_manager.find_font_size(:heading),
         style: :bold,
-        leading: line_height * FONT_SIZE[:heading]
+        leading: line_height * font_manager.find_font_size(:heading)
       )
 
       education_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[education]))
@@ -272,7 +277,7 @@ def run(relative_path)
         # Draw left column text
         doc.text_box(
           left_text,
-          size: FONT_SIZE[:body],
+          size: font_manager.find_font_size(:body),
           at: [0, doc.cursor],
           width: left_col_width,
           align: :left
@@ -281,7 +286,7 @@ def run(relative_path)
         # Draw right column text, positioned to start at the right_col_start
         doc.text_box(
           right_text,
-          size: FONT_SIZE[:body],
+          size: font_manager.find_font_size(:body),
           at: [right_col_start, doc.cursor],
           width: doc.bounds.width - right_col_start,
           align: :left
