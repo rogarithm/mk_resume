@@ -29,6 +29,10 @@ class DocumentWriter
   def write_text(pdf_doc, txt, options = {})
     pdf_doc.text(txt, options)
   end
+
+  def indent(pdf_doc, left_width, &text_writer)
+    pdf_doc.indent(left_width, &text_writer)
+  end
 end
 
 def run(relative_path)
@@ -109,7 +113,7 @@ def run(relative_path)
       intro_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[introduction])).map(&:chomp)
 
       intro_info.each do |item|
-        doc.indent(doc.width_of("- ")) do
+        doc_writer.indent(doc, doc.width_of("- ")) do
           doc_writer.write_text(
             doc,
             "- #{item}",
@@ -184,7 +188,7 @@ def run(relative_path)
           what_n_details_list = wi[:project][solve]
           what_n_details_list.each do |what_n_details|
             what_n_details.each_key {|what|
-              doc.indent(doc.width_of("      ")) do
+              doc_writer.indent(doc, doc.width_of("      ")) do
                 doc_writer.write_text(
                   doc,
                   what,
@@ -197,7 +201,7 @@ def run(relative_path)
               end if what != :EMPTY_WHAT
               details = what_n_details[what]
               details.each do |detail_item|
-                doc.indent(doc.width_of("      ")) do
+                doc_writer.indent(doc, doc.width_of("      ")) do
                   doc_writer.write_text(
                     doc,
                     "- #{detail_item}",
@@ -269,7 +273,7 @@ def run(relative_path)
           what_n_details_list = spi[:project][project]
           what_n_details_list.each do |what_n_details|
             what_n_details.each_key {|what|
-              doc.indent(doc.width_of("      ")) do
+              doc_writer.indent(doc, doc.width_of("      ")) do
                 doc_writer.write_text(
                   doc,
                   what,
@@ -282,7 +286,7 @@ def run(relative_path)
               end if what != :EMPTY_WHAT
               details = what_n_details[what]
               details.each do |detail_item|
-                doc.indent(doc.width_of("      ")) do
+                doc_writer.indent(doc, doc.width_of("      ")) do
                   doc_writer.write_text(
                     doc,
                     "- #{detail_item}",
