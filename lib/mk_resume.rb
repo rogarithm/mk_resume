@@ -4,41 +4,6 @@ require_relative 'preproc'
 
 # 플레인 텍스트 형식으로 적은 이력서를 pdf로 변환하기 위한 스크립트
 
-def load_font
-  Prawn::Font::AFM.hide_m17n_warning = true
-  font_families.update(
-    "NotoSans" => {
-      normal: "./fonts/NotoSansKR-Regular.ttf",
-      bold: "./fonts/NotoSansKR-Bold.ttf"
-    }
-  )
-  font "NotoSans"
-end
-
-def draw_horizontal_line
-  stroke_horizontal_rule
-  move_down 9.5
-end
-
-def space_after_list_item
-  move_down 2
-end
-
-def space_after_paragraph
-  move_down 14.5
-end
-
-def draw_heading heading, font_size
-  draw_horizontal_line
-  line_height = 1.45
-  text(
-    heading[:text],
-    size: font_size[:heading],
-    style: :bold,
-    leading: line_height * font_size[:heading]
-  )
-end
-
 DOC_MARGIN = {:top => 2.cm, :right => 3.05.cm, :bottom => 2.cm, :left => 3.05.cm}
 FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
 
@@ -51,7 +16,14 @@ def run(relative_path)
     margin: [DOC_MARGIN[:top], DOC_MARGIN[:right], DOC_MARGIN[:bottom], DOC_MARGIN[:left]]
   ) do
 
-    load_font
+    Prawn::Font::AFM.hide_m17n_warning = true
+    font_families.update(
+      "NotoSans" => {
+        normal: "./fonts/NotoSansKR-Regular.ttf",
+        bold: "./fonts/NotoSansKR-Bold.ttf"
+      }
+    )
+    font "NotoSans"
 
     ["personal_info"].each do |heading|
       personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
@@ -87,10 +59,18 @@ def run(relative_path)
       )
     end
 
-    space_after_paragraph
+    move_down 14.5
 
     [{level: 4, text: "Introduction"}].each do |heading|
-      draw_heading(heading, FONT_SIZE)
+      stroke_horizontal_rule
+      move_down 9.5
+      line_height = 1.45
+      text(
+        heading[:text],
+        size: FONT_SIZE[:heading],
+        style: :bold,
+        leading: line_height * FONT_SIZE[:heading]
+      )
       intro_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[introduction])).map(&:chomp)
 
       intro_info.each do |item|
@@ -103,14 +83,22 @@ def run(relative_path)
           )
         end
 
-        space_after_list_item
+        move_down 2
       end
     end
 
-    space_after_paragraph
+    move_down 14.5
 
     [{ level: 4, text: "Work Experience" }].each do |heading|
-      draw_heading(heading, FONT_SIZE)
+      stroke_horizontal_rule
+      move_down 9.5
+      line_height = 1.45
+      text(
+        heading[:text],
+        size: FONT_SIZE[:heading],
+        style: :bold,
+        leading: line_height * FONT_SIZE[:heading]
+      )
 
       pp = Preproc.new
       work_info = []
@@ -126,14 +114,14 @@ def run(relative_path)
           leading: 6,
           indent_paragraphs: 0
         )
-        space_after_list_item
+        move_down 2
         text(
           "사용기술: #{wi[:skill_set]}",
           size: FONT_SIZE[:body],
           leading: 12,
           indent_paragraphs: 0
         ) if wi[:skill_set]
-        space_after_list_item if wi[:skill_set]
+        move_down 2 if wi[:skill_set]
 
         wi[:project].keys.each do |solve|
           text(
@@ -164,22 +152,30 @@ def run(relative_path)
                     indent_paragraphs: 0
                   )
                 end
-                space_after_list_item
+                move_down 2
               end
-              space_after_list_item
-              space_after_list_item
-              space_after_list_item
+              move_down 2
+              move_down 2
+              move_down 2
             }
           end
         end
       end
     end
 
-    space_after_list_item
-    space_after_paragraph
+    move_down 2
+    move_down 14.5
 
     [{ level: 4, text: "Side Project" }].each do |heading|
-      draw_heading(heading, FONT_SIZE)
+      stroke_horizontal_rule
+      move_down 9.5
+      line_height = 1.45
+      text(
+        heading[:text],
+        size: FONT_SIZE[:heading],
+        style: :bold,
+        leading: line_height * FONT_SIZE[:heading]
+      )
 
       pp = Preproc.new
       side_project_info = []
@@ -209,7 +205,7 @@ def run(relative_path)
             ], indent_paragraphs: 0)
           end
 
-          space_after_list_item
+          move_down 2
 
           what_n_details_list = spi[:project][project]
           what_n_details_list.each do |what_n_details|
@@ -232,22 +228,30 @@ def run(relative_path)
                     indent_paragraphs: 0
                   )
                 end
-                space_after_list_item
+                move_down 2
               end
-              space_after_list_item
-              space_after_list_item
-              space_after_list_item
+              move_down 2
+              move_down 2
+              move_down 2
             }
           end
         end
       end
     end
 
-    space_after_list_item
-    space_after_paragraph
+    move_down 2
+    move_down 14.5
 
     [{ level: 4, text: "Education" }].each do |heading|
-      draw_heading(heading, FONT_SIZE)
+      stroke_horizontal_rule
+      move_down 9.5
+      line_height = 1.45
+      text(
+        heading[:text],
+        size: FONT_SIZE[:heading],
+        style: :bold,
+        leading: line_height * FONT_SIZE[:heading]
+      )
 
       education_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[education]))
                            .map! { |cols|
