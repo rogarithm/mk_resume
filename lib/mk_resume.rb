@@ -14,21 +14,21 @@ def run(relative_path)
     "output.pdf",
     page_size: "A4",
     margin: [DOC_MARGIN[:top], DOC_MARGIN[:right], DOC_MARGIN[:bottom], DOC_MARGIN[:left]]
-  ) do
+  ) do |doc|
 
     Prawn::Font::AFM.hide_m17n_warning = true
-    font_families.update(
+    doc.font_families.update(
       "NotoSans" => {
         normal: "./fonts/NotoSansKR-Regular.ttf",
         bold: "./fonts/NotoSansKR-Bold.ttf"
       }
     )
-    font "NotoSans"
+    doc.font "NotoSans"
 
     ["personal_info"].each do |heading|
       personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
 
-      text(
+      doc.text(
         personal_info[0],
         size: FONT_SIZE[:name],
         style: :bold,
@@ -36,14 +36,14 @@ def run(relative_path)
       )
 
       personal_info[1..2].each do |item|
-        text(
+        doc.text(
           item,
           size: FONT_SIZE[:channel],
           leading: 5,
         )
       end
 
-      text(
+      doc.text(
         link_style % personal_info[3],
         size: FONT_SIZE[:channel],
         leading: 5,
@@ -51,7 +51,7 @@ def run(relative_path)
       )
 
       # blog 링크
-      text(
+      doc.text(
         link_style % personal_info[4],
         size: FONT_SIZE[:channel],
         leading: 5,
@@ -59,13 +59,13 @@ def run(relative_path)
       )
     end
 
-    move_down 14.5
+    doc.move_down 14.5
 
     [{level: 4, text: "Introduction"}].each do |heading|
-      stroke_horizontal_rule
-      move_down 9.5
+      doc.stroke_horizontal_rule
+      doc.move_down 9.5
       line_height = 1.45
-      text(
+      doc.text(
         heading[:text],
         size: FONT_SIZE[:heading],
         style: :bold,
@@ -74,8 +74,8 @@ def run(relative_path)
       intro_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[introduction])).map(&:chomp)
 
       intro_info.each do |item|
-        indent(width_of("- ")) do
-          text(
+        doc.indent(doc.width_of("- ")) do
+          doc.text(
             "- #{item}",
             size: FONT_SIZE[:body],
             leading: 6,
@@ -83,17 +83,17 @@ def run(relative_path)
           )
         end
 
-        move_down 2
+        doc.move_down 2
       end
     end
 
-    move_down 14.5
+    doc.move_down 14.5
 
     [{ level: 4, text: "Work Experience" }].each do |heading|
-      stroke_horizontal_rule
-      move_down 9.5
+      doc.stroke_horizontal_rule
+      doc.move_down 9.5
       line_height = 1.45
-      text(
+      doc.text(
         heading[:text],
         size: FONT_SIZE[:heading],
         style: :bold,
@@ -108,23 +108,23 @@ def run(relative_path)
       end
 
       work_info.each.with_index do |wi, idx|
-        text(
+        doc.text(
           wi[:company_nm],
           size: FONT_SIZE[:body],
           leading: 6,
           indent_paragraphs: 0
         )
-        move_down 2
-        text(
+        doc.move_down 2
+        doc.text(
           "사용기술: #{wi[:skill_set]}",
           size: FONT_SIZE[:body],
           leading: 12,
           indent_paragraphs: 0
         ) if wi[:skill_set]
-        move_down 2 if wi[:skill_set]
+        doc.move_down 2 if wi[:skill_set]
 
         wi[:project].keys.each do |solve|
-          text(
+          doc.text(
             solve,
             size: FONT_SIZE[:body],
             leading: 6,
@@ -134,8 +134,8 @@ def run(relative_path)
           what_n_details_list = wi[:project][solve]
           what_n_details_list.each do |what_n_details|
             what_n_details.each_key {|what|
-              indent(width_of("      ")) do
-                text(
+              doc.indent(doc.width_of("      ")) do
+                doc.text(
                   what,
                   size: FONT_SIZE[:body],
                   leading: 6,
@@ -144,33 +144,33 @@ def run(relative_path)
               end if what != :EMPTY_WHAT
               details = what_n_details[what]
               details.each do |detail_item|
-                indent(width_of("      ")) do
-                  text(
+                doc.indent(doc.width_of("      ")) do
+                  doc.text(
                     "- #{detail_item}",
                     size: FONT_SIZE[:body],
                     leading: 6,
                     indent_paragraphs: 0
                   )
                 end
-                move_down 2
+                doc.move_down 2
               end
-              move_down 2
-              move_down 2
-              move_down 2
+              doc.move_down 2
+              doc.move_down 2
+              doc.move_down 2
             }
           end
         end
       end
     end
 
-    move_down 2
-    move_down 14.5
+    doc.move_down 2
+    doc.move_down 14.5
 
     [{ level: 4, text: "Side Project" }].each do |heading|
-      stroke_horizontal_rule
-      move_down 9.5
+      doc.stroke_horizontal_rule
+      doc.move_down 9.5
       line_height = 1.45
-      text(
+      doc.text(
         heading[:text],
         size: FONT_SIZE[:heading],
         style: :bold,
@@ -191,27 +191,27 @@ def run(relative_path)
             link_url = Regexp.last_match(1)
             link_text = Regexp.last_match(2)
 
-            formatted_text([
+            doc.formatted_text([
               { text: spi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
               { text: " (", size: FONT_SIZE[:body] },
               { text: "#{link_text}", size: FONT_SIZE[:body], leading: 6, styles: [:underline], color: "888888", link: link_url },
               { text: ")", size: FONT_SIZE[:body] },
             ], indent_paragraphs: 0)
           else
-            formatted_text([
+            doc.formatted_text([
               { text: spi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
               { text: " ", size: FONT_SIZE[:body] },
               { text: project, size: FONT_SIZE[:body], leading: 6 }
             ], indent_paragraphs: 0)
           end
 
-          move_down 2
+          doc.move_down 2
 
           what_n_details_list = spi[:project][project]
           what_n_details_list.each do |what_n_details|
             what_n_details.each_key {|what|
-              indent(width_of("      ")) do
-                text(
+              doc.indent(doc.width_of("      ")) do
+                doc.text(
                   what,
                   size: FONT_SIZE[:body],
                   leading: 6,
@@ -220,33 +220,33 @@ def run(relative_path)
               end if what != :EMPTY_WHAT
               details = what_n_details[what]
               details.each do |detail_item|
-                indent(width_of("      ")) do
-                  text(
+                doc.indent(doc.width_of("      ")) do
+                  doc.text(
                     "- #{detail_item}",
                     size: FONT_SIZE[:body],
                     leading: 6,
                     indent_paragraphs: 0
                   )
                 end
-                move_down 2
+                doc.move_down 2
               end
-              move_down 2
-              move_down 2
-              move_down 2
+              doc.move_down 2
+              doc.move_down 2
+              doc.move_down 2
             }
           end
         end
       end
     end
 
-    move_down 2
-    move_down 14.5
+    doc.move_down 2
+    doc.move_down 14.5
 
     [{ level: 4, text: "Education" }].each do |heading|
-      stroke_horizontal_rule
-      move_down 9.5
+      doc.stroke_horizontal_rule
+      doc.move_down 9.5
       line_height = 1.45
-      text(
+      doc.text(
         heading[:text],
         size: FONT_SIZE[:heading],
         style: :bold,
@@ -263,24 +263,24 @@ def run(relative_path)
       right_col_start = left_col_width + 10 # Spacing between columns
       education_info.each do |left_text, right_text|
         # Draw left column text
-        text_box(
+        doc.text_box(
           left_text,
           size: FONT_SIZE[:body],
-          at: [0, cursor],
+          at: [0, doc.cursor],
           width: left_col_width,
           align: :left
         )
 
         # Draw right column text, positioned to start at the right_col_start
-        text_box(
+        doc.text_box(
           right_text,
           size: FONT_SIZE[:body],
-          at: [right_col_start, cursor],
-          width: bounds.width - right_col_start,
+          at: [right_col_start, doc.cursor],
+          width: doc.bounds.width - right_col_start,
           align: :left
         )
 
-        move_down 15 # Space between rows; adjust as needed
+        doc.move_down 15 # Space between rows; adjust as needed
       end
     end
   end
