@@ -182,28 +182,28 @@ def run(relative_path)
       draw_heading(heading, FONT_SIZE)
 
       pp = Preproc.new
-      toy_project_info = []
+      side_project_info = []
       wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[sideProject])))
       wis.each do |wi|
-        toy_project_info << pp.group_by_company(wi.join("\n"))
+        side_project_info << pp.group_by_company(wi.join("\n"))
       end
 
-      toy_project_info.each do |tpi|
-        tpi[:project].keys.each do |project|
+      side_project_info.each do |spi|
+        spi[:project].keys.each do |project|
 
           if project.match(/<link href='([^']*)'>([^<]*)<\/link>/)
             link_url = Regexp.last_match(1)
             link_text = Regexp.last_match(2)
 
             formatted_text([
-              { text: tpi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
+              { text: spi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
               { text: " (", size: FONT_SIZE[:body] },
               { text: "#{link_text}", size: FONT_SIZE[:body], leading: 6, styles: [:underline], color: "888888", link: link_url },
               { text: ")", size: FONT_SIZE[:body] },
             ], indent_paragraphs: 0)
           else
             formatted_text([
-              { text: tpi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
+              { text: spi[:company_nm], size: FONT_SIZE[:body], leading: 6 },
               { text: " ", size: FONT_SIZE[:body] },
               { text: project, size: FONT_SIZE[:body], leading: 6 }
             ], indent_paragraphs: 0)
@@ -211,7 +211,7 @@ def run(relative_path)
 
           space_after_list_item
 
-          what_n_details_list = tpi[:project][project]
+          what_n_details_list = spi[:project][project]
           what_n_details_list.each do |what_n_details|
             what_n_details.each_key {|what|
               indent(width_of("      ")) do
