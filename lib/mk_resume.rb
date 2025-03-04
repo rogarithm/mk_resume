@@ -25,6 +25,12 @@ class FontManager
   end
 end
 
+class DocumentWriter
+  def write_text(pdf_doc, txt, options = {})
+    pdf_doc.text(txt, options)
+  end
+end
+
 def run(relative_path)
   link_style = "<color rgb='888888'><u>%s</u></color>"
 
@@ -37,37 +43,51 @@ def run(relative_path)
     font_manager = FontManager.new
     font_manager.load_font(doc)
 
+    doc_writer = DocumentWriter.new
+
     ["personal_info"].each do |heading|
       personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
 
-      doc.text(
+      doc_writer.write_text(
+        doc,
         personal_info[0],
-        size: font_manager.find_font_size(:name),
-        style: :bold,
-        leading: 8
+        {
+          size: font_manager.find_font_size(:name),
+          style: :bold,
+          leading: 8
+        }
       )
 
       personal_info[1..2].each do |item|
-        doc.text(
+        doc_writer.write_text(
+          doc,
           item,
-          size: font_manager.find_font_size(:channel),
-          leading: 5,
+          {
+            size: font_manager.find_font_size(:channel),
+            leading: 5
+          }
         )
       end
 
-      doc.text(
+      doc_writer.write_text(
+        doc,
         link_style % personal_info[3],
-        size: font_manager.find_font_size(:channel),
-        leading: 5,
-        inline_format: true
+        {
+          size: font_manager.find_font_size(:channel),
+          leading: 5,
+          inline_format: true
+        }
       )
 
       # blog 링크
-      doc.text(
+      doc_writer.write_text(
+        doc,
         link_style % personal_info[4],
-        size: font_manager.find_font_size(:channel),
-        leading: 5,
-        inline_format: true
+        {
+          size: font_manager.find_font_size(:channel),
+          leading: 5,
+          inline_format: true
+        }
       )
     end
 
@@ -77,21 +97,27 @@ def run(relative_path)
       doc.stroke_horizontal_rule
       doc.move_down 9.5
       line_height = 1.45
-      doc.text(
+      doc_writer.write_text(
+        doc,
         heading[:text],
-        size: font_manager.find_font_size(:heading),
-        style: :bold,
-        leading: line_height * font_manager.find_font_size(:heading)
+        {
+          size: font_manager.find_font_size(:heading),
+          style: :bold,
+          leading: line_height * font_manager.find_font_size(:heading)
+        }
       )
       intro_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[introduction])).map(&:chomp)
 
       intro_info.each do |item|
         doc.indent(doc.width_of("- ")) do
-          doc.text(
+          doc_writer.write_text(
+            doc,
             "- #{item}",
-            size: font_manager.find_font_size(:body),
-            leading: 6,
-            indent_paragraphs: 0
+            {
+              size: font_manager.find_font_size(:body),
+              leading: 6,
+              indent_paragraphs: 0
+            }
           )
         end
 
@@ -105,11 +131,14 @@ def run(relative_path)
       doc.stroke_horizontal_rule
       doc.move_down 9.5
       line_height = 1.45
-      doc.text(
+      doc_writer.write_text(
+        doc,
         heading[:text],
-        size: font_manager.find_font_size(:heading),
-        style: :bold,
-        leading: line_height * font_manager.find_font_size(:heading)
+        {
+          size: font_manager.find_font_size(:heading),
+          style: :bold,
+          leading: line_height * font_manager.find_font_size(:heading)
+        }
       )
 
       pp = Preproc.new
@@ -120,48 +149,63 @@ def run(relative_path)
       end
 
       work_info.each.with_index do |wi, idx|
-        doc.text(
+        doc_writer.write_text(
+          doc,
           wi[:company_nm],
-          size: font_manager.find_font_size(:body),
-          leading: 6,
-          indent_paragraphs: 0
+          {
+            size: font_manager.find_font_size(:body),
+            leading: 6,
+            indent_paragraphs: 0
+          }
         )
         doc.move_down 2
-        doc.text(
+        doc_writer.write_text(
+          doc,
           "사용기술: #{wi[:skill_set]}",
-          size: font_manager.find_font_size(:body),
-          leading: 12,
-          indent_paragraphs: 0
+          {
+            size: font_manager.find_font_size(:body),
+            leading: 12,
+            indent_paragraphs: 0
+          }
         ) if wi[:skill_set]
         doc.move_down 2 if wi[:skill_set]
 
         wi[:project].keys.each do |solve|
-          doc.text(
+          doc_writer.write_text(
+            doc,
             solve,
-            size: font_manager.find_font_size(:body),
-            leading: 6,
-            indent_paragraphs: 0
+            {
+              size: font_manager.find_font_size(:body),
+              leading: 6,
+              indent_paragraphs: 0
+            }
           )
 
           what_n_details_list = wi[:project][solve]
           what_n_details_list.each do |what_n_details|
             what_n_details.each_key {|what|
               doc.indent(doc.width_of("      ")) do
-                doc.text(
+                doc_writer.write_text(
+                  doc,
                   what,
-                  size: font_manager.find_font_size(:body),
-                  leading: 6,
-                  indent_paragraphs: 0
+                  {
+                    size: font_manager.find_font_size(:body),
+                    leading: 6,
+                    indent_paragraphs: 0
+                  }
                 )
               end if what != :EMPTY_WHAT
               details = what_n_details[what]
               details.each do |detail_item|
                 doc.indent(doc.width_of("      ")) do
-                  doc.text(
+                  doc_writer.write_text(
+                    doc,
                     "- #{detail_item}",
-                    size: font_manager.find_font_size(:body),
-                    leading: 6,
-                    indent_paragraphs: 0
+                    {
+                      size: font_manager.find_font_size(:body),
+                      leading: 6,
+                      indent_paragraphs: 0
+                    }
                   )
                 end
                 doc.move_down 2
@@ -182,11 +226,14 @@ def run(relative_path)
       doc.stroke_horizontal_rule
       doc.move_down 9.5
       line_height = 1.45
-      doc.text(
+      doc_writer.write_text(
+        doc,
         heading[:text],
-        size: font_manager.find_font_size(:heading),
-        style: :bold,
-        leading: line_height * font_manager.find_font_size(:heading)
+        {
+          size: font_manager.find_font_size(:heading),
+          style: :bold,
+          leading: line_height * font_manager.find_font_size(:heading)
+        }
       )
 
       pp = Preproc.new
@@ -223,21 +270,27 @@ def run(relative_path)
           what_n_details_list.each do |what_n_details|
             what_n_details.each_key {|what|
               doc.indent(doc.width_of("      ")) do
-                doc.text(
+                doc_writer.write_text(
+                  doc,
                   what,
-                  size: font_manager.find_font_size(:body),
-                  leading: 6,
-                  indent_paragraphs: 0
+                  {
+                    size: font_manager.find_font_size(:body),
+                    leading: 6,
+                    indent_paragraphs: 0
+                  }
                 )
               end if what != :EMPTY_WHAT
               details = what_n_details[what]
               details.each do |detail_item|
                 doc.indent(doc.width_of("      ")) do
-                  doc.text(
+                  doc_writer.write_text(
+                    doc,
                     "- #{detail_item}",
-                    size: font_manager.find_font_size(:body),
-                    leading: 6,
-                    indent_paragraphs: 0
+                    {
+                      size: font_manager.find_font_size(:body),
+                      leading: 6,
+                      indent_paragraphs: 0
+                    }
                   )
                 end
                 doc.move_down 2
@@ -258,11 +311,14 @@ def run(relative_path)
       doc.stroke_horizontal_rule
       doc.move_down 9.5
       line_height = 1.45
-      doc.text(
+      doc_writer.write_text(
+        doc,
         heading[:text],
-        size: font_manager.find_font_size(:heading),
-        style: :bold,
-        leading: line_height * font_manager.find_font_size(:heading)
+        {
+          size: font_manager.find_font_size(:heading),
+          style: :bold,
+          leading: line_height * font_manager.find_font_size(:heading)
+        }
       )
 
       education_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[education]))
