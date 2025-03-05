@@ -33,6 +33,14 @@ class DocumentWriter
   def indent(pdf_doc, left_width, &text_writer)
     pdf_doc.indent(left_width, &text_writer)
   end
+
+  def write_text_box(pdf_doc, txt, options = {})
+    pdf_doc.text_box(txt, options)
+  end
+
+  def write_formatted_text(pdf_doc, texts, options = {})
+    pdf_doc.formatted_text(texts, options)
+  end
 end
 
 class LayoutArranger
@@ -281,18 +289,27 @@ def run(relative_path)
             link_url = Regexp.last_match(1)
             link_text = Regexp.last_match(2)
 
-            doc.formatted_text([
-              { text: spi[:company_nm], size: font_manager.find_font_size(:body), leading: 6 },
-              { text: " (", size: font_manager.find_font_size(:body) },
-              { text: "#{link_text}", size: font_manager.find_font_size(:body), leading: 6, styles: [:underline], color: "888888", link: link_url },
-              { text: ")", size: font_manager.find_font_size(:body) },
-            ], indent_paragraphs: 0)
+            doc_writer.write_formatted_text(
+              doc,
+              [
+                { text: spi[:company_nm], size: font_manager.find_font_size(:body), leading: 6 },
+                { text: " (", size: font_manager.find_font_size(:body) },
+                { text: "#{link_text}", size: font_manager.find_font_size(:body), leading: 6,
+                  styles: [:underline], color: "888888", link: link_url },
+                { text: ")", size: font_manager.find_font_size(:body) },
+              ],
+              { indent_paragraphs: 0 }
+            )
           else
-            doc.formatted_text([
-              { text: spi[:company_nm], size: font_manager.find_font_size(:body), leading: 6 },
-              { text: " ", size: font_manager.find_font_size(:body) },
-              { text: project, size: font_manager.find_font_size(:body), leading: 6 }
-            ], indent_paragraphs: 0)
+            doc_writer.write_formatted_text(
+              doc,
+              [
+                { text: spi[:company_nm], size: font_manager.find_font_size(:body), leading: 6 },
+                { text: " ", size: font_manager.find_font_size(:body) },
+                { text: project, size: font_manager.find_font_size(:body), leading: 6 }
+              ],
+              { indent_paragraphs: 0 }
+            )
           end
 
           layout_arranger.v_space(doc, 2)
@@ -362,7 +379,8 @@ def run(relative_path)
       right_col_start = left_col_width + 10 # Spacing between columns
       education_info.each do |left_text, right_text|
         # Draw left column text
-        doc.text_box(
+        doc_writer.write_text_box(
+          doc,
           left_text,
           {
             size: font_manager.find_font_size(:body),
@@ -373,7 +391,8 @@ def run(relative_path)
         )
 
         # Draw right column text, positioned to start at the right_col_start
-        doc.text_box(
+        doc_writer.write_text_box(
+          doc,
           right_text,
           {
             size: font_manager.find_font_size(:body),
