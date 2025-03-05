@@ -41,6 +41,12 @@ class LayoutArranger
   end
 
   alias_method :v_space, :make_vertical_space
+
+  def draw_horizontal_rule(pdf_doc)
+    pdf_doc.stroke_horizontal_rule
+  end
+
+  alias_method :h_rule, :draw_horizontal_rule
 end
 
 def run(relative_path)
@@ -107,7 +113,7 @@ def run(relative_path)
     layout_arranger.v_space(doc, 14.5)
 
     [{level: 4, text: "Introduction"}].each do |heading|
-      doc.stroke_horizontal_rule
+      layout_arranger.draw_horizontal_rule(doc)
       layout_arranger.v_space(doc, 9.5)
       line_height = 1.45
       doc_writer.write_text(
@@ -141,7 +147,7 @@ def run(relative_path)
     layout_arranger.v_space(doc, 14.5)
 
     [{ level: 4, text: "Work Experience" }].each do |heading|
-      doc.stroke_horizontal_rule
+      layout_arranger.draw_horizontal_rule(doc)
       layout_arranger.v_space(doc, 9.5)
       line_height = 1.45
       doc_writer.write_text(
@@ -236,7 +242,7 @@ def run(relative_path)
     layout_arranger.v_space(doc, 14.5)
 
     [{ level: 4, text: "Side Project" }].each do |heading|
-      doc.stroke_horizontal_rule
+      layout_arranger.draw_horizontal_rule(doc)
       layout_arranger.v_space(doc, 9.5)
       line_height = 1.45
       doc_writer.write_text(
@@ -321,7 +327,7 @@ def run(relative_path)
     layout_arranger.v_space(doc, 14.5)
 
     [{ level: 4, text: "Education" }].each do |heading|
-      doc.stroke_horizontal_rule
+      layout_arranger.draw_horizontal_rule(doc)
       layout_arranger.v_space(doc, 9.5)
       line_height = 1.45
       doc_writer.write_text(
