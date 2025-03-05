@@ -35,6 +35,14 @@ class DocumentWriter
   end
 end
 
+class LayoutArranger
+  def make_vertical_space(pdf_doc, point)
+    pdf_doc.move_down point
+  end
+
+  alias_method :v_space, :make_vertical_space
+end
+
 def run(relative_path)
   link_style = "<color rgb='888888'><u>%s</u></color>"
 
@@ -48,6 +56,7 @@ def run(relative_path)
     font_manager.load_font(doc)
 
     doc_writer = DocumentWriter.new
+    layout_arranger = LayoutArranger.new
 
     ["personal_info"].each do |heading|
       personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
@@ -95,11 +104,11 @@ def run(relative_path)
       )
     end
 
-    doc.move_down 14.5
+    layout_arranger.v_space(doc, 14.5)
 
     [{level: 4, text: "Introduction"}].each do |heading|
       doc.stroke_horizontal_rule
-      doc.move_down 9.5
+      layout_arranger.v_space(doc, 9.5)
       line_height = 1.45
       doc_writer.write_text(
         doc,
@@ -125,15 +134,15 @@ def run(relative_path)
           )
         end
 
-        doc.move_down 2
+        layout_arranger.v_space(doc, 2)
       end
     end
 
-    doc.move_down 14.5
+    layout_arranger.v_space(doc, 14.5)
 
     [{ level: 4, text: "Work Experience" }].each do |heading|
       doc.stroke_horizontal_rule
-      doc.move_down 9.5
+      layout_arranger.v_space(doc, 9.5)
       line_height = 1.45
       doc_writer.write_text(
         doc,
@@ -162,7 +171,7 @@ def run(relative_path)
             indent_paragraphs: 0
           }
         )
-        doc.move_down 2
+        layout_arranger.v_space(doc, 2)
         doc_writer.write_text(
           doc,
           "사용기술: #{wi[:skill_set]}",
@@ -172,7 +181,7 @@ def run(relative_path)
             indent_paragraphs: 0
           }
         ) if wi[:skill_set]
-        doc.move_down 2 if wi[:skill_set]
+        layout_arranger.v_space(doc, 2) if wi[:skill_set]
 
         wi[:project].keys.each do |solve|
           doc_writer.write_text(
@@ -212,23 +221,23 @@ def run(relative_path)
                     }
                   )
                 end
-                doc.move_down 2
+                layout_arranger.v_space(doc, 2)
               end
-              doc.move_down 2
-              doc.move_down 2
-              doc.move_down 2
+              layout_arranger.v_space(doc, 2)
+              layout_arranger.v_space(doc, 2)
+              layout_arranger.v_space(doc, 2)
             }
           end
         end
       end
     end
 
-    doc.move_down 2
-    doc.move_down 14.5
+    layout_arranger.v_space(doc, 2)
+    layout_arranger.v_space(doc, 14.5)
 
     [{ level: 4, text: "Side Project" }].each do |heading|
       doc.stroke_horizontal_rule
-      doc.move_down 9.5
+      layout_arranger.v_space(doc, 9.5)
       line_height = 1.45
       doc_writer.write_text(
         doc,
@@ -268,7 +277,7 @@ def run(relative_path)
             ], indent_paragraphs: 0)
           end
 
-          doc.move_down 2
+          layout_arranger.v_space(doc, 2)
 
           what_n_details_list = spi[:project][project]
           what_n_details_list.each do |what_n_details|
@@ -297,23 +306,23 @@ def run(relative_path)
                     }
                   )
                 end
-                doc.move_down 2
+                layout_arranger.v_space(doc, 2)
               end
-              doc.move_down 2
-              doc.move_down 2
-              doc.move_down 2
+              layout_arranger.v_space(doc, 2)
+              layout_arranger.v_space(doc, 2)
+              layout_arranger.v_space(doc, 2)
             }
           end
         end
       end
     end
 
-    doc.move_down 2
-    doc.move_down 14.5
+    layout_arranger.v_space(doc, 2)
+    layout_arranger.v_space(doc, 14.5)
 
     [{ level: 4, text: "Education" }].each do |heading|
       doc.stroke_horizontal_rule
-      doc.move_down 9.5
+      layout_arranger.v_space(doc, 9.5)
       line_height = 1.45
       doc_writer.write_text(
         doc,
@@ -352,7 +361,7 @@ def run(relative_path)
           align: :left
         )
 
-        doc.move_down 15 # Space between rows; adjust as needed
+        layout_arranger.v_space(doc, 15) # Space between rows; adjust as needed
       end
     end
   end
