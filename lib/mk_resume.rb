@@ -47,6 +47,18 @@ class LayoutArranger
   end
 
   alias_method :h_rule, :draw_horizontal_rule
+
+  def width_of_bounding_box(pdf_doc)
+    pdf_doc.bounds.width
+  end
+
+  alias_method :bound_width, :width_of_bounding_box
+
+  def y_position_of_bounding_box(pdf_doc)
+    pdf_doc.cursor
+  end
+
+  alias_method :y_position, :y_position_of_bounding_box
 end
 
 def run(relative_path)
@@ -352,19 +364,23 @@ def run(relative_path)
         # Draw left column text
         doc.text_box(
           left_text,
-          size: font_manager.find_font_size(:body),
-          at: [0, doc.cursor],
-          width: left_col_width,
-          align: :left
+          {
+            size: font_manager.find_font_size(:body),
+            at: [0, layout_arranger.y_position(doc)],
+            width: left_col_width,
+            align: :left
+          }
         )
 
         # Draw right column text, positioned to start at the right_col_start
         doc.text_box(
           right_text,
-          size: font_manager.find_font_size(:body),
-          at: [right_col_start, doc.cursor],
-          width: doc.bounds.width - right_col_start,
-          align: :left
+          {
+            size: font_manager.find_font_size(:body),
+            at: [right_col_start, layout_arranger.y_position(doc)],
+            width: layout_arranger.bound_width(doc) - right_col_start,
+            align: :left
+          }
         )
 
         layout_arranger.v_space(doc, 15) # Space between rows; adjust as needed
