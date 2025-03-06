@@ -1,6 +1,6 @@
 require 'prawn'
 require 'prawn/measurement_extensions'
-require_relative 'preproc'
+require_relative 'mk_resume/preproc'
 require_relative 'mk_resume/font_manager'
 require_relative 'mk_resume/document_writer'
 require_relative 'mk_resume/layout_arranger'
@@ -12,6 +12,7 @@ class ResumePrinter
     @layout_arranger = MkResume::LayoutArranger.new
     @font_manager = MkResume::FontManager.new
     @doc_writer = MkResume::DocumentWriter.new
+    @preproc = MkResume::Preproc.new
   end
 
   def run(relative_path)
@@ -125,11 +126,10 @@ class ResumePrinter
           }
         )
 
-        pp = Preproc.new
         work_info = []
-        wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[workExperience])))
+        wis = @preproc.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[workExperience])))
         wis.each do |wi|
-          work_info << pp.group_by_company(wi.join("\n"))
+          work_info << @preproc.group_by_company(wi.join("\n"))
         end
 
         work_info.each.with_index do |wi, idx|
@@ -220,11 +220,10 @@ class ResumePrinter
           }
         )
 
-        pp = Preproc.new
         side_project_info = []
-        wis = pp.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[sideProject])))
+        wis = @preproc.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[sideProject])))
         wis.each do |wi|
-          side_project_info << pp.group_by_company(wi.join("\n"))
+          side_project_info << @preproc.group_by_company(wi.join("\n"))
         end
 
         side_project_info.each do |spi|

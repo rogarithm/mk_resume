@@ -1,4 +1,4 @@
-require_relative "../lib/preproc"
+require_relative "../lib/mk_resume/preproc"
 
 describe Preproc do
   RSpec.configure do |config|
