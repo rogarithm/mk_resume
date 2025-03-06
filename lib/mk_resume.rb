@@ -1,83 +1,17 @@
 require 'prawn'
 require 'prawn/measurement_extensions'
 require_relative 'preproc'
+require_relative 'mk_resume/font_manager'
+require_relative 'mk_resume/document_writer'
+require_relative 'mk_resume/layout_arranger'
 
 # 플레인 텍스트 형식으로 적은 이력서를 pdf로 변환하기 위한 스크립트
 
-class FontManager
-  FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
-
-  def load_font(pdf_doc)
-    Prawn::Font::AFM.hide_m17n_warning = true
-    pdf_doc.font_families.update(
-      "NotoSans" => {
-        normal: "./fonts/NotoSansKR-Regular.ttf",
-        bold: "./fonts/NotoSansKR-Bold.ttf"
-      }
-    )
-    pdf_doc.font "NotoSans"
-  end
-
-  def find_font_size usage
-    FONT_SIZE[usage]
-  end
-end
-
-class DocumentWriter
-  def write_text(pdf_doc, txt, options = {})
-    pdf_doc.text(txt, options)
-  end
-
-  def indent(pdf_doc, left_width, &text_writer)
-    pdf_doc.indent(left_width, &text_writer)
-  end
-
-  def write_text_box(pdf_doc, txt, options = {})
-    pdf_doc.text_box(txt, options)
-  end
-
-  def write_formatted_text(pdf_doc, texts, options = {})
-    pdf_doc.formatted_text(texts, options)
-  end
-end
-
-class LayoutArranger
-  DOC_MARGIN = {:top => 2.cm, :right => 3.05.cm, :bottom => 2.cm, :left => 3.05.cm}
-
-  def find_margin_size(where)
-    DOC_MARGIN[where]
-  end
-
-  def make_vertical_space(pdf_doc, point)
-    pdf_doc.move_down point
-  end
-
-  alias_method :v_space, :make_vertical_space
-
-  def draw_horizontal_rule(pdf_doc)
-    pdf_doc.stroke_horizontal_rule
-  end
-
-  alias_method :h_rule, :draw_horizontal_rule
-
-  def width_of_bounding_box(pdf_doc)
-    pdf_doc.bounds.width
-  end
-
-  alias_method :bound_width, :width_of_bounding_box
-
-  def y_position_of_bounding_box(pdf_doc)
-    pdf_doc.cursor
-  end
-
-  alias_method :y_position, :y_position_of_bounding_box
-end
-
 class ResumePrinter
   def initialize
-    @layout_arranger = LayoutArranger.new
-    @font_manager = FontManager.new
-    @doc_writer = DocumentWriter.new
+    @layout_arranger = MkResume::LayoutArranger.new
+    @font_manager = MkResume::FontManager.new
+    @doc_writer = MkResume::DocumentWriter.new
   end
 
   def run(relative_path)
