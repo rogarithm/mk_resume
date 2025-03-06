@@ -4,8 +4,6 @@ require_relative 'preproc'
 
 # 플레인 텍스트 형식으로 적은 이력서를 pdf로 변환하기 위한 스크립트
 
-DOC_MARGIN = {:top => 2.cm, :right => 3.05.cm, :bottom => 2.cm, :left => 3.05.cm}
-
 class FontManager
   FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
 
@@ -44,6 +42,12 @@ class DocumentWriter
 end
 
 class LayoutArranger
+  DOC_MARGIN = {:top => 2.cm, :right => 3.05.cm, :bottom => 2.cm, :left => 3.05.cm}
+
+  def find_margin_size(where)
+    DOC_MARGIN[where]
+  end
+
   def make_vertical_space(pdf_doc, point)
     pdf_doc.move_down point
   end
@@ -71,18 +75,22 @@ end
 
 def run(relative_path)
   link_style = "<color rgb='888888'><u>%s</u></color>"
-
+  layout_arranger = LayoutArranger.new
   Prawn::Document.generate(
     "output.pdf",
     page_size: "A4",
-    margin: [DOC_MARGIN[:top], DOC_MARGIN[:right], DOC_MARGIN[:bottom], DOC_MARGIN[:left]]
+    margin: [
+      layout_arranger.find_margin_size(:top),
+      layout_arranger.find_margin_size(:right),
+      layout_arranger.find_margin_size(:bottom),
+      layout_arranger.find_margin_size(:left)
+    ]
   ) do |doc|
 
     font_manager = FontManager.new
     font_manager.load_font(doc)
 
     doc_writer = DocumentWriter.new
-    layout_arranger = LayoutArranger.new
 
     ["personal_info"].each do |heading|
       personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
