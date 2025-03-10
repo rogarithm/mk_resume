@@ -169,23 +169,22 @@ class ResumePrinter
               @doc_writer.write_formatted_text(
                 doc,
                 [
-                  { text: spi[:company_nm], size: @font_manager.find_font_size(:body), leading: 6 },
-                  { text: " (", size: @font_manager.find_font_size(:body) },
-                  { text: "#{link_text}", size: @font_manager.find_font_size(:body), leading: 6,
-                    styles: [:underline], color: "888888", link: link_url },
-                  { text: ")", size: @font_manager.find_font_size(:body) },
+                  { text: spi[:company_nm], leading: 6 },
+                  { text: " (" },
+                  { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
+                  { text: ")" },
                 ],
-                { indent_paragraphs: 0 }
+                { size: @font_manager.find_font_size(:body), indent_paragraphs: 0 }
               )
             else
               @doc_writer.write_formatted_text(
                 doc,
                 [
-                  { text: spi[:company_nm], size: @font_manager.find_font_size(:body), leading: 6 },
-                  { text: " ", size: @font_manager.find_font_size(:body) },
-                  { text: project, size: @font_manager.find_font_size(:body), leading: 6 }
+                  { text: spi[:company_nm],  leading: 6 },
+                  { text: " " },
+                  { text: project, leading: 6 }
                 ],
-                { indent_paragraphs: 0 }
+                { size: @font_manager.find_font_size(:body), indent_paragraphs: 0 }
               )
             end
 
