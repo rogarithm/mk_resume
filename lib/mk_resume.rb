@@ -142,15 +142,10 @@ class ResumePrinter
       [{ level: 4, text: "Side Project" }].each do |heading|
         @layout_arranger.draw_horizontal_rule(doc)
         @layout_arranger.v_space(doc, 9.5)
-        line_height = 1.45
         @doc_writer.write_text(
           doc,
           heading[:text],
-          {
-            size: @font_manager.find_font_size(:heading),
-            style: :bold,
-            leading: line_height * @font_manager.find_font_size(:heading)
-          }
+          @formatting_config.side_project(:heading, @font_manager)
         )
 
         side_project_info = []
@@ -174,7 +169,7 @@ class ResumePrinter
                   { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
                   { text: ")" },
                 ],
-                { size: @font_manager.find_font_size(:body), indent_paragraphs: 0 }
+                @formatting_config.side_project(:project, @font_manager)
               )
             else
               @doc_writer.write_formatted_text(
@@ -184,7 +179,7 @@ class ResumePrinter
                   { text: " " },
                   { text: project, leading: 6 }
                 ],
-                { size: @font_manager.find_font_size(:body), indent_paragraphs: 0 }
+                @formatting_config.side_project(:project, @font_manager)
               )
             end
 
@@ -197,11 +192,7 @@ class ResumePrinter
                   @doc_writer.write_text(
                     doc,
                     what,
-                    {
-                      size: @font_manager.find_font_size(:body),
-                      leading: 6,
-                      indent_paragraphs: 0
-                    }
+                    @formatting_config.side_project(:default, @font_manager)
                   )
                 end if what != :EMPTY_WHAT
                 details = what_n_details[what]
@@ -210,11 +201,7 @@ class ResumePrinter
                     @doc_writer.write_text(
                       doc,
                       "- #{detail_item}",
-                      {
-                        size: @font_manager.find_font_size(:body),
-                        leading: 6,
-                        indent_paragraphs: 0
-                      }
+                      @formatting_config.side_project(:default, @font_manager)
                     )
                   end
                   @layout_arranger.v_space(doc, 2)
