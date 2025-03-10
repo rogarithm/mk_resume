@@ -4,6 +4,7 @@ require_relative 'mk_resume/preproc'
 require_relative 'mk_resume/font_manager'
 require_relative 'mk_resume/document_writer'
 require_relative 'mk_resume/layout_arranger'
+require_relative 'mk_resume/formatting_config'
 
 # 플레인 텍스트 형식으로 적은 이력서를 pdf로 변환하기 위한 스크립트
 
@@ -33,47 +34,22 @@ class ResumePrinter
       ["personal_info"].each do |heading|
         personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
 
-        @doc_writer.write_text(
-          doc,
-          personal_info[0],
-          {
-            size: @font_manager.find_font_size(:name),
-            style: :bold,
-            leading: 8
-          }
-        )
-
-        personal_info[1..2].each do |item|
+        formatting_config = MkResume::FormattingConfig.new
+        personal_info[0..2].each.with_index do |item, idx|
           @doc_writer.write_text(
             doc,
             item,
-            {
-              size: @font_manager.find_font_size(:channel),
-              leading: 5
-            }
+            formatting_config.personal_info(idx, @font_manager)
           )
         end
 
-        @doc_writer.write_text(
-          doc,
-          link_style % personal_info[3],
-          {
-            size: @font_manager.find_font_size(:channel),
-            leading: 5,
-            inline_format: true
-          }
-        )
-
-        # blog 링크
-        @doc_writer.write_text(
-          doc,
-          link_style % personal_info[4],
-          {
-            size: @font_manager.find_font_size(:channel),
-            leading: 5,
-            inline_format: true
-          }
-        )
+        personal_info[3..4].each.with_index do |item, idx|
+          @doc_writer.write_text(
+            doc,
+            link_style % item,
+            formatting_config.personal_info(idx + 3, @font_manager)
+          )
+        end
       end
 
       @layout_arranger.v_space(doc, 14.5)
