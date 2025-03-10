@@ -94,5 +94,33 @@ module MkResume
 
       formatting_config[usage]
     end
+
+    def education usage, font_manager, layout_arranger, doc
+      line_height = 1.45
+      left_col_width = 180 # Adjust based on content and page layout needs
+      right_col_start = left_col_width + 10 # Spacing between columns
+
+      formatting_config = {
+        :heading => {
+          size: font_manager.find_font_size(:heading),
+          style: :bold,
+          leading: line_height * font_manager.find_font_size(:heading)
+        },
+        :left => {
+          size: font_manager.find_font_size(:body),
+          at: [0, layout_arranger.y_position(doc)],
+          width: left_col_width,
+          align: :left
+        },
+        :right => {
+          size: font_manager.find_font_size(:body),
+          at: [right_col_start, layout_arranger.y_position(doc)],
+          width: layout_arranger.bound_width(doc) - right_col_start,
+          align: :left
+        }
+      }
+
+      formatting_config[usage]
+    end
   end
 end

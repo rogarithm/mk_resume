@@ -221,15 +221,10 @@ class ResumePrinter
       [{ level: 4, text: "Education" }].each do |heading|
         @layout_arranger.draw_horizontal_rule(doc)
         @layout_arranger.v_space(doc, 9.5)
-        line_height = 1.45
         @doc_writer.write_text(
           doc,
           heading[:text],
-          {
-            size: @font_manager.find_font_size(:heading),
-            style: :bold,
-            leading: line_height * @font_manager.find_font_size(:heading)
-          }
+          @formatting_config.education(:heading, @font_manager, @layout_arranger, doc)
         )
 
         education_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[education]))
@@ -238,31 +233,19 @@ class ResumePrinter
                                    .each { |col| col.strip! }
                              }
 
-        left_col_width = 180 # Adjust based on content and page layout needs
-        right_col_start = left_col_width + 10 # Spacing between columns
         education_info.each do |left_text, right_text|
           # Draw left column text
           @doc_writer.write_text_box(
             doc,
             left_text,
-            {
-              size: @font_manager.find_font_size(:body),
-              at: [0, @layout_arranger.y_position(doc)],
-              width: left_col_width,
-              align: :left
-            }
+            @formatting_config.education(:left, @font_manager, @layout_arranger, doc)
           )
 
           # Draw right column text, positioned to start at the right_col_start
           @doc_writer.write_text_box(
             doc,
             right_text,
-            {
-              size: @font_manager.find_font_size(:body),
-              at: [right_col_start, @layout_arranger.y_position(doc)],
-              width: @layout_arranger.bound_width(doc) - right_col_start,
-              align: :left
-            }
+            @formatting_config.education(:right, @font_manager, @layout_arranger, doc)
           )
 
           @layout_arranger.v_space(doc, 15) # Space between rows; adjust as needed
