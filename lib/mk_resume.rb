@@ -73,15 +73,10 @@ class ResumePrinter
       [{ level: 4, text: "Work Experience" }].each do |heading|
         @layout_arranger.draw_horizontal_rule(doc)
         @layout_arranger.v_space(doc, 9.5)
-        line_height = 1.45
         @doc_writer.write_text(
           doc,
           heading[:text],
-          {
-            size: @font_manager.find_font_size(:heading),
-            style: :bold,
-            leading: line_height * @font_manager.find_font_size(:heading)
-          }
+          @formatting_config.work_experience(:heading, @font_manager)
         )
 
         work_info = []
@@ -94,21 +89,13 @@ class ResumePrinter
           @doc_writer.write_text(
             doc,
             wi[:company_nm],
-            {
-              size: @font_manager.find_font_size(:body),
-              leading: 6,
-              indent_paragraphs: 0
-            }
+            @formatting_config.work_experience(:work_info, @font_manager)
           )
           @layout_arranger.v_space(doc, 2)
           @doc_writer.write_text(
             doc,
             "사용기술: #{wi[:skill_set]}",
-            {
-              size: @font_manager.find_font_size(:body),
-              leading: 12,
-              indent_paragraphs: 0
-            }
+            @formatting_config.work_experience(:skill_set, @font_manager)
           ) if wi[:skill_set]
           @layout_arranger.v_space(doc, 2) if wi[:skill_set]
 
@@ -116,11 +103,7 @@ class ResumePrinter
             @doc_writer.write_text(
               doc,
               solve,
-              {
-                size: @font_manager.find_font_size(:body),
-                leading: 6,
-                indent_paragraphs: 0
-              }
+              @formatting_config.work_experience(:solve, @font_manager)
             )
 
             what_n_details_list = wi[:project][solve]
@@ -130,11 +113,7 @@ class ResumePrinter
                   @doc_writer.write_text(
                     doc,
                     what,
-                    {
-                      size: @font_manager.find_font_size(:body),
-                      leading: 6,
-                      indent_paragraphs: 0
-                    }
+                    @formatting_config.work_experience(:what, @font_manager)
                   )
                 end if what != :EMPTY_WHAT
                 details = what_n_details[what]
@@ -143,11 +122,7 @@ class ResumePrinter
                     @doc_writer.write_text(
                       doc,
                       "- #{detail_item}",
-                      {
-                        size: @font_manager.find_font_size(:body),
-                        leading: 6,
-                        indent_paragraphs: 0
-                      }
+                      @formatting_config.work_experience(:detail, @font_manager)
                     )
                   end
                   @layout_arranger.v_space(doc, 2)

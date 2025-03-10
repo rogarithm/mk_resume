@@ -47,5 +47,44 @@ module MkResume
 
       formatting_config[usage]
     end
+
+    def work_experience usage, font_manager
+      line_height = 1.45
+
+      formatting_config = {
+        :heading => {
+          size: font_manager.find_font_size(:heading),
+          style: :bold,
+          leading: line_height * font_manager.find_font_size(:heading)
+        },
+        :work_info => {
+          size: font_manager.find_font_size(:body),
+          leading: 6,
+          indent_paragraphs: 0
+        },
+        :skill_set => {
+          size: font_manager.find_font_size(:body),
+          leading: 12,
+          indent_paragraphs: 0
+        },
+        :solve => {
+          size: font_manager.find_font_size(:body),
+          leading: 6,
+          indent_paragraphs: 0
+        },
+        :what => {
+          size: font_manager.find_font_size(:body),
+          leading: 6,
+          indent_paragraphs: 0
+        },
+        :detail => {
+          size: font_manager.find_font_size(:body),
+          leading: 6,
+          indent_paragraphs: 0
+        }
+      }
+
+      formatting_config[usage]
+    end
   end
 end
