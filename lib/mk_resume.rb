@@ -89,13 +89,13 @@ class ResumePrinter
           @doc_writer.write_text(
             doc,
             wi[:company_nm],
-            @formatting_config.work_experience(:work_info, @font_manager)
+            @formatting_config.work_experience(:default, @font_manager)
           )
           @layout_arranger.v_space(doc, 2)
           @doc_writer.write_text(
             doc,
             "사용기술: #{wi[:skill_set]}",
-            @formatting_config.work_experience(:skill_set, @font_manager)
+            @formatting_config.work_experience(:long_leading, @font_manager)
           ) if wi[:skill_set]
           @layout_arranger.v_space(doc, 2) if wi[:skill_set]
 
@@ -103,7 +103,7 @@ class ResumePrinter
             @doc_writer.write_text(
               doc,
               solve,
-              @formatting_config.work_experience(:solve, @font_manager)
+              @formatting_config.work_experience(:default, @font_manager)
             )
 
             what_n_details_list = wi[:project][solve]
@@ -113,7 +113,7 @@ class ResumePrinter
                   @doc_writer.write_text(
                     doc,
                     what,
-                    @formatting_config.work_experience(:what, @font_manager)
+                    @formatting_config.work_experience(:default, @font_manager)
                   )
                 end if what != :EMPTY_WHAT
                 details = what_n_details[what]
@@ -122,7 +122,7 @@ class ResumePrinter
                     @doc_writer.write_text(
                       doc,
                       "- #{detail_item}",
-                      @formatting_config.work_experience(:detail, @font_manager)
+                      @formatting_config.work_experience(:default, @font_manager)
                     )
                   end
                   @layout_arranger.v_space(doc, 2)

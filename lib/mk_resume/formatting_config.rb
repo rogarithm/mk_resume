@@ -57,29 +57,14 @@ module MkResume
           style: :bold,
           leading: line_height * font_manager.find_font_size(:heading)
         },
-        :work_info => {
+        :default => {
           size: font_manager.find_font_size(:body),
           leading: 6,
           indent_paragraphs: 0
         },
-        :skill_set => {
+        :long_leading => {
           size: font_manager.find_font_size(:body),
           leading: 12,
-          indent_paragraphs: 0
-        },
-        :solve => {
-          size: font_manager.find_font_size(:body),
-          leading: 6,
-          indent_paragraphs: 0
-        },
-        :what => {
-          size: font_manager.find_font_size(:body),
-          leading: 6,
-          indent_paragraphs: 0
-        },
-        :detail => {
-          size: font_manager.find_font_size(:body),
-          leading: 6,
           indent_paragraphs: 0
         }
       }
