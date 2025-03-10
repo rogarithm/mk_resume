@@ -17,7 +17,6 @@ class ResumePrinter
   end
 
   def run(relative_path)
-    link_style = "<color rgb='888888'><u>%s</u></color>"
     Prawn::Document.generate(
       "output.pdf",
       page_size: "A4",
@@ -35,19 +34,11 @@ class ResumePrinter
         personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
 
         formatting_config = MkResume::FormattingConfig.new
-        personal_info[0..2].each.with_index do |item, idx|
+        personal_info[0..4].each.with_index do |item, idx|
           @doc_writer.write_text(
             doc,
             item,
             formatting_config.personal_info(idx, @font_manager)
-          )
-        end
-
-        personal_info[3..4].each.with_index do |item, idx|
-          @doc_writer.write_text(
-            doc,
-            link_style % item,
-            formatting_config.personal_info(idx + 3, @font_manager)
           )
         end
       end
