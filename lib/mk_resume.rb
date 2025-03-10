@@ -12,6 +12,7 @@ class ResumePrinter
   def initialize
     @layout_arranger = MkResume::LayoutArranger.new
     @font_manager = MkResume::FontManager.new
+    @formatting_config = MkResume::FormattingConfig.new
     @doc_writer = MkResume::DocumentWriter.new
     @preproc = MkResume::Preproc.new
   end
@@ -33,12 +34,11 @@ class ResumePrinter
       ["personal_info"].each do |heading|
         personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
 
-        formatting_config = MkResume::FormattingConfig.new
         personal_info[0..4].each.with_index do |item, idx|
           @doc_writer.write_text(
             doc,
             item,
-            formatting_config.personal_info(idx, @font_manager)
+            @formatting_config.personal_info(idx, @font_manager)
           )
         end
       end
