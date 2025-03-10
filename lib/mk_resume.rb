@@ -224,7 +224,7 @@ class ResumePrinter
         @doc_writer.write_text(
           doc,
           heading[:text],
-          @formatting_config.education(:heading, @font_manager, @layout_arranger, doc)
+          @formatting_config.education(:heading, @font_manager, doc)
         )
 
         education_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[education]))
@@ -238,14 +238,14 @@ class ResumePrinter
           @doc_writer.write_text_box(
             doc,
             left_text,
-            @formatting_config.education(:left, @font_manager, @layout_arranger, doc)
+            @formatting_config.education(:left, @font_manager, doc)
           )
 
           # Draw right column text, positioned to start at the right_col_start
           @doc_writer.write_text_box(
             doc,
             right_text,
-            @formatting_config.education(:right, @font_manager, @layout_arranger, doc)
+            @formatting_config.education(:right, @font_manager, doc)
           )
 
           @layout_arranger.v_space(doc, 15) # Space between rows; adjust as needed
