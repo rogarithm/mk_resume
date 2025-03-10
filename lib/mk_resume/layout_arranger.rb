@@ -17,17 +17,5 @@ module MkResume
     end
 
     alias_method :h_rule, :draw_horizontal_rule
-
-    def width_of_bounding_box(pdf_doc)
-      pdf_doc.bounds.width
-    end
-
-    alias_method :bound_width, :width_of_bounding_box
-
-    def y_position_of_bounding_box(pdf_doc)
-      pdf_doc.cursor
-    end
-
-    alias_method :y_position, :y_position_of_bounding_box
   end
 end

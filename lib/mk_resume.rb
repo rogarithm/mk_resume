@@ -4,6 +4,7 @@ require_relative 'mk_resume/preproc'
 require_relative 'mk_resume/font_manager'
 require_relative 'mk_resume/document_writer'
 require_relative 'mk_resume/layout_arranger'
+require_relative 'mk_resume/formatting_config'
 
 # 플레인 텍스트 형식으로 적은 이력서를 pdf로 변환하기 위한 스크립트
 
@@ -11,12 +12,12 @@ class ResumePrinter
   def initialize
     @layout_arranger = MkResume::LayoutArranger.new
     @font_manager = MkResume::FontManager.new
+    @formatting_config = MkResume::FormattingConfig.new
     @doc_writer = MkResume::DocumentWriter.new
     @preproc = MkResume::Preproc.new
   end
 
   def run(relative_path)
-    link_style = "<color rgb='888888'><u>%s</u></color>"
     Prawn::Document.generate(
       "output.pdf",
       page_size: "A4",
@@ -33,47 +34,13 @@ class ResumePrinter
       ["personal_info"].each do |heading|
         personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
 
-        @doc_writer.write_text(
-          doc,
-          personal_info[0],
-          {
-            size: @font_manager.find_font_size(:name),
-            style: :bold,
-            leading: 8
-          }
-        )
-
-        personal_info[1..2].each do |item|
+        personal_info[0..4].each.with_index do |item, idx|
           @doc_writer.write_text(
             doc,
             item,
-            {
-              size: @font_manager.find_font_size(:channel),
-              leading: 5
-            }
+            @formatting_config.personal_info(idx, @font_manager)
           )
         end
-
-        @doc_writer.write_text(
-          doc,
-          link_style % personal_info[3],
-          {
-            size: @font_manager.find_font_size(:channel),
-            leading: 5,
-            inline_format: true
-          }
-        )
-
-        # blog 링크
-        @doc_writer.write_text(
-          doc,
-          link_style % personal_info[4],
-          {
-            size: @font_manager.find_font_size(:channel),
-            leading: 5,
-            inline_format: true
-          }
-        )
       end
 
       @layout_arranger.v_space(doc, 14.5)
@@ -81,15 +48,10 @@ class ResumePrinter
       [{level: 4, text: "Introduction"}].each do |heading|
         @layout_arranger.draw_horizontal_rule(doc)
         @layout_arranger.v_space(doc, 9.5)
-        line_height = 1.45
         @doc_writer.write_text(
           doc,
           heading[:text],
-          {
-            size: @font_manager.find_font_size(:heading),
-            style: :bold,
-            leading: line_height * @font_manager.find_font_size(:heading)
-          }
+          @formatting_config.introduction(:heading, @font_manager)
         )
         intro_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[introduction])).map(&:chomp)
 
@@ -98,11 +60,7 @@ class ResumePrinter
             @doc_writer.write_text(
               doc,
               "- #{item}",
-              {
-                size: @font_manager.find_font_size(:body),
-                leading: 6,
-                indent_paragraphs: 0
-              }
+              @formatting_config.introduction(:default, @font_manager)
             )
           end
 
@@ -115,15 +73,10 @@ class ResumePrinter
       [{ level: 4, text: "Work Experience" }].each do |heading|
         @layout_arranger.draw_horizontal_rule(doc)
         @layout_arranger.v_space(doc, 9.5)
-        line_height = 1.45
         @doc_writer.write_text(
           doc,
           heading[:text],
-          {
-            size: @font_manager.find_font_size(:heading),
-            style: :bold,
-            leading: line_height * @font_manager.find_font_size(:heading)
-          }
+          @formatting_config.work_experience(:heading, @font_manager)
         )
 
         work_info = []
@@ -136,21 +89,13 @@ class ResumePrinter
           @doc_writer.write_text(
             doc,
             wi[:company_nm],
-            {
-              size: @font_manager.find_font_size(:body),
-              leading: 6,
-              indent_paragraphs: 0
-            }
+            @formatting_config.work_experience(:default, @font_manager)
           )
           @layout_arranger.v_space(doc, 2)
           @doc_writer.write_text(
             doc,
             "사용기술: #{wi[:skill_set]}",
-            {
-              size: @font_manager.find_font_size(:body),
-              leading: 12,
-              indent_paragraphs: 0
-            }
+            @formatting_config.work_experience(:long_leading, @font_manager)
           ) if wi[:skill_set]
           @layout_arranger.v_space(doc, 2) if wi[:skill_set]
 
@@ -158,11 +103,7 @@ class ResumePrinter
             @doc_writer.write_text(
               doc,
               solve,
-              {
-                size: @font_manager.find_font_size(:body),
-                leading: 6,
-                indent_paragraphs: 0
-              }
+              @formatting_config.work_experience(:default, @font_manager)
             )
 
             what_n_details_list = wi[:project][solve]
@@ -172,11 +113,7 @@ class ResumePrinter
                   @doc_writer.write_text(
                     doc,
                     what,
-                    {
-                      size: @font_manager.find_font_size(:body),
-                      leading: 6,
-                      indent_paragraphs: 0
-                    }
+                    @formatting_config.work_experience(:default, @font_manager)
                   )
                 end if what != :EMPTY_WHAT
                 details = what_n_details[what]
@@ -185,11 +122,7 @@ class ResumePrinter
                     @doc_writer.write_text(
                       doc,
                       "- #{detail_item}",
-                      {
-                        size: @font_manager.find_font_size(:body),
-                        leading: 6,
-                        indent_paragraphs: 0
-                      }
+                      @formatting_config.work_experience(:default, @font_manager)
                     )
                   end
                   @layout_arranger.v_space(doc, 2)
@@ -209,15 +142,10 @@ class ResumePrinter
       [{ level: 4, text: "Side Project" }].each do |heading|
         @layout_arranger.draw_horizontal_rule(doc)
         @layout_arranger.v_space(doc, 9.5)
-        line_height = 1.45
         @doc_writer.write_text(
           doc,
           heading[:text],
-          {
-            size: @font_manager.find_font_size(:heading),
-            style: :bold,
-            leading: line_height * @font_manager.find_font_size(:heading)
-          }
+          @formatting_config.side_project(:heading, @font_manager)
         )
 
         side_project_info = []
@@ -236,23 +164,22 @@ class ResumePrinter
               @doc_writer.write_formatted_text(
                 doc,
                 [
-                  { text: spi[:company_nm], size: @font_manager.find_font_size(:body), leading: 6 },
-                  { text: " (", size: @font_manager.find_font_size(:body) },
-                  { text: "#{link_text}", size: @font_manager.find_font_size(:body), leading: 6,
-                    styles: [:underline], color: "888888", link: link_url },
-                  { text: ")", size: @font_manager.find_font_size(:body) },
+                  { text: spi[:company_nm], leading: 6 },
+                  { text: " (" },
+                  { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
+                  { text: ")" },
                 ],
-                { indent_paragraphs: 0 }
+                @formatting_config.side_project(:project, @font_manager)
               )
             else
               @doc_writer.write_formatted_text(
                 doc,
                 [
-                  { text: spi[:company_nm], size: @font_manager.find_font_size(:body), leading: 6 },
-                  { text: " ", size: @font_manager.find_font_size(:body) },
-                  { text: project, size: @font_manager.find_font_size(:body), leading: 6 }
+                  { text: spi[:company_nm],  leading: 6 },
+                  { text: " " },
+                  { text: project, leading: 6 }
                 ],
-                { indent_paragraphs: 0 }
+                @formatting_config.side_project(:project, @font_manager)
               )
             end
 
@@ -265,11 +192,7 @@ class ResumePrinter
                   @doc_writer.write_text(
                     doc,
                     what,
-                    {
-                      size: @font_manager.find_font_size(:body),
-                      leading: 6,
-                      indent_paragraphs: 0
-                    }
+                    @formatting_config.side_project(:default, @font_manager)
                   )
                 end if what != :EMPTY_WHAT
                 details = what_n_details[what]
@@ -278,11 +201,7 @@ class ResumePrinter
                     @doc_writer.write_text(
                       doc,
                       "- #{detail_item}",
-                      {
-                        size: @font_manager.find_font_size(:body),
-                        leading: 6,
-                        indent_paragraphs: 0
-                      }
+                      @formatting_config.side_project(:default, @font_manager)
                     )
                   end
                   @layout_arranger.v_space(doc, 2)
@@ -302,15 +221,10 @@ class ResumePrinter
       [{ level: 4, text: "Education" }].each do |heading|
         @layout_arranger.draw_horizontal_rule(doc)
         @layout_arranger.v_space(doc, 9.5)
-        line_height = 1.45
         @doc_writer.write_text(
           doc,
           heading[:text],
-          {
-            size: @font_manager.find_font_size(:heading),
-            style: :bold,
-            leading: line_height * @font_manager.find_font_size(:heading)
-          }
+          @formatting_config.education(:heading, @font_manager, doc)
         )
 
         education_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[education]))
@@ -319,31 +233,19 @@ class ResumePrinter
                                    .each { |col| col.strip! }
                              }
 
-        left_col_width = 180 # Adjust based on content and page layout needs
-        right_col_start = left_col_width + 10 # Spacing between columns
         education_info.each do |left_text, right_text|
           # Draw left column text
           @doc_writer.write_text_box(
             doc,
             left_text,
-            {
-              size: @font_manager.find_font_size(:body),
-              at: [0, @layout_arranger.y_position(doc)],
-              width: left_col_width,
-              align: :left
-            }
+            @formatting_config.education(:left, @font_manager, doc)
           )
 
           # Draw right column text, positioned to start at the right_col_start
           @doc_writer.write_text_box(
             doc,
             right_text,
-            {
-              size: @font_manager.find_font_size(:body),
-              at: [right_col_start, @layout_arranger.y_position(doc)],
-              width: @layout_arranger.bound_width(doc) - right_col_start,
-              align: :left
-            }
+            @formatting_config.education(:right, @font_manager, doc)
           )
 
           @layout_arranger.v_space(doc, 15) # Space between rows; adjust as needed
