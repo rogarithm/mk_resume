@@ -48,15 +48,10 @@ class ResumePrinter
       [{level: 4, text: "Introduction"}].each do |heading|
         @layout_arranger.draw_horizontal_rule(doc)
         @layout_arranger.v_space(doc, 9.5)
-        line_height = 1.45
         @doc_writer.write_text(
           doc,
           heading[:text],
-          {
-            size: @font_manager.find_font_size(:heading),
-            style: :bold,
-            leading: line_height * @font_manager.find_font_size(:heading)
-          }
+          @formatting_config.introduction(:heading, @font_manager)
         )
         intro_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[introduction])).map(&:chomp)
 
@@ -65,11 +60,7 @@ class ResumePrinter
             @doc_writer.write_text(
               doc,
               "- #{item}",
-              {
-                size: @font_manager.find_font_size(:body),
-                leading: 6,
-                indent_paragraphs: 0
-              }
+              @formatting_config.introduction(:default, @font_manager)
             )
           end
 

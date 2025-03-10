@@ -28,5 +28,24 @@ module MkResume
       ]
       formatting_config[line_no]
     end
+
+    def introduction usage, font_manager
+      line_height = 1.45
+
+      formatting_config = {
+        :heading => {
+          size: font_manager.find_font_size(:heading),
+          style: :bold,
+          leading: line_height * font_manager.find_font_size(:heading)
+        },
+        :default => {
+          size: font_manager.find_font_size(:body),
+          leading: 6,
+          indent_paragraphs: 0
+        }
+      }
+
+      formatting_config[usage]
+    end
   end
 end
