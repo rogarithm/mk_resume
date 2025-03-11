@@ -42,10 +42,10 @@ class ResumePrinter
       @font_manager.load_font(doc)
 
       ["personal_info"].each do |heading|
-        sections[:personal_info].split("\n")[0..4].each.with_index do |item, idx|
+        sections[:personal_info].split("\n")[0..4].each.with_index do |text, idx|
           @doc_writer.write_text(
             doc,
-            item,
+            text,
             @formatting_config.personal_info(idx, @font_manager)
           )
         end
@@ -61,11 +61,11 @@ class ResumePrinter
           heading[:text],
           @formatting_config.introduction(:heading, @font_manager)
         )
-        sections[:introduction].split("\n").each do |item|
+        sections[:introduction].split("\n").each do |text|
           @doc_writer.indent(doc, doc.width_of("- ")) do
             @doc_writer.write_text(
               doc,
-              "- #{item}",
+              "- #{text}",
               @formatting_config.introduction(:default, @font_manager)
             )
           end
