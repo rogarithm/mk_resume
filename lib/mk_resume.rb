@@ -42,9 +42,7 @@ class ResumePrinter
       @font_manager.load_font(doc)
 
       ["personal_info"].each do |heading|
-        personal_info = sections[:personal_info].split("\n")
-
-        personal_info[0..4].each.with_index do |item, idx|
+        sections[:personal_info].split("\n")[0..4].each.with_index do |item, idx|
           @doc_writer.write_text(
             doc,
             item,
@@ -63,9 +61,7 @@ class ResumePrinter
           heading[:text],
           @formatting_config.introduction(:heading, @font_manager)
         )
-        intro_info = sections[:introduction].split("\n")
-
-        intro_info.each do |item|
+        sections[:introduction].split("\n").each do |item|
           @doc_writer.indent(doc, doc.width_of("- ")) do
             @doc_writer.write_text(
               doc,
@@ -90,8 +86,7 @@ class ResumePrinter
         )
 
         work_info = []
-        wis = @preproc.split_by_company(sections[:work_experience])
-        wis.each do |wi|
+        @preproc.split_by_company(sections[:work_experience]).each do |wi|
           work_info << @preproc.group_by_company(wi.join("\n"))
         end
 
@@ -159,8 +154,7 @@ class ResumePrinter
         )
 
         side_project_info = []
-        wis = @preproc.split_by_company(sections[:side_project])
-        wis.each do |wi|
+        @preproc.split_by_company(sections[:side_project]).each do |wi|
           side_project_info << @preproc.group_by_company(wi.join("\n"))
         end
 
@@ -237,12 +231,11 @@ class ResumePrinter
           @formatting_config.education(:heading, @font_manager, doc)
         )
 
-        education_info = sections[:education].split("\n")
-                           .map! { |cols|
-                             cols.split(",")
-                                 .each { |col| col.strip! }
-                           }
-        education_info.each do |left_text, right_text|
+        sections[:education].split("\n")
+                            .map! { |cols|
+                              cols.split(",")
+                                  .each { |col| col.strip! }
+                            }.each do |left_text, right_text|
           # Draw left column text
           @doc_writer.write_text_box(
             doc,
