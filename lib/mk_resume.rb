@@ -17,7 +17,17 @@ class ResumePrinter
     @preproc = MkResume::Preproc.new
   end
 
+  def read_file file_nm, relative_path
+    File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[#{file_nm}]))
+  end
+
   def run(relative_path)
+
+    sections = {}
+    [:personal_info, :introduction, :work_experience, :side_project, :education].each {|file_sym|
+      sections.store(file_sym, read_file(file_sym.to_s, relative_path))
+    }
+
     Prawn::Document.generate(
       "output.pdf",
       page_size: "A4",
@@ -32,7 +42,7 @@ class ResumePrinter
       @font_manager.load_font(doc)
 
       ["personal_info"].each do |heading|
-        personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personal_info])).map(&:chomp)
+        personal_info = sections[:personal_info].split("\n")
 
         personal_info[0..4].each.with_index do |item, idx|
           @doc_writer.write_text(
@@ -53,7 +63,7 @@ class ResumePrinter
           heading[:text],
           @formatting_config.introduction(:heading, @font_manager)
         )
-        intro_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[introduction])).map(&:chomp)
+        intro_info = sections[:introduction].split("\n")
 
         intro_info.each do |item|
           @doc_writer.indent(doc, doc.width_of("- ")) do
@@ -80,7 +90,7 @@ class ResumePrinter
         )
 
         work_info = []
-        wis = @preproc.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[work_experience])))
+        wis = @preproc.split_by_company(sections[:work_experience])
         wis.each do |wi|
           work_info << @preproc.group_by_company(wi.join("\n"))
         end
@@ -149,7 +159,7 @@ class ResumePrinter
         )
 
         side_project_info = []
-        wis = @preproc.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[side_project])))
+        wis = @preproc.split_by_company(sections[:side_project])
         wis.each do |wi|
           side_project_info << @preproc.group_by_company(wi.join("\n"))
         end
@@ -227,12 +237,11 @@ class ResumePrinter
           @formatting_config.education(:heading, @font_manager, doc)
         )
 
-        education_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[education]))
-                             .map! { |cols|
-                               cols.split(",")
-                                   .each { |col| col.strip! }
-                             }
-
+        education_info = sections[:education].split("\n")
+                           .map! { |cols|
+                             cols.split(",")
+                                 .each { |col| col.strip! }
+                           }
         education_info.each do |left_text, right_text|
           # Draw left column text
           @doc_writer.write_text_box(
