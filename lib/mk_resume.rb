@@ -32,7 +32,7 @@ class ResumePrinter
       @font_manager.load_font(doc)
 
       ["personal_info"].each do |heading|
-        personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personalInfo])).map(&:chomp)
+        personal_info = File.readlines(File.join(File.dirname(__FILE__), *relative_path, *%W[personal_info])).map(&:chomp)
 
         personal_info[0..4].each.with_index do |item, idx|
           @doc_writer.write_text(
@@ -80,7 +80,7 @@ class ResumePrinter
         )
 
         work_info = []
-        wis = @preproc.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[workExperience])))
+        wis = @preproc.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[work_experience])))
         wis.each do |wi|
           work_info << @preproc.group_by_company(wi.join("\n"))
         end
@@ -149,7 +149,7 @@ class ResumePrinter
         )
 
         side_project_info = []
-        wis = @preproc.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[sideProject])))
+        wis = @preproc.split_by_company(File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[side_project])))
         wis.each do |wi|
           side_project_info << @preproc.group_by_company(wi.join("\n"))
         end
