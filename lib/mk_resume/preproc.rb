@@ -6,8 +6,8 @@ module MkResume
     def skill_set?(l)
       l =~ /^\s*(skill_set:)/
     end
-    def solved?(l)
-      l =~ /^\s*(solved:)/
+    def task?(l)
+      l =~ /^\s*(task:)/
     end
     def project?(l)
       l =~ /^\s*(project:)/
@@ -69,7 +69,7 @@ module MkResume
           nmish = l.split(":")
           nm = nmish.size == 2 ? nmish[1].strip : l.split(":")[1..-1].join(":").strip
           project[nm] = []
-        when solved?(l) then
+        when task?(l) then
           solved_what = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_WHAT
           project[nm] << {solved_what => []}
         when details?(l) then
