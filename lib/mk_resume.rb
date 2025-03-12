@@ -120,7 +120,7 @@ class ResumePrinter
                     what,
                     @formatting_config.work_experience(:default, @font_manager)
                   )
-                end if what != :EMPTY_WHAT
+                end if what != :EMPTY_TASK_DESC
                 details = what_n_details[what]
                 details.each do |detail_item|
                   @doc_writer.indent(doc, doc.width_of("      ")) do
@@ -198,7 +198,7 @@ class ResumePrinter
                     what,
                     @formatting_config.side_project(:default, @font_manager)
                   )
-                end if what != :EMPTY_WHAT
+                end if what != :EMPTY_TASK_DESC
                 details = what_n_details[what]
                 details.each do |detail_item|
                   @doc_writer.indent(doc, doc.width_of("      ")) do

@@ -70,7 +70,7 @@ module MkResume
           nm = nmish.size == 2 ? nmish[1].strip : l.split(":")[1..-1].join(":").strip
           project[nm] = []
         when task?(l) then
-          task_desc = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_WHAT
+          task_desc = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_TASK_DESC
           project[nm] << {task_desc => []}
         when details?(l) then
           ""
