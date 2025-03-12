@@ -1,6 +1,6 @@
 require_relative "../lib/mk_resume/preproc"
 
-describe Preproc do
+describe MkResume::Preproc do
   RSpec.configure do |config|
     config.filter_run_when_matching(focus: true)
     config.example_status_persistence_file_path = 'spec/pass_fail_history'
@@ -9,7 +9,7 @@ describe Preproc do
   TEST_DATA_DIR = File.join(File.dirname(__FILE__), *%w[data])
 
   before(:each) do
-    @pp = Preproc.new
+    @pp = MkResume::Preproc.new
   end
 
   it "여러 회사명, 일한 기간을 파싱할 수 있다" do
