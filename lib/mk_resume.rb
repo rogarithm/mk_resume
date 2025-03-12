@@ -85,33 +85,33 @@ class ResumePrinter
           @formatting_config.work_experience(:heading, @font_manager)
         )
 
-        work_info = []
-        @preproc.split_by_company(sections[:work_experience]).each do |wi|
-          work_info << @preproc.group_by_company(wi.join("\n"))
+        work_exps = []
+        @preproc.split_by_company(sections[:work_experience]).each do |work_exp|
+          work_exps << @preproc.group_by_company(work_exp.join("\n"))
         end
 
-        work_info.each.with_index do |wi, idx|
+        work_exps.each do |work_exp|
           @doc_writer.write_text(
             doc,
-            wi[:company_nm],
+            work_exp[:company_nm],
             @formatting_config.work_experience(:default, @font_manager)
           )
           @layout_arranger.v_space(doc, 2)
           @doc_writer.write_text(
             doc,
-            "사용기술: #{wi[:skill_set]}",
+            "사용기술: #{work_exp[:skill_set]}",
             @formatting_config.work_experience(:long_leading, @font_manager)
-          ) if wi[:skill_set]
-          @layout_arranger.v_space(doc, 2) if wi[:skill_set]
+          ) if work_exp[:skill_set]
+          @layout_arranger.v_space(doc, 2) if work_exp[:skill_set]
 
-          wi[:project].keys.each do |task|
+          work_exp[:project].keys.each do |task|
             @doc_writer.write_text(
               doc,
               task,
               @formatting_config.work_experience(:default, @font_manager)
             )
 
-            wi[:project][task].each do |task_info|
+            work_exp[:project][task].each do |task_info|
               task_info.each_key {|task_desc|
                 @doc_writer.indent(doc, doc.width_of("      ")) do
                   @doc_writer.write_text(
@@ -152,13 +152,13 @@ class ResumePrinter
           @formatting_config.side_project(:heading, @font_manager)
         )
 
-        side_project_info = []
-        @preproc.split_by_company(sections[:side_project]).each do |wi|
-          side_project_info << @preproc.group_by_company(wi.join("\n"))
+        side_projs = []
+        @preproc.split_by_company(sections[:side_project]).each do |side_proj|
+          side_projs << @preproc.group_by_company(side_proj.join("\n"))
         end
 
-        side_project_info.each do |spi|
-          spi[:project].keys.each do |task|
+        side_projs.each do |side_proj|
+          side_proj[:project].keys.each do |task|
 
             if task.match(/<link href='([^']*)'>([^<]*)<\/link>/)
               link_url = Regexp.last_match(1)
@@ -167,7 +167,7 @@ class ResumePrinter
               @doc_writer.write_formatted_text(
                 doc,
                 [
-                  { text: spi[:company_nm], leading: 6 },
+                  { text: side_proj[:company_nm], leading: 6 },
                   { text: " (" },
                   { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
                   { text: ")" },
@@ -178,7 +178,7 @@ class ResumePrinter
               @doc_writer.write_formatted_text(
                 doc,
                 [
-                  { text: spi[:company_nm],  leading: 6 },
+                  { text: side_proj[:company_nm],  leading: 6 },
                   { text: " " },
                   { text: task, leading: 6 }
                 ],
@@ -188,7 +188,7 @@ class ResumePrinter
 
             @layout_arranger.v_space(doc, 2)
 
-            spi[:project][task].each do |task_info|
+            side_proj[:project][task].each do |task_info|
               task_info.each_key {|task|
                 @doc_writer.indent(doc, doc.width_of("      ")) do
                   @doc_writer.write_text(
