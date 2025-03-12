@@ -104,29 +104,28 @@ class ResumePrinter
           ) if wi[:skill_set]
           @layout_arranger.v_space(doc, 2) if wi[:skill_set]
 
-          wi[:project].keys.each do |solve|
+          wi[:project].keys.each do |task|
             @doc_writer.write_text(
               doc,
-              solve,
+              task,
               @formatting_config.work_experience(:default, @font_manager)
             )
 
-            what_n_details_list = wi[:project][solve]
-            what_n_details_list.each do |what_n_details|
-              what_n_details.each_key {|what|
+            wi[:project][task].each do |task_info|
+              task_info.each_key {|task_desc|
                 @doc_writer.indent(doc, doc.width_of("      ")) do
                   @doc_writer.write_text(
                     doc,
-                    what,
+                    task_desc,
                     @formatting_config.work_experience(:default, @font_manager)
                   )
-                end if what != :EMPTY_TASK_DESC
-                details = what_n_details[what]
-                details.each do |detail_item|
+                end if task_desc != :EMPTY_TASK_DESC
+                task_details = task_info[task_desc]
+                task_details.each do |task_detail|
                   @doc_writer.indent(doc, doc.width_of("      ")) do
                     @doc_writer.write_text(
                       doc,
-                      "- #{detail_item}",
+                      "- #{task_detail}",
                       @formatting_config.work_experience(:default, @font_manager)
                     )
                   end
@@ -159,9 +158,9 @@ class ResumePrinter
         end
 
         side_project_info.each do |spi|
-          spi[:project].keys.each do |project|
+          spi[:project].keys.each do |task|
 
-            if project.match(/<link href='([^']*)'>([^<]*)<\/link>/)
+            if task.match(/<link href='([^']*)'>([^<]*)<\/link>/)
               link_url = Regexp.last_match(1)
               link_text = Regexp.last_match(2)
 
@@ -181,7 +180,7 @@ class ResumePrinter
                 [
                   { text: spi[:company_nm],  leading: 6 },
                   { text: " " },
-                  { text: project, leading: 6 }
+                  { text: task, leading: 6 }
                 ],
                 @formatting_config.side_project(:project, @font_manager)
               )
@@ -189,18 +188,17 @@ class ResumePrinter
 
             @layout_arranger.v_space(doc, 2)
 
-            what_n_details_list = spi[:project][project]
-            what_n_details_list.each do |what_n_details|
-              what_n_details.each_key {|what|
+            spi[:project][task].each do |task_info|
+              task_info.each_key {|task|
                 @doc_writer.indent(doc, doc.width_of("      ")) do
                   @doc_writer.write_text(
                     doc,
-                    what,
+                    task,
                     @formatting_config.side_project(:default, @font_manager)
                   )
-                end if what != :EMPTY_TASK_DESC
-                details = what_n_details[what]
-                details.each do |detail_item|
+                end if task != :EMPTY_TASK_DESC
+                task_details = task_info[task]
+                task_details.each do |detail_item|
                   @doc_writer.indent(doc, doc.width_of("      ")) do
                     @doc_writer.write_text(
                       doc,
