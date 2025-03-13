@@ -58,7 +58,7 @@ class ResumePrinter
         sections[:introduction].split("\n").each do |text|
           @doc_writer.write_indented_text(
             doc,
-            doc.width_of("- "),
+            "- ",
             "- #{text}",
             @formatting_config.introduction(:default, @font_manager)
                               .merge!({:line_spacing_pt => 2})
@@ -105,7 +105,7 @@ class ResumePrinter
               task_info.each_key {|task_desc|
                 @doc_writer.write_indented_text(
                   doc,
-                  doc.width_of("      "),
+                  "      ",
                   task_desc,
                   @formatting_config.work_experience(:default, @font_manager)
                 ) if task_desc != :EMPTY_TASK_DESC
@@ -113,7 +113,7 @@ class ResumePrinter
                 task_details.each do |task_detail|
                   @doc_writer.write_indented_text(
                     doc,
-                    doc.width_of("      "),
+                    "      ",
                     "- #{task_detail}",
                     @formatting_config.work_experience(:default, @font_manager)
                       .merge!({:line_spacing_pt => 2})
@@ -178,7 +178,7 @@ class ResumePrinter
               task_info.each_key {|task|
                 @doc_writer.write_indented_text(
                   doc,
-                  doc.width_of("      "),
+                  "      ",
                   task,
                   @formatting_config.side_project(:default, @font_manager)
                 ) if task != :EMPTY_TASK_DESC
@@ -186,7 +186,7 @@ class ResumePrinter
                 task_details.each do |detail_item|
                   @doc_writer.write_indented_text(
                     doc,
-                    doc.width_of("      "),
+                    "      ",
                     "- #{detail_item}",
                     @formatting_config.side_project(:default, @font_manager)
                                       .merge!({:line_spacing_pt => 2})

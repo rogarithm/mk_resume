@@ -45,7 +45,8 @@ module MkResume
     end
 
     def indent(pdf_doc, left_width, &text_writer)
-      pdf_doc.indent(left_width, &text_writer)
+      val2indent = pdf_doc.width_of(left_width)
+      pdf_doc.indent(val2indent, &text_writer)
     end
 
     def write_text_box(pdf_doc, txt, options = {})
