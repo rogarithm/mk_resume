@@ -11,11 +11,5 @@ module MkResume
     end
 
     alias_method :v_space, :make_vertical_space
-
-    def draw_horizontal_rule(pdf_doc)
-      pdf_doc.stroke_horizontal_rule
-    end
-
-    alias_method :h_rule, :draw_horizontal_rule
   end
 end

@@ -54,13 +54,12 @@ class ResumePrinter
       @layout_arranger.v_space(doc, 14.5)
 
       [{level: 4, text: "Introduction"}].each do |heading|
-        @layout_arranger.draw_horizontal_rule(doc)
-        @layout_arranger.v_space(doc, 9.5)
-        @doc_writer.write_text(
+        @doc_writer.write_heading(
           doc,
           heading[:text],
           @formatting_config.introduction(:heading, @font_manager)
         )
+
         sections[:introduction].split("\n").each do |text|
           @doc_writer.indent(doc, doc.width_of("- ")) do
             @doc_writer.write_text(
@@ -76,9 +75,7 @@ class ResumePrinter
       @layout_arranger.v_space(doc, 14.5)
 
       [{ level: 4, text: "Work Experience" }].each do |heading|
-        @layout_arranger.draw_horizontal_rule(doc)
-        @layout_arranger.v_space(doc, 9.5)
-        @doc_writer.write_text(
+        @doc_writer.write_heading(
           doc,
           heading[:text],
           @formatting_config.work_experience(:heading, @font_manager)
@@ -143,9 +140,7 @@ class ResumePrinter
       @layout_arranger.v_space(doc, 14.5)
 
       [{ level: 4, text: "Side Project" }].each do |heading|
-        @layout_arranger.draw_horizontal_rule(doc)
-        @layout_arranger.v_space(doc, 9.5)
-        @doc_writer.write_text(
+        @doc_writer.write_heading(
           doc,
           heading[:text],
           @formatting_config.side_project(:heading, @font_manager)
@@ -220,9 +215,7 @@ class ResumePrinter
       @layout_arranger.v_space(doc, 14.5)
 
       [{ level: 4, text: "Education" }].each do |heading|
-        @layout_arranger.draw_horizontal_rule(doc)
-        @layout_arranger.v_space(doc, 9.5)
-        @doc_writer.write_text(
+        @doc_writer.write_heading(
           doc,
           heading[:text],
           @formatting_config.education(:heading, @font_manager, doc)

@@ -1,5 +1,21 @@
 module MkResume
   class DocumentWriter
+    def write_heading(pdf_doc, txt, options = {})
+      h_rule(pdf_doc)
+      line_spacing(pdf_doc, 9.5)
+      write_text(
+        pdf_doc,
+        txt,
+        options
+      )
+    end
+
+    def draw_horizontal_rule(pdf_doc)
+      pdf_doc.stroke_horizontal_rule
+    end
+
+    alias_method :h_rule, :draw_horizontal_rule
+
     def write_text(pdf_doc, txt, options = {})
       txt = wrap_link(txt)
       pdf_doc.text(txt, options)
