@@ -31,12 +31,7 @@ class ResumePrinter
     Prawn::Document.generate(
       "output.pdf",
       page_size: "A4",
-      margin: [
-        @layout_arranger.find_margin_size(:top),
-        @layout_arranger.find_margin_size(:right),
-        @layout_arranger.find_margin_size(:bottom),
-        @layout_arranger.find_margin_size(:left)
-      ]
+      margin: @layout_arranger.doc_margins
     ) do |doc|
 
       @font_manager.load_font(doc)
