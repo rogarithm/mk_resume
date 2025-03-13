@@ -16,6 +16,12 @@ module MkResume
 
     alias_method :h_rule, :draw_horizontal_rule
 
+    def write_indented_text(pdf_doc, width2indent, txt, options = {})
+      indent(pdf_doc, width2indent) do
+        write_text(pdf_doc, txt, options)
+      end
+    end
+
     def write_text(pdf_doc, txt, options = {})
       txt = wrap_link(txt)
       pdf_doc.text(txt, options)

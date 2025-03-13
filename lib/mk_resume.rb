@@ -56,14 +56,13 @@ class ResumePrinter
         )
 
         sections[:introduction].split("\n").each do |text|
-          @doc_writer.indent(doc, doc.width_of("- ")) do
-            @doc_writer.write_text(
-              doc,
-              "- #{text}",
-              @formatting_config.introduction(:default, @font_manager)
-                .merge!({:line_spacing_pt => 2})
-            )
-          end
+          @doc_writer.write_indented_text(
+            doc,
+            doc.width_of("- "),
+            "- #{text}",
+            @formatting_config.introduction(:default, @font_manager)
+                              .merge!({:line_spacing_pt => 2})
+          )
         end
       end
 
@@ -104,23 +103,21 @@ class ResumePrinter
 
             work_exp[:project][task].each do |task_info|
               task_info.each_key {|task_desc|
-                @doc_writer.indent(doc, doc.width_of("      ")) do
-                  @doc_writer.write_text(
-                    doc,
-                    task_desc,
-                    @formatting_config.work_experience(:default, @font_manager)
-                  )
-                end if task_desc != :EMPTY_TASK_DESC
+                @doc_writer.write_indented_text(
+                  doc,
+                  doc.width_of("      "),
+                  task_desc,
+                  @formatting_config.work_experience(:default, @font_manager)
+                ) if task_desc != :EMPTY_TASK_DESC
                 task_details = task_info[task_desc]
                 task_details.each do |task_detail|
-                  @doc_writer.indent(doc, doc.width_of("      ")) do
-                    @doc_writer.write_text(
-                      doc,
-                      "- #{task_detail}",
-                      @formatting_config.work_experience(:default, @font_manager)
-                        .merge!({:line_spacing_pt => 2})
-                    )
-                  end
+                  @doc_writer.write_indented_text(
+                    doc,
+                    doc.width_of("      "),
+                    "- #{task_detail}",
+                    @formatting_config.work_experience(:default, @font_manager)
+                      .merge!({:line_spacing_pt => 2})
+                  )
                 end
                 @layout_arranger.v_space(doc, 2)
                 @layout_arranger.v_space(doc, 2)
@@ -179,23 +176,21 @@ class ResumePrinter
 
             side_proj[:project][task].each do |task_info|
               task_info.each_key {|task|
-                @doc_writer.indent(doc, doc.width_of("      ")) do
-                  @doc_writer.write_text(
-                    doc,
-                    task,
-                    @formatting_config.side_project(:default, @font_manager)
-                  )
-                end if task != :EMPTY_TASK_DESC
+                @doc_writer.write_indented_text(
+                  doc,
+                  doc.width_of("      "),
+                  task,
+                  @formatting_config.side_project(:default, @font_manager)
+                ) if task != :EMPTY_TASK_DESC
                 task_details = task_info[task]
                 task_details.each do |detail_item|
-                  @doc_writer.indent(doc, doc.width_of("      ")) do
-                    @doc_writer.write_text(
-                      doc,
-                      "- #{detail_item}",
-                      @formatting_config.side_project(:default, @font_manager)
-                        .merge!({:line_spacing_pt => 2})
-                    )
-                  end
+                  @doc_writer.write_indented_text(
+                    doc,
+                    doc.width_of("      "),
+                    "- #{detail_item}",
+                    @formatting_config.side_project(:default, @font_manager)
+                                      .merge!({:line_spacing_pt => 2})
+                  )
                 end
                 @layout_arranger.v_space(doc, 2)
                 @layout_arranger.v_space(doc, 2)
