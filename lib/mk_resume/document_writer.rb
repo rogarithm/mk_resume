@@ -3,6 +3,16 @@ module MkResume
     def write_text(pdf_doc, txt, options = {})
       txt = wrap_link(txt)
       pdf_doc.text(txt, options)
+
+      if options[:line_spacing_pt] == nil
+        line_spacing(pdf_doc, 0)
+      else
+        line_spacing(pdf_doc, options[:line_spacing_pt])
+      end
+    end
+
+    def line_spacing(pdf_doc, point)
+      pdf_doc.move_down point
     end
 
     def wrap_link text

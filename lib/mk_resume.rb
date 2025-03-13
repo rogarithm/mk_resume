@@ -67,10 +67,9 @@ class ResumePrinter
               doc,
               "- #{text}",
               @formatting_config.introduction(:default, @font_manager)
+                .merge!({:line_spacing_pt => 2})
             )
           end
-
-          @layout_arranger.v_space(doc, 2)
         end
       end
 
@@ -95,14 +94,14 @@ class ResumePrinter
             doc,
             work_exp[:company_nm],
             @formatting_config.work_experience(:default, @font_manager)
+              .merge!({:line_spacing_pt => 2})
           )
-          @layout_arranger.v_space(doc, 2)
           @doc_writer.write_text(
             doc,
             "사용기술: #{work_exp[:skill_set]}",
             @formatting_config.work_experience(:long_leading, @font_manager)
+              .merge!({:line_spacing_pt => 2})
           ) if work_exp[:skill_set]
-          @layout_arranger.v_space(doc, 2) if work_exp[:skill_set]
 
           work_exp[:project].keys.each do |task|
             @doc_writer.write_text(
@@ -127,9 +126,9 @@ class ResumePrinter
                       doc,
                       "- #{task_detail}",
                       @formatting_config.work_experience(:default, @font_manager)
+                        .merge!({:line_spacing_pt => 2})
                     )
                   end
-                  @layout_arranger.v_space(doc, 2)
                 end
                 @layout_arranger.v_space(doc, 2)
                 @layout_arranger.v_space(doc, 2)
@@ -204,9 +203,9 @@ class ResumePrinter
                       doc,
                       "- #{detail_item}",
                       @formatting_config.side_project(:default, @font_manager)
+                        .merge!({:line_spacing_pt => 2})
                     )
                   end
-                  @layout_arranger.v_space(doc, 2)
                 end
                 @layout_arranger.v_space(doc, 2)
                 @layout_arranger.v_space(doc, 2)
