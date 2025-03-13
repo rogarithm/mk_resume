@@ -42,10 +42,10 @@ class ResumePrinter
       @font_manager.load_font(doc)
 
       ["personal_info"].each do |heading|
-        sections[:personal_info].split("\n")[0..4].each.with_index do |item, idx|
+        sections[:personal_info].split("\n")[0..4].each.with_index do |text, idx|
           @doc_writer.write_text(
             doc,
-            item,
+            text,
             @formatting_config.personal_info(idx, @font_manager)
           )
         end
@@ -61,11 +61,11 @@ class ResumePrinter
           heading[:text],
           @formatting_config.introduction(:heading, @font_manager)
         )
-        sections[:introduction].split("\n").each do |item|
+        sections[:introduction].split("\n").each do |text|
           @doc_writer.indent(doc, doc.width_of("- ")) do
             @doc_writer.write_text(
               doc,
-              "- #{item}",
+              "- #{text}",
               @formatting_config.introduction(:default, @font_manager)
             )
           end
@@ -85,48 +85,47 @@ class ResumePrinter
           @formatting_config.work_experience(:heading, @font_manager)
         )
 
-        work_info = []
-        @preproc.split_by_company(sections[:work_experience]).each do |wi|
-          work_info << @preproc.group_by_company(wi.join("\n"))
+        work_exps = []
+        @preproc.split_by_company(sections[:work_experience]).each do |work_exp|
+          work_exps << @preproc.group_by_company(work_exp.join("\n"))
         end
 
-        work_info.each.with_index do |wi, idx|
+        work_exps.each do |work_exp|
           @doc_writer.write_text(
             doc,
-            wi[:company_nm],
+            work_exp[:company_nm],
             @formatting_config.work_experience(:default, @font_manager)
           )
           @layout_arranger.v_space(doc, 2)
           @doc_writer.write_text(
             doc,
-            "사용기술: #{wi[:skill_set]}",
+            "사용기술: #{work_exp[:skill_set]}",
             @formatting_config.work_experience(:long_leading, @font_manager)
-          ) if wi[:skill_set]
-          @layout_arranger.v_space(doc, 2) if wi[:skill_set]
+          ) if work_exp[:skill_set]
+          @layout_arranger.v_space(doc, 2) if work_exp[:skill_set]
 
-          wi[:project].keys.each do |solve|
+          work_exp[:project].keys.each do |task|
             @doc_writer.write_text(
               doc,
-              solve,
+              task,
               @formatting_config.work_experience(:default, @font_manager)
             )
 
-            what_n_details_list = wi[:project][solve]
-            what_n_details_list.each do |what_n_details|
-              what_n_details.each_key {|what|
+            work_exp[:project][task].each do |task_info|
+              task_info.each_key {|task_desc|
                 @doc_writer.indent(doc, doc.width_of("      ")) do
                   @doc_writer.write_text(
                     doc,
-                    what,
+                    task_desc,
                     @formatting_config.work_experience(:default, @font_manager)
                   )
-                end if what != :EMPTY_WHAT
-                details = what_n_details[what]
-                details.each do |detail_item|
+                end if task_desc != :EMPTY_TASK_DESC
+                task_details = task_info[task_desc]
+                task_details.each do |task_detail|
                   @doc_writer.indent(doc, doc.width_of("      ")) do
                     @doc_writer.write_text(
                       doc,
-                      "- #{detail_item}",
+                      "- #{task_detail}",
                       @formatting_config.work_experience(:default, @font_manager)
                     )
                   end
@@ -153,22 +152,22 @@ class ResumePrinter
           @formatting_config.side_project(:heading, @font_manager)
         )
 
-        side_project_info = []
-        @preproc.split_by_company(sections[:side_project]).each do |wi|
-          side_project_info << @preproc.group_by_company(wi.join("\n"))
+        side_projs = []
+        @preproc.split_by_company(sections[:side_project]).each do |side_proj|
+          side_projs << @preproc.group_by_company(side_proj.join("\n"))
         end
 
-        side_project_info.each do |spi|
-          spi[:project].keys.each do |project|
+        side_projs.each do |side_proj|
+          side_proj[:project].keys.each do |task|
 
-            if project.match(/<link href='([^']*)'>([^<]*)<\/link>/)
+            if task.match(/<link href='([^']*)'>([^<]*)<\/link>/)
               link_url = Regexp.last_match(1)
               link_text = Regexp.last_match(2)
 
               @doc_writer.write_formatted_text(
                 doc,
                 [
-                  { text: spi[:company_nm], leading: 6 },
+                  { text: side_proj[:company_nm], leading: 6 },
                   { text: " (" },
                   { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
                   { text: ")" },
@@ -179,9 +178,9 @@ class ResumePrinter
               @doc_writer.write_formatted_text(
                 doc,
                 [
-                  { text: spi[:company_nm],  leading: 6 },
+                  { text: side_proj[:company_nm],  leading: 6 },
                   { text: " " },
-                  { text: project, leading: 6 }
+                  { text: task, leading: 6 }
                 ],
                 @formatting_config.side_project(:project, @font_manager)
               )
@@ -189,18 +188,17 @@ class ResumePrinter
 
             @layout_arranger.v_space(doc, 2)
 
-            what_n_details_list = spi[:project][project]
-            what_n_details_list.each do |what_n_details|
-              what_n_details.each_key {|what|
+            side_proj[:project][task].each do |task_info|
+              task_info.each_key {|task|
                 @doc_writer.indent(doc, doc.width_of("      ")) do
                   @doc_writer.write_text(
                     doc,
-                    what,
+                    task,
                     @formatting_config.side_project(:default, @font_manager)
                   )
-                end if what != :EMPTY_WHAT
-                details = what_n_details[what]
-                details.each do |detail_item|
+                end if task != :EMPTY_TASK_DESC
+                task_details = task_info[task]
+                task_details.each do |detail_item|
                   @doc_writer.indent(doc, doc.width_of("      ")) do
                     @doc_writer.write_text(
                       doc,

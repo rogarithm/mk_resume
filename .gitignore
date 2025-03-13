@@ -2,3 +2,5 @@ fonts/
 src/
 .DS_Store
 output.pdf
+*.swp
+spec/pass_fail_history

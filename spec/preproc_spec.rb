@@ -142,7 +142,7 @@ describe MkResume::Preproc do
     expected = {
       :project => {
         "s" => [
-          { :EMPTY_WHAT => ["d1", "d2", "d3"] },
+          { :EMPTY_TASK_DESC => ["d1", "d2", "d3"] },
         ]
       }
     }
@@ -202,7 +202,7 @@ describe MkResume::Preproc do
         ],
         "사내 버전 관리 문화 도입" => [
           {
-            :EMPTY_WHAT => [
+            :EMPTY_TASK_DESC => [
               "사내 개발 인력 증가로 개별 작업한 프로젝트 소스 코드의 통합 문제가 우려되어 버전 관리를 도입",
               "GitLab 서버 설치, 유지 보수 담당 및 사내 팀원에게 Git을 통한 형상 관리 세미나 진행",
               "여러 인원이 참여하는 프로젝트에서 소스 코드 통합 문제 해결에 기여"
