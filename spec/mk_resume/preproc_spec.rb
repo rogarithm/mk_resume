@@ -1,4 +1,4 @@
-require_relative "../lib/mk_resume/preproc"
+require_relative "../../lib/mk_resume/preproc"
 
 describe MkResume::Preproc do
   RSpec.configure do |config|
@@ -6,7 +6,7 @@ describe MkResume::Preproc do
     config.example_status_persistence_file_path = 'spec/pass_fail_history'
   end
 
-  TEST_DATA_DIR = File.join(File.dirname(__FILE__), *%w[data])
+  TEST_DATA_DIR = File.join(File.dirname(__FILE__), *%w[.. data])
 
   before(:each) do
     @pp = MkResume::Preproc.new
