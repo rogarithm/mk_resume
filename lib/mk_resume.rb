@@ -36,186 +36,175 @@ class ResumePrinter
 
       @font_manager.load_font(doc)
 
-      ["personal_info"].each do |heading|
-        sections[:personal_info].split("\n")[0..4].each.with_index do |text, idx|
-          @doc_writer.write_text(
-            doc,
-            text,
-            @formatting_config.personal_info(idx, @font_manager)
-          )
-        end
+      sections[:personal_info].split("\n")[0..4].each.with_index do |text, idx|
+        @doc_writer.write_text(
+          doc,
+          text,
+          @formatting_config.personal_info(idx, @font_manager)
+        )
       end
-
       @layout_arranger.v_space(doc, 14.5)
 
-      [{level: 4, text: "Introduction"}].each do |heading|
-        @doc_writer.write_heading(
+
+      @doc_writer.write_heading(
+        doc,
+        :introduction.to_s.capitalize,
+        @formatting_config.introduction(:heading, @font_manager)
+      )
+
+      sections[:introduction].split("\n").each do |text|
+        @doc_writer.write_indented_text(
           doc,
-          :introduction.to_s.capitalize,
-          @formatting_config.introduction(:heading, @font_manager)
+          "- ",
+          "- #{text}",
+          @formatting_config.introduction(:default, @font_manager)
+            .merge!({:line_spacing_pt => 2})
         )
-
-        sections[:introduction].split("\n").each do |text|
-          @doc_writer.write_indented_text(
-            doc,
-            "- ",
-            "- #{text}",
-            @formatting_config.introduction(:default, @font_manager)
-                              .merge!({:line_spacing_pt => 2})
-          )
-        end
       end
-
       @layout_arranger.v_space(doc, 14.5)
 
-      [{ level: 4, text: "Work Experience" }].each do |heading|
-        @doc_writer.write_heading(
+      @doc_writer.write_heading(
+        doc,
+        :work_experience.to_s.split("_").map(&:capitalize).join(" "),
+        @formatting_config.work_experience(:heading, @font_manager)
+      )
+
+      work_exps = []
+      @preproc.split_by_company(sections[:work_experience]).each do |work_exp|
+        work_exps << @preproc.group_by_company(work_exp.join("\n"))
+      end
+
+      work_exps.each do |work_exp|
+        @doc_writer.write_text(
           doc,
-          :work_experience.to_s.split("_").map(&:capitalize).join(" "),
-          @formatting_config.work_experience(:heading, @font_manager)
+          work_exp[:company_nm],
+          @formatting_config.work_experience(:default, @font_manager)
+          .merge!({:line_spacing_pt => 2})
         )
+        @doc_writer.write_text(
+          doc,
+          "사용기술: #{work_exp[:skill_set]}",
+          @formatting_config.work_experience(:long_leading, @font_manager)
+            .merge!({:line_spacing_pt => 2})
+        ) if work_exp[:skill_set]
 
-        work_exps = []
-        @preproc.split_by_company(sections[:work_experience]).each do |work_exp|
-          work_exps << @preproc.group_by_company(work_exp.join("\n"))
-        end
-
-        work_exps.each do |work_exp|
+        work_exp[:project].keys.each do |task|
           @doc_writer.write_text(
             doc,
-            work_exp[:company_nm],
+            task,
             @formatting_config.work_experience(:default, @font_manager)
-              .merge!({:line_spacing_pt => 2})
           )
-          @doc_writer.write_text(
-            doc,
-            "사용기술: #{work_exp[:skill_set]}",
-            @formatting_config.work_experience(:long_leading, @font_manager)
-              .merge!({:line_spacing_pt => 2})
-          ) if work_exp[:skill_set]
 
-          work_exp[:project].keys.each do |task|
-            @doc_writer.write_text(
-              doc,
-              task,
-              @formatting_config.work_experience(:default, @font_manager)
-            )
-
-            work_exp[:project][task].each do |task_info|
-              task_info.each_key {|task_desc|
+          work_exp[:project][task].each do |task_info|
+            task_info.each_key {|task_desc|
+              @doc_writer.write_indented_text(
+                doc,
+                "      ",
+                task_desc,
+                @formatting_config.work_experience(:default, @font_manager)
+              ) if task_desc != :EMPTY_TASK_DESC
+              task_details = task_info[task_desc]
+              task_details.each do |task_detail|
                 @doc_writer.write_indented_text(
                   doc,
                   "      ",
-                  task_desc,
+                  "- #{task_detail}",
                   @formatting_config.work_experience(:default, @font_manager)
-                ) if task_desc != :EMPTY_TASK_DESC
-                task_details = task_info[task_desc]
-                task_details.each do |task_detail|
-                  @doc_writer.write_indented_text(
-                    doc,
-                    "      ",
-                    "- #{task_detail}",
-                    @formatting_config.work_experience(:default, @font_manager)
-                      .merge!({:line_spacing_pt => 2})
-                  )
-                end
-                @layout_arranger.v_space(doc, 2)
-                @layout_arranger.v_space(doc, 2)
-                @layout_arranger.v_space(doc, 2)
-              }
-            end
+                    .merge!({:line_spacing_pt => 2})
+                )
+              end
+              @layout_arranger.v_space(doc, 2)
+              @layout_arranger.v_space(doc, 2)
+              @layout_arranger.v_space(doc, 2)
+            }
           end
         end
       end
-
       @layout_arranger.v_space(doc, 2)
       @layout_arranger.v_space(doc, 14.5)
 
-      [{ level: 4, text: "Side Project" }].each do |heading|
-        @doc_writer.write_heading(
-          doc,
-          :side_project.to_s.split("_").map(&:capitalize).join(" "),
-          @formatting_config.side_project(:heading, @font_manager)
-        )
 
-        side_projs = []
-        @preproc.split_by_company(sections[:side_project]).each do |side_proj|
-          side_projs << @preproc.group_by_company(side_proj.join("\n"))
-        end
+      @doc_writer.write_heading(
+        doc,
+        :side_project.to_s.split("_").map(&:capitalize).join(" "),
+        @formatting_config.side_project(:heading, @font_manager)
+      )
 
-        side_projs.each do |side_proj|
-          side_proj[:project].keys.each do |task|
+      side_projs = []
+      @preproc.split_by_company(sections[:side_project]).each do |side_proj|
+        side_projs << @preproc.group_by_company(side_proj.join("\n"))
+      end
 
-            if task.match(/<link href='([^']*)'>([^<]*)<\/link>/)
-              link_url = Regexp.last_match(1)
-              link_text = Regexp.last_match(2)
+      side_projs.each do |side_proj|
+        side_proj[:project].keys.each do |task|
 
-              @doc_writer.write_formatted_text(
+          if task.match(/<link href='([^']*)'>([^<]*)<\/link>/)
+            link_url = Regexp.last_match(1)
+            link_text = Regexp.last_match(2)
+
+            @doc_writer.write_formatted_text(
+              doc,
+              [
+                { text: side_proj[:company_nm], leading: 6 },
+                { text: " (" },
+                { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
+                { text: ")" },
+              ],
+              @formatting_config.side_project(:project, @font_manager)
+            )
+          else
+            @doc_writer.write_formatted_text(
+              doc,
+              [
+                { text: side_proj[:company_nm],  leading: 6 },
+                { text: " " },
+                { text: task, leading: 6 }
+              ],
+              @formatting_config.side_project(:project, @font_manager)
+            )
+          end
+
+          @layout_arranger.v_space(doc, 2)
+
+          side_proj[:project][task].each do |task_info|
+            task_info.each_key {|task|
+              @doc_writer.write_indented_text(
                 doc,
-                [
-                  { text: side_proj[:company_nm], leading: 6 },
-                  { text: " (" },
-                  { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
-                  { text: ")" },
-                ],
-                @formatting_config.side_project(:project, @font_manager)
-              )
-            else
-              @doc_writer.write_formatted_text(
-                doc,
-                [
-                  { text: side_proj[:company_nm],  leading: 6 },
-                  { text: " " },
-                  { text: task, leading: 6 }
-                ],
-                @formatting_config.side_project(:project, @font_manager)
-              )
-            end
-
-            @layout_arranger.v_space(doc, 2)
-
-            side_proj[:project][task].each do |task_info|
-              task_info.each_key {|task|
+                "      ",
+                task,
+                @formatting_config.side_project(:default, @font_manager)
+              ) if task != :EMPTY_TASK_DESC
+              task_details = task_info[task]
+              task_details.each do |detail_item|
                 @doc_writer.write_indented_text(
                   doc,
                   "      ",
-                  task,
+                  "- #{detail_item}",
                   @formatting_config.side_project(:default, @font_manager)
-                ) if task != :EMPTY_TASK_DESC
-                task_details = task_info[task]
-                task_details.each do |detail_item|
-                  @doc_writer.write_indented_text(
-                    doc,
-                    "      ",
-                    "- #{detail_item}",
-                    @formatting_config.side_project(:default, @font_manager)
-                                      .merge!({:line_spacing_pt => 2})
-                  )
-                end
-                @layout_arranger.v_space(doc, 2)
-                @layout_arranger.v_space(doc, 2)
-                @layout_arranger.v_space(doc, 2)
-              }
-            end
+                    .merge!({:line_spacing_pt => 2})
+                )
+              end
+              @layout_arranger.v_space(doc, 2)
+              @layout_arranger.v_space(doc, 2)
+              @layout_arranger.v_space(doc, 2)
+            }
           end
         end
       end
-
       @layout_arranger.v_space(doc, 2)
       @layout_arranger.v_space(doc, 14.5)
 
-      [{ level: 4, text: "Education" }].each do |heading|
-        @doc_writer.write_heading(
-          doc,
-          :education.to_s.capitalize,
-          @formatting_config.education(:heading, @font_manager, doc)
-        )
+      @doc_writer.write_heading(
+        doc,
+        :education.to_s.capitalize,
+        @formatting_config.education(:heading, @font_manager, doc)
+      )
 
-        sections[:education].split("\n")
-                            .map! { |cols|
-                              cols.split(",")
-                                  .each { |col| col.strip! }
-                            }.each do |left_text, right_text|
+      sections[:education].split("\n")
+        .map! { |cols|
+          cols.split(",")
+            .each { |col| col.strip! }
+        }.each do |left_text, right_text|
           # Draw left column text
           @doc_writer.write_text_box(
             doc,
@@ -232,7 +221,6 @@ class ResumePrinter
 
           @layout_arranger.v_space(doc, 15) # Space between rows; adjust as needed
         end
-      end
     end
   end
 end
