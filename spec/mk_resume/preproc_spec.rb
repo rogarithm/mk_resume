@@ -12,7 +12,7 @@ describe MkResume::Preproc do
     @pp = MkResume::Preproc.new
   end
 
-  context "split_by_company" do
+  context "company_nm을 기준으로 도메인 객체 하나로 파싱할 영역을 나눌 수 있다" do
     it "여러 회사명" do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[two_company_nm])
 
@@ -25,7 +25,7 @@ describe MkResume::Preproc do
     end
   end
 
-  context "group_project" do
+  context "프로젝트 하위 항목을 그룹핑할 수 있다" do
     it "업무 하나에 대한 상세 내용" do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[one_task])
 
@@ -84,7 +84,7 @@ describe MkResume::Preproc do
     end
   end
 
-  context "group_by_company" do
+  context "프로젝트 관련 정보와 회사 관련 정보를 함께 그룹핑할 수 있다" do
     it "회사명 하나" do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[one_company_nm])
 
