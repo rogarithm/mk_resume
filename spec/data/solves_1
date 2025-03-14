@@ -1,11 +1,11 @@
-project: s
- task: w
+project: p1
+ task: t1
   details:
   d1
   d2
   d3
-project: s2
- task: w
+project: p2
+ task: t1
   details:
   d1
   d2

@@ -1,11 +1,11 @@
 company_nm: c1 (f ~ t)
-project: s
- task: w
+project: p1
+ task: t1
   details:
   d1
   d2
   d3
- task: w2
+ task: t2
   details:
   d4
   d5
