@@ -51,7 +51,7 @@ class ResumePrinter
       [{level: 4, text: "Introduction"}].each do |heading|
         @doc_writer.write_heading(
           doc,
-          heading[:text],
+          :introduction.to_s.capitalize,
           @formatting_config.introduction(:heading, @font_manager)
         )
 
@@ -71,7 +71,7 @@ class ResumePrinter
       [{ level: 4, text: "Work Experience" }].each do |heading|
         @doc_writer.write_heading(
           doc,
-          heading[:text],
+          :work_experience.to_s.split("_").map(&:capitalize).join(" "),
           @formatting_config.work_experience(:heading, @font_manager)
         )
 
@@ -134,7 +134,7 @@ class ResumePrinter
       [{ level: 4, text: "Side Project" }].each do |heading|
         @doc_writer.write_heading(
           doc,
-          heading[:text],
+          :side_project.to_s.split("_").map(&:capitalize).join(" "),
           @formatting_config.side_project(:heading, @font_manager)
         )
 
@@ -207,7 +207,7 @@ class ResumePrinter
       [{ level: 4, text: "Education" }].each do |heading|
         @doc_writer.write_heading(
           doc,
-          heading[:text],
+          :education.to_s.capitalize,
           @formatting_config.education(:heading, @font_manager, doc)
         )
 
