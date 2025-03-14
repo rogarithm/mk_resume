@@ -1,5 +1,5 @@
-project: s
- task: w
+project: p1
+ task: t1
   details:
   d1
   d2
