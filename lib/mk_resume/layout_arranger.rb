@@ -2,8 +2,8 @@ module MkResume
   class LayoutArranger
     DOC_MARGIN = {:top => 2.cm, :right => 3.05.cm, :bottom => 2.cm, :left => 3.05.cm}
 
-    def find_margin_size(where)
-      DOC_MARGIN[where]
+    def doc_margins
+      DOC_MARGIN.reduce([]) {|margins, (_, v)| margins << v}
     end
 
     def make_vertical_space(pdf_doc, point)
@@ -11,11 +11,5 @@ module MkResume
     end
 
     alias_method :v_space, :make_vertical_space
-
-    def draw_horizontal_rule(pdf_doc)
-      pdf_doc.stroke_horizontal_rule
-    end
-
-    alias_method :h_rule, :draw_horizontal_rule
   end
 end
