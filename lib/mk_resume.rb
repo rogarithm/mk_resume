@@ -17,16 +17,9 @@ class ResumePrinter
     @preproc = MkResume::Preproc.new
   end
 
-  def read_file file_nm, relative_path
-    File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[#{file_nm}]))
-  end
-
   def run(relative_path)
 
-    sections = {}
-    [:personal_info, :introduction, :work_experience, :side_project, :education].each {|file_sym|
-      sections.store(file_sym, read_file(file_sym.to_s, relative_path))
-    }
+    sections = @doc_writer.read_sections(relative_path)
 
     Prawn::Document.generate(
       "output.pdf",

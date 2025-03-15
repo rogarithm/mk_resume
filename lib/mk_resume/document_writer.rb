@@ -1,5 +1,22 @@
 module MkResume
   class DocumentWriter
+    attr_reader :sections
+
+    def initialize
+      @sections = {}
+    end
+
+    def read_sections(relative_path)
+      [:personal_info, :introduction, :work_experience, :side_project, :education].each {|file_sym|
+        @sections.store(file_sym, read_file(file_sym.to_s, relative_path))
+      }
+      @sections
+    end
+
+    def read_file file_nm, relative_path
+      File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[#{file_nm}]))
+    end
+
     def write_heading(pdf_doc, txt, options = {})
       h_rule(pdf_doc)
       line_spacing(pdf_doc, 9.5)
