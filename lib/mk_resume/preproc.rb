@@ -38,22 +38,23 @@ module MkResume
       end
     end
 
-    def group_by_company(obj_in_txt)
+    def group_by_company(obj_in_txt, kw_list = [:company_nm, :skill_set])
       lines = obj_in_txt.split("\n")
 
+      matching_lines = lines.filter {|l|
+        kw_list.any? {|kw|
+          l =~ /^\s*(#{kw.to_s})/
+        }
+      }
+
       obj = {}
-      proj_in_txt = []
-      lines.each do |l|
-        case
-        when company_nm?(l) then
-          obj = {}
-          obj[:company_nm] = l.split(":")[1].strip
-        when skill_set?(l) then
-          obj[:skill_set] = l.split(":")[1].strip
-        else
-          proj_in_txt << l
-        end
-      end
+      matching_lines.each {|l|
+        k_v = l.split(":").map(&:strip)
+        obj[k_v[0].to_sym] = k_v[1]
+      }
+
+      proj_in_txt = lines - matching_lines
+
       obj[:project] = group_project proj_in_txt.join("\n") if proj_in_txt != []
       obj
     end

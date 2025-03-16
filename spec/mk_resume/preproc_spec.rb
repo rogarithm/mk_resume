@@ -96,6 +96,30 @@ describe MkResume::Preproc do
   end
 
   context "프로젝트 관련 정보와 회사 관련 정보를 함께 그룹핑할 수 있다" do
+
+    it "시맨틱 모델에 넣을 키워드를 메서드 인자로 쓸 수 있다" do
+      kw_list = [:company_nm, :skill_set]
+      lines = ["company_nm: xx", "nothing: yy", "skill_set: zz"]
+      obj = {}
+      # 주어진 키워드로 시작하는 줄만 필터링한다
+      matching_lines = lines.filter {|l|
+        kw_list.any? {|kw|
+          l =~ /^\s*(#{kw.to_s})/
+        }
+      }
+      expect(matching_lines).to eq(["company_nm: xx", "skill_set: zz"])
+
+      # 필터링한 줄을 객체에 저장한다
+      matching_lines.each {|l|
+        k_v = l.split(":").map(&:strip)
+        obj[k_v[0].to_sym] = k_v[1]
+      }
+      expect(obj).to eq({:company_nm => "xx", :skill_set => "zz"})
+
+      # 나머지 줄을 따로 모은다
+      expect(lines - matching_lines).to eq(["nothing: yy"])
+    end
+
     it "회사명 하나" do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[one_company_nm])
 
