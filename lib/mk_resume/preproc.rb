@@ -19,11 +19,11 @@ module MkResume
       l =~ /^\s*(details:)/
     end
 
-    def split_by_company work_exp
+    def split_by_company work_exp, obj_sep = "company_nm"
       lines = work_exp.split("\n")
 
       ranges = []
-      lines.select {|l| company_nm?(l)}.each do |l|
+      lines.select {|l| l =~ /^\s*(#{obj_sep}:)/}.each do |l|
         ranges << lines.find_index(l)
       end
       res = []

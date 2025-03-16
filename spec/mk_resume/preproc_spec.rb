@@ -12,8 +12,8 @@ describe MkResume::Preproc do
     @pp = MkResume::Preproc.new
   end
 
-  context "company_nm을 기준으로 도메인 객체 하나로 파싱할 영역을 나눌 수 있다" do
-    it "여러 회사명" do
+  context "키워드를 기준으로 시맨틱 모델 하나를 만들 영역을 나눌 수 있다" do
+    it "키워드명이 company_nm일 때" do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[two_company_nm])
 
       expected = [
@@ -22,6 +22,17 @@ describe MkResume::Preproc do
       ]
 
       expect(@pp.split_by_company(File.read(src_path_sp))).to eq(expected)
+    end
+
+    it "키워드명이 project_nm일 때" do
+      src_path_sp = File.join(TEST_DATA_DIR, *%w[two_side_proj_nm])
+
+      expected = [
+        ["side_proj_nm: s1"],
+        ["side_proj_nm: s2"]
+      ]
+
+      expect(@pp.split_by_company(File.read(src_path_sp), "side_proj_nm")).to eq(expected)
     end
   end
 
