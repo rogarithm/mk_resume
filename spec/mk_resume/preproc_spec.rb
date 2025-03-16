@@ -46,7 +46,7 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_proj_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "업무 둘에 대한 상세 내용" do
@@ -59,7 +59,7 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_proj_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "두 프로젝트, 프로젝트별 업무가 하나" do
@@ -74,7 +74,7 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_proj_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "두 프로젝트, 프로젝트당 업무가 여러 개" do
@@ -91,7 +91,7 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_proj_obj(File.read(src_path_sp))).to eq(expected)
     end
   end
 

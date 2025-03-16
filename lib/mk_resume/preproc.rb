@@ -46,11 +46,11 @@ module MkResume
 
       proj_in_txt = lines - matching_lines
 
-      obj[:project] = group_project proj_in_txt.join("\n") if proj_in_txt != []
+      obj[:project] = make_proj_obj proj_in_txt.join("\n") if proj_in_txt != []
       obj
     end
 
-    def group_project plain_text_project
+    def make_proj_obj plain_text_project
       lines = plain_text_project.split("\n")
 
       project = {}
