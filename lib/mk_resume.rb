@@ -125,29 +125,29 @@ class ResumePrinter
 
       side_projs = []
       @preproc.segments_by_keyword(sections[:side_project], "side_proj_nm").each do |side_proj|
-        side_projs << @preproc.make_obj(side_proj.join("\n"), [:side_proj_nm, :skill_set])
+        side_projs << @preproc.make_obj(side_proj.join("\n"), [:side_proj_nm, :proj_link])
       end
 
       side_projs.each do |side_proj|
+
+        match = side_proj[:proj_link].match(/<link href='([^']*)'>([^<]*)<\/link>/)
+        link_url = match[1]
+        link_text = match[2]
+
+        @doc_writer.write_formatted_text(
+          doc,
+          [
+            { text: side_proj[:side_proj_nm], leading: 6 },
+            { text: " (" },
+            { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
+            { text: ")" },
+          ],
+          @formatting_config.side_project(:project, @font_manager)
+        )
+
+        @layout_arranger.v_space(doc, 2)
+
         side_proj[:project].keys.each do |task|
-
-          match = task.match(/<link href='([^']*)'>([^<]*)<\/link>/)
-          link_url = match[1]
-          link_text = match[2]
-
-          @doc_writer.write_formatted_text(
-            doc,
-            [
-              { text: side_proj[:side_proj_nm], leading: 6 },
-              { text: " (" },
-              { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
-              { text: ")" },
-            ],
-            @formatting_config.side_project(:project, @font_manager)
-          )
-
-          @layout_arranger.v_space(doc, 2)
-
           side_proj[:project][task].each do |task_info|
             task_info.each_key {|task|
               @doc_writer.write_indented_text(
