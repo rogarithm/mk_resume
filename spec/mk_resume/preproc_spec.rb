@@ -17,7 +17,7 @@ describe MkResume::Preproc do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[two_company_nm])
 
       expected = [
-        ["company_nm: c1", ""],
+        ["company_nm: c1"],
         ["company_nm: c2"]
       ]
 

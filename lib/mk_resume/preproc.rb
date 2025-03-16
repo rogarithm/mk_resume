@@ -32,7 +32,7 @@ module MkResume
           res << lines[range..(lines.length - 1)]
           return res
         else
-          res << lines[range...ranges[idx + 1]]
+          res << lines[range...ranges[idx + 1]].delete_if {|l| l == ""}
         end
       end
     end
