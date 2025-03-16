@@ -1,19 +1,10 @@
 module MkResume
   class Preproc
-    def company_nm?(l)
-      l =~ /^\s*(company_nm:)/
-    end
-    def skill_set?(l)
-      l =~ /^\s*(skill_set:)/
-    end
     def task?(l)
       l =~ /^\s*(task:)/
     end
     def project?(l)
       l =~ /^\s*(project:)/
-    end
-    def what?(l)
-      l =~ /^\s*(what:)/
     end
     def details?(l)
       l =~ /^\s*(details:)/
