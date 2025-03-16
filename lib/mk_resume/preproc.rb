@@ -50,10 +50,10 @@ module MkResume
       obj
     end
 
-    def make_proj_obj plain_text_project
-      lines = plain_text_project.split("\n")
+    def make_proj_obj proj_in_txt
+      lines = proj_in_txt.split("\n")
 
-      project = {}
+      proj = {}
       nm = nil
       task_desc = nil
       lines.each do |l|
@@ -61,18 +61,18 @@ module MkResume
         when project?(l) then
           nmish = l.split(":")
           nm = nmish.size == 2 ? nmish[1].strip : l.split(":")[1..-1].join(":").strip
-          project[nm] = []
+          proj[nm] = []
         when task?(l) then
           task_desc = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_TASK_DESC
-          project[nm] << {task_desc => []}
+          proj[nm] << {task_desc => []}
         when details?(l) then
           ""
         else
-          idx = project[nm].find_index {|e| e[task_desc] != nil}
-          project[nm][idx][task_desc] << l.strip
+          idx = proj[nm].find_index {|e| e[task_desc] != nil}
+          proj[nm][idx][task_desc] << l.strip
         end
       end
-      project
+      proj
     end
   end
 end
