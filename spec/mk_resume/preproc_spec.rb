@@ -21,7 +21,7 @@ describe MkResume::Preproc do
         ["company_nm: c2"]
       ]
 
-      expect(@pp.split_by_company(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.segments_by_keyword(File.read(src_path_sp))).to eq(expected)
     end
 
     it "키워드명이 project_nm일 때" do
@@ -32,7 +32,7 @@ describe MkResume::Preproc do
         ["side_proj_nm: s2"]
       ]
 
-      expect(@pp.split_by_company(File.read(src_path_sp), "side_proj_nm")).to eq(expected)
+      expect(@pp.segments_by_keyword(File.read(src_path_sp), "side_proj_nm")).to eq(expected)
     end
   end
 

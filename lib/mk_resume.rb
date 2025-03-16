@@ -63,7 +63,7 @@ class ResumePrinter
       )
 
       work_exps = []
-      @preproc.split_by_company(sections[:work_experience]).each do |work_exp|
+      @preproc.segments_by_keyword(sections[:work_experience]).each do |work_exp|
         work_exps << @preproc.group_by_company(work_exp.join("\n"))
       end
 
@@ -124,7 +124,7 @@ class ResumePrinter
       )
 
       side_projs = []
-      @preproc.split_by_company(sections[:side_project]).each do |side_proj|
+      @preproc.segments_by_keyword(sections[:side_project]).each do |side_proj|
         side_projs << @preproc.group_by_company(side_proj.join("\n"))
       end
 

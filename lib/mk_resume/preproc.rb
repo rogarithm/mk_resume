@@ -19,20 +19,21 @@ module MkResume
       l =~ /^\s*(details:)/
     end
 
-    def split_by_company work_exp, obj_sep = "company_nm"
-      lines = work_exp.split("\n")
+    def segments_by_keyword objs_in_txt, obj_sep = "company_nm"
+      lines = objs_in_txt.split("\n")
 
-      ranges = []
+      obj_start_idxs = []
       lines.select {|l| l =~ /^\s*(#{obj_sep}:)/}.each do |l|
-        ranges << lines.find_index(l)
+        obj_start_idxs << lines.find_index(l)
       end
-      res = []
-      ranges.each.with_index do |range, idx|
-        if (idx == ranges.length - 1)
-          res << lines[range..(lines.length - 1)]
-          return res
+      obj_segments = []
+      obj_start_idxs.each.with_index do |obj_stt_idx, idx|
+        if (idx == obj_start_idxs.length - 1)
+          obj_segments << lines[obj_stt_idx..(lines.length - 1)]
+          return obj_segments
         else
-          res << lines[range...ranges[idx + 1]].delete_if {|l| l == ""}
+          obj_segments << lines[obj_stt_idx...obj_start_idxs[idx + 1]]
+                            .delete_if {|l| l == ""}
         end
       end
     end
