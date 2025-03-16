@@ -124,8 +124,8 @@ class ResumePrinter
       )
 
       side_projs = []
-      @preproc.segments_by_keyword(sections[:side_project]).each do |side_proj|
-        side_projs << @preproc.make_obj(side_proj.join("\n"))
+      @preproc.segments_by_keyword(sections[:side_project], "side_proj_nm").each do |side_proj|
+        side_projs << @preproc.make_obj(side_proj.join("\n"), [:side_proj_nm, :skill_set])
       end
 
       side_projs.each do |side_proj|
@@ -138,7 +138,7 @@ class ResumePrinter
             @doc_writer.write_formatted_text(
               doc,
               [
-                { text: side_proj[:company_nm], leading: 6 },
+                { text: side_proj[:side_proj_nm], leading: 6 },
                 { text: " (" },
                 { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
                 { text: ")" },
@@ -149,7 +149,7 @@ class ResumePrinter
             @doc_writer.write_formatted_text(
               doc,
               [
-                { text: side_proj[:company_nm],  leading: 6 },
+                { text: side_proj[:side_proj_nm],  leading: 6 },
                 { text: " " },
                 { text: task, leading: 6 }
               ],
