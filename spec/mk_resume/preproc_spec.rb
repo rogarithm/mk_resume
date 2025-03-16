@@ -127,7 +127,7 @@ describe MkResume::Preproc do
         :company_nm => "c1"
       }
 
-      expect(@pp.group_by_company(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "회사 하나에 대한 포트폴리오" do
@@ -143,7 +143,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.group_by_company(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "task_desc가 없는 경우 기본값을 설정한다" do
@@ -157,7 +157,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.group_by_company(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "실제 데이터로 테스트한다" do
@@ -194,7 +194,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.group_by_company(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
     end
   end
 end

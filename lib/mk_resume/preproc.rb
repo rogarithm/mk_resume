@@ -38,7 +38,7 @@ module MkResume
       end
     end
 
-    def group_by_company(obj_in_txt, kw_list = [:company_nm, :skill_set])
+    def make_obj(obj_in_txt, kw_list = [:company_nm, :skill_set])
       lines = obj_in_txt.split("\n")
 
       matching_lines = lines.filter {|l|
