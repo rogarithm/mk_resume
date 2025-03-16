@@ -131,31 +131,20 @@ class ResumePrinter
       side_projs.each do |side_proj|
         side_proj[:project].keys.each do |task|
 
-          if task.match(/<link href='([^']*)'>([^<]*)<\/link>/)
-            link_url = Regexp.last_match(1)
-            link_text = Regexp.last_match(2)
+          match = task.match(/<link href='([^']*)'>([^<]*)<\/link>/)
+          link_url = match[1]
+          link_text = match[2]
 
-            @doc_writer.write_formatted_text(
-              doc,
-              [
-                { text: side_proj[:side_proj_nm], leading: 6 },
-                { text: " (" },
-                { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
-                { text: ")" },
-              ],
-              @formatting_config.side_project(:project, @font_manager)
-            )
-          else
-            @doc_writer.write_formatted_text(
-              doc,
-              [
-                { text: side_proj[:side_proj_nm],  leading: 6 },
-                { text: " " },
-                { text: task, leading: 6 }
-              ],
-              @formatting_config.side_project(:project, @font_manager)
-            )
-          end
+          @doc_writer.write_formatted_text(
+            doc,
+            [
+              { text: side_proj[:side_proj_nm], leading: 6 },
+              { text: " (" },
+              { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
+              { text: ")" },
+            ],
+            @formatting_config.side_project(:project, @font_manager)
+          )
 
           @layout_arranger.v_space(doc, 2)
 
