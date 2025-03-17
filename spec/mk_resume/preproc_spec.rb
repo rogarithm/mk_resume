@@ -24,7 +24,7 @@ describe MkResume::Preproc do
       expect(@pp.segments_by_keyword(File.read(src_path_sp))).to eq(expected)
     end
 
-    it "키워드명이 project_nm일 때" do
+    it "키워드명이 side_proj_nm일 때" do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[two_side_proj_nm])
 
       expected = [
