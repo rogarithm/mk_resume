@@ -11,6 +11,7 @@ describe MkResume::Preproc do
   before(:each) do
     @pp = MkResume::Preproc.new
     @basic_proj = MkResume::BasicProjectMaker.new
+    @portfolio_proj = MkResume::PortfolioProjectMaker.new
   end
 
   context "키워드를 기준으로 시맨틱 모델 하나를 만들 영역을 나눌 수 있다" do
@@ -93,6 +94,21 @@ describe MkResume::Preproc do
       }
 
       expect(@basic_proj.make(File.read(src_path_sp))).to eq(expected)
+    end
+
+    it "포트폴리오용 프로젝트 시맨틱 모델을 만들 수 있다" do
+      src_path_sp = File.join(TEST_DATA_DIR, *%w[portfolio_proj])
+
+      expected = {
+        :project => {
+          :tasks => ["x", "y"],
+          :trouble_shooting => [
+            {"z" => ["z1" ,"z2" ,"z3"]}
+          ]
+        }
+      }
+
+      expect(@portfolio_proj.make(File.read(src_path_sp))).to eq(expected)
     end
   end
 

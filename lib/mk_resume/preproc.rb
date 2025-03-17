@@ -78,4 +78,52 @@ module MkResume
       l =~ /^\s*(details:)/
     end
   end
+
+  class PortfolioProjectMaker
+    def make proj_in_txt
+      lines = proj_in_txt.split("\n")
+
+      proj = {}
+      trouble_shoot_now = nil
+      lines.each do |l|
+        case
+        when project?(l) then
+          proj[:project] = {}
+        when tasks?(l) then
+          proj[:project][:tasks] = []
+          tasks_idx = lines.find_index { |l| tasks?(l) }
+          trb_sht_idx = lines.find_index { |l| trouble_shooting?(l) }
+          lines[tasks_idx + 1 .. trb_sht_idx - 1].each {|task|
+            proj[:project][:tasks] << task.strip!
+          }
+        when trouble_shooting?(l) then
+          x = proj[:project]
+          x[:trouble_shooting] = [] if x[:trouble_shooting] == nil
+          trouble_shoot_now = l.split(":", 2)[1].strip!
+          x[:trouble_shooting] << {trouble_shoot_now => []}
+        when details?(l) then
+          ""
+        else
+          if trouble_shoot_now != nil
+            idx = proj[:project][:trouble_shooting].find_index {|e| e[trouble_shoot_now] != nil}
+            proj[:project][:trouble_shooting][idx][trouble_shoot_now] << l.strip!
+          end
+        end
+      end
+      proj
+    end
+
+    def project?(l)
+      l =~ /^\s*(project:)/
+    end
+    def tasks?(l)
+      l =~ /^\s*(tasks:)/
+    end
+    def trouble_shooting?(l)
+      l =~ /^\s*(trouble_shooting:)/
+    end
+    def details?(l)
+      l =~ /^\s*(details:)/
+    end
+  end
 end
