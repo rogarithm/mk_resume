@@ -1,15 +1,5 @@
 module MkResume
   class Preproc
-    def task?(l)
-      l =~ /^\s*(task:)/
-    end
-    def project?(l)
-      l =~ /^\s*(project:)/
-    end
-    def details?(l)
-      l =~ /^\s*(details:)/
-    end
-
     def segments_by_keyword objs_in_txt, obj_sep = "company_nm"
       lines = objs_in_txt.split("\n")
 
@@ -29,7 +19,7 @@ module MkResume
       end
     end
 
-    def make_obj(obj_in_txt, kw_list = [:company_nm, :skill_set])
+    def make_obj(obj_in_txt, kw_list = [:company_nm, :skill_set], proj_klass = MkResume::BasicProject)
       lines = obj_in_txt.split("\n")
 
       matching_lines = lines.filter {|l|
@@ -46,10 +36,14 @@ module MkResume
 
       proj_in_txt = lines - matching_lines
 
-      obj[:project] = make_proj_obj proj_in_txt.join("\n") if proj_in_txt != []
+      proj_maker = proj_klass.new
+      method = proj_maker.method(:make_proj_obj)
+      obj[:project] = method.call(proj_in_txt.join("\n")) if proj_in_txt != []
       obj
     end
+  end
 
+  class BasicProject
     def make_proj_obj proj_in_txt
       lines = proj_in_txt.split("\n")
 
@@ -72,6 +66,16 @@ module MkResume
         end
       end
       proj
+    end
+
+    def task?(l)
+      l =~ /^\s*(task:)/
+    end
+    def project?(l)
+      l =~ /^\s*(project:)/
+    end
+    def details?(l)
+      l =~ /^\s*(details:)/
     end
   end
 end
