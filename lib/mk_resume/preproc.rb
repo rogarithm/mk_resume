@@ -84,7 +84,7 @@ module MkResume
       lines = proj_in_txt.split("\n")
 
       proj = {}
-      trouble_shoot_now = nil
+      trb_sht_now = nil
       lines.each do |l|
         case
         when project?(l) then
@@ -99,15 +99,16 @@ module MkResume
         when trouble_shooting?(l) then
           x = proj[:project]
           x[:trouble_shooting] = [] if x[:trouble_shooting] == nil
-          trouble_shoot_now = l.split(":", 2)[1].strip!
-          x[:trouble_shooting] << {trouble_shoot_now => []}
+          trb_sht_now = l.split(":", 2)[1].strip!
+          x[:trouble_shooting] << {trb_sht_now => []}
         when details?(l) then
-          ""
+          trb_sht_detail_stt = lines.find_index { |l| details?(l) } + 1
+          lines[trb_sht_detail_stt..-1].each {|detail|
+            idx = proj[:project][:trouble_shooting].find_index {|e| e[trb_sht_now] != nil}
+            proj[:project][:trouble_shooting][idx][trb_sht_now] << detail.strip!
+          }
         else
-          if trouble_shoot_now != nil
-            idx = proj[:project][:trouble_shooting].find_index {|e| e[trouble_shoot_now] != nil}
-            proj[:project][:trouble_shooting][idx][trouble_shoot_now] << l.strip!
-          end
+          ""
         end
       end
       proj
