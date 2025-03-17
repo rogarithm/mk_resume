@@ -120,6 +120,15 @@ describe MkResume::Preproc do
       expect(lines - matching_lines).to eq(["nothing: yy"])
     end
 
+    it ": 문자가 여러 번 나오더라도 키값 구분을 제대로 할 수 있다" do
+      has_one_colon = "proj_link: x"
+      split1 = has_one_colon.split(":", 2)
+      expect(split1).to eq(["proj_link", " x"])
+      has_multiple_colons = "proj_link: x:y"
+      split2 = has_multiple_colons.split(":", 2)
+      expect(split2).to eq(["proj_link", " x:y"])
+    end
+
     it "회사명 하나" do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[one_company_nm])
 

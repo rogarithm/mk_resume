@@ -1,39 +1,31 @@
-company_nm: 1.    플레인 텍스트->PDF 이력서 생성기
-project: <link href='https://github.com/rogarithm/mk_resume'>프로젝트 링크</link>
- task: 플레인 텍스트로 작성된 이력서를 PDF로 조판해주는 프로그램
-  details:
+side_proj_nm: 1.    플레인 텍스트->PDF 이력서 생성기
+proj_link: <link href='https://github.com/rogarithm/mk_resume'>프로젝트 링크</link>
+proj_desc: 플레인 텍스트로 작성된 이력서를 PDF로 조판해주는 프로그램
 
-company_nm: 2.    web archive API 연동 웹 클라이언트
-project: <link href='http://github.com/rogarithm/agile-story-index'>프로젝트 링크</link>
- task: 애자일 이야기 블로그 글 전체 목록을 한 번에 볼 수 있는 인덱스 페이지를 만들어주는 프로그램
-  details:
+side_proj_nm: 2.    web archive API 연동 웹 클라이언트
+proj_link: <link href='http://github.com/rogarithm/agile-story-index'>프로젝트 링크</link>
+proj_desc: 애자일 이야기 블로그 글 전체 목록을 한 번에 볼 수 있는 인덱스 페이지를 만들어주는 프로그램
 
-company_nm: 3.    텍스트 에디터(vim) 기반 위키 엔진
-project: <link href='https://github.com/rogarithm/wiki-in-vim'>프로젝트 링크</link>
- task: vim에서 위키 문서를 만들고 문서 간 이동할 수 있는 기능을 제공하는 vimscript 기반 엔진
-  details:
+side_proj_nm: 3.    텍스트 에디터(vim) 기반 위키 엔진
+proj_link: <link href='https://github.com/rogarithm/wiki-in-vim'>프로젝트 링크</link>
+proj_desc: vim에서 위키 문서를 만들고 문서 간 이동할 수 있는 기능을 제공하는 vimscript 기반 엔진
 
-company_nm: 4.    가계부 분석 스크립트
-project: <link href='https://github.com/rogarithm/ledger'>프로젝트 링크</link>
- task: 가계부 작성 및 지출 내역 분석을 도와주는 스크립트
-  details:
+side_proj_nm: 4.    가계부 분석 스크립트
+proj_link: <link href='https://github.com/rogarithm/ledger'>프로젝트 링크</link>
+proj_desc: 가계부 작성 및 지출 내역 분석을 도와주는 스크립트
 
-company_nm: 5.    정적 사이트 생성기
-project: <link href='https://github.com/rogarithm/autoblog'>프로젝트 링크</link>
- task: 블로그를 생성해주는 프로그램
-  details:
+side_proj_nm: 5.    정적 사이트 생성기
+proj_link: <link href='https://github.com/rogarithm/autoblog'>프로젝트 링크</link>
+proj_desc: 블로그를 생성해주는 프로그램
 
-company_nm: 6.    마크다운 파서
-project: <link href='https://github.com/rogarithm/md2html'>프로젝트 링크</link>
- task: 마크다운 형식 파일을 HTML 형식으로 변환해주는 파서
-  details:
+side_proj_nm: 6.    마크다운 파서
+proj_link: <link href='https://github.com/rogarithm/md2html'>프로젝트 링크</link>
+proj_desc: 마크다운 형식 파일을 HTML 형식으로 변환해주는 파서
 
-company_nm: 7.    타이머
-project: <link href='https://github.com/rogarithm/timer'>프로젝트 링크</link>
- task: 터미널 환경에서 실행할 수 있는 셸 스크립트로 만든 타이머
-  details:
+side_proj_nm: 7.    타이머
+proj_link: <link href='https://github.com/rogarithm/timer'>프로젝트 링크</link>
+proj_desc: 터미널 환경에서 실행할 수 있는 셸 스크립트로 만든 타이머
 
-company_nm: 8.    cd-bookmark
-project: <link href='https://github.com/rogarithm/cd-bookmark'>프로젝트 링크</link>
- task: 터미널에서 자주 이동하는 디렉토리 경로를 북마크할 수 있는 스크립트
-  details:
+side_proj_nm: 8.    cd-bookmark
+proj_link: <link href='https://github.com/rogarithm/cd-bookmark'>프로젝트 링크</link>
+proj_desc: 터미널에서 자주 이동하는 디렉토리 경로를 북마크할 수 있는 스크립트

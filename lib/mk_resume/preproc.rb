@@ -40,7 +40,7 @@ module MkResume
 
       obj = {}
       matching_lines.each {|l|
-        k_v = l.split(":").map(&:strip)
+        k_v = l.split(":", 2).map(&:strip)
         obj[k_v[0].to_sym] = k_v[1]
       }
 

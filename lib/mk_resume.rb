@@ -124,65 +124,38 @@ class ResumePrinter
       )
 
       side_projs = []
-      @preproc.segments_by_keyword(sections[:side_project]).each do |side_proj|
-        side_projs << @preproc.make_obj(side_proj.join("\n"))
+      @preproc.segments_by_keyword(sections[:side_project], "side_proj_nm").each do |side_proj|
+        side_projs << @preproc.make_obj(side_proj.join("\n"), [:side_proj_nm, :proj_link, :proj_desc])
       end
 
       side_projs.each do |side_proj|
-        side_proj[:project].keys.each do |task|
 
-          if task.match(/<link href='([^']*)'>([^<]*)<\/link>/)
-            link_url = Regexp.last_match(1)
-            link_text = Regexp.last_match(2)
+        match = side_proj[:proj_link].match(/<link href='([^']*)'>([^<]*)<\/link>/)
+        link_url = match[1]
+        link_text = match[2]
 
-            @doc_writer.write_formatted_text(
-              doc,
-              [
-                { text: side_proj[:company_nm], leading: 6 },
-                { text: " (" },
-                { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
-                { text: ")" },
-              ],
-              @formatting_config.side_project(:project, @font_manager)
-            )
-          else
-            @doc_writer.write_formatted_text(
-              doc,
-              [
-                { text: side_proj[:company_nm],  leading: 6 },
-                { text: " " },
-                { text: task, leading: 6 }
-              ],
-              @formatting_config.side_project(:project, @font_manager)
-            )
-          end
+        @doc_writer.write_formatted_text(
+          doc,
+          [
+            { text: side_proj[:side_proj_nm], leading: 6 },
+            { text: " (" },
+            { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
+            { text: ")" },
+          ],
+          @formatting_config.side_project(:project, @font_manager)
+        )
 
-          @layout_arranger.v_space(doc, 2)
+        @layout_arranger.v_space(doc, 2)
 
-          side_proj[:project][task].each do |task_info|
-            task_info.each_key {|task|
-              @doc_writer.write_indented_text(
-                doc,
-                "      ",
-                task,
-                @formatting_config.side_project(:default, @font_manager)
-              ) if task != :EMPTY_TASK_DESC
-              task_details = task_info[task]
-              task_details.each do |detail_item|
-                @doc_writer.write_indented_text(
-                  doc,
-                  "      ",
-                  "- #{detail_item}",
-                  @formatting_config.side_project(:default, @font_manager)
-                    .merge!({:line_spacing_pt => 2})
-                )
-              end
-              @layout_arranger.v_space(doc, 2)
-              @layout_arranger.v_space(doc, 2)
-              @layout_arranger.v_space(doc, 2)
-            }
-          end
-        end
+        @doc_writer.write_indented_text(
+          doc,
+          "      ",
+          side_proj[:proj_desc],
+          @formatting_config.side_project(:default, @font_manager)
+        )
+        @layout_arranger.v_space(doc, 2)
+        @layout_arranger.v_space(doc, 2)
+        @layout_arranger.v_space(doc, 2)
       end
       @layout_arranger.v_space(doc, 2)
       @layout_arranger.v_space(doc, 14.5)
