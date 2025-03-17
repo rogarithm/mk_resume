@@ -19,7 +19,7 @@ module MkResume
       end
     end
 
-    def make_obj(obj_in_txt, kw_list = [:company_nm, :skill_set], proj_klass = MkResume::BasicProject)
+    def make_obj(obj_in_txt, kw_list = [:company_nm, :skill_set], proj_maker_klass = MkResume::BasicProjectMaker)
       lines = obj_in_txt.split("\n")
 
       matching_lines = lines.filter {|l|
@@ -36,15 +36,15 @@ module MkResume
 
       proj_in_txt = lines - matching_lines
 
-      proj_maker = proj_klass.new
-      method = proj_maker.method(:make_proj_obj)
-      obj[:project] = method.call(proj_in_txt.join("\n")) if proj_in_txt != []
+      proj_obj_maker = proj_maker_klass.new
+      obj[:project] = proj_obj_maker.method(:make)
+                                    .call(proj_in_txt.join("\n")) if proj_in_txt != []
       obj
     end
   end
 
-  class BasicProject
-    def make_proj_obj proj_in_txt
+  class BasicProjectMaker
+    def make proj_in_txt
       lines = proj_in_txt.split("\n")
 
       proj = {}
