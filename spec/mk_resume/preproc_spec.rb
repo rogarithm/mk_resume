@@ -12,16 +12,27 @@ describe MkResume::Preproc do
     @pp = MkResume::Preproc.new
   end
 
-  context "company_nm을 기준으로 도메인 객체 하나로 파싱할 영역을 나눌 수 있다" do
-    it "여러 회사명" do
+  context "키워드를 기준으로 시맨틱 모델 하나를 만들 영역을 나눌 수 있다" do
+    it "키워드명이 company_nm일 때" do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[two_company_nm])
 
       expected = [
-        ["company_nm: c1", ""],
+        ["company_nm: c1"],
         ["company_nm: c2"]
       ]
 
-      expect(@pp.split_by_company(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.segments_by_keyword(File.read(src_path_sp))).to eq(expected)
+    end
+
+    it "키워드명이 side_proj_nm일 때" do
+      src_path_sp = File.join(TEST_DATA_DIR, *%w[two_side_proj_nm])
+
+      expected = [
+        ["side_proj_nm: s1"],
+        ["side_proj_nm: s2"]
+      ]
+
+      expect(@pp.segments_by_keyword(File.read(src_path_sp), "side_proj_nm")).to eq(expected)
     end
   end
 
@@ -35,7 +46,7 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_proj_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "업무 둘에 대한 상세 내용" do
@@ -48,7 +59,7 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_proj_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "두 프로젝트, 프로젝트별 업무가 하나" do
@@ -63,7 +74,7 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_proj_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "두 프로젝트, 프로젝트당 업무가 여러 개" do
@@ -80,11 +91,35 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@pp.group_project(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_proj_obj(File.read(src_path_sp))).to eq(expected)
     end
   end
 
   context "프로젝트 관련 정보와 회사 관련 정보를 함께 그룹핑할 수 있다" do
+
+    it "시맨틱 모델에 넣을 키워드를 메서드 인자로 쓸 수 있다" do
+      kw_list = [:company_nm, :skill_set]
+      lines = ["company_nm: xx", "nothing: yy", "skill_set: zz"]
+      obj = {}
+      # 주어진 키워드로 시작하는 줄만 필터링한다
+      matching_lines = lines.filter {|l|
+        kw_list.any? {|kw|
+          l =~ /^\s*(#{kw.to_s})/
+        }
+      }
+      expect(matching_lines).to eq(["company_nm: xx", "skill_set: zz"])
+
+      # 필터링한 줄을 객체에 저장한다
+      matching_lines.each {|l|
+        k_v = l.split(":").map(&:strip)
+        obj[k_v[0].to_sym] = k_v[1]
+      }
+      expect(obj).to eq({:company_nm => "xx", :skill_set => "zz"})
+
+      # 나머지 줄을 따로 모은다
+      expect(lines - matching_lines).to eq(["nothing: yy"])
+    end
+
     it "회사명 하나" do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[one_company_nm])
 
@@ -92,7 +127,7 @@ describe MkResume::Preproc do
         :company_nm => "c1"
       }
 
-      expect(@pp.group_by_company(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "회사 하나에 대한 포트폴리오" do
@@ -108,7 +143,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.group_by_company(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "task_desc가 없는 경우 기본값을 설정한다" do
@@ -122,7 +157,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.group_by_company(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
     end
 
     it "실제 데이터로 테스트한다" do
@@ -159,7 +194,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.group_by_company(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
     end
   end
 end
