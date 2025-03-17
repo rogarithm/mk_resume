@@ -59,8 +59,7 @@ module MkResume
       lines.each do |l|
         case
         when project?(l) then
-          nmish = l.split(":")
-          nm = nmish.size == 2 ? nmish[1].strip : l.split(":")[1..-1].join(":").strip
+          nm = l.split(":", 2)[1].strip
           proj[nm] = []
         when task?(l) then
           task_desc = l.split(":").size > 1 ? l.split(":")[1].strip : :EMPTY_TASK_DESC
