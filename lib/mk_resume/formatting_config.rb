@@ -95,6 +95,29 @@ module MkResume
       formatting_config[usage]
     end
 
+    def portfolio usage, font_manager
+      line_height = 1.45
+
+      formatting_config = {
+        :heading => {
+          size: font_manager.find_font_size(:heading),
+          style: :bold,
+          leading: line_height * font_manager.find_font_size(:heading)
+        },
+        :project => {
+          size: font_manager.find_font_size(:body),
+          indent_paragraphs: 0
+        },
+        :default => {
+          size: font_manager.find_font_size(:body),
+          leading: 6,
+          indent_paragraphs: 0
+        }
+      }
+
+      formatting_config[usage]
+    end
+
     def education usage, font_manager, doc
       line_height = 1.45
       left_col_width = 180 # Adjust based on content and page layout needs

@@ -7,7 +7,7 @@ module MkResume
     end
 
     def read_sections(relative_path)
-      [:personal_info, :introduction, :work_experience, :side_project, :education].each {|file_sym|
+      [:personal_info, :introduction, :work_experience, :side_project, :education, :portfolio].each {|file_sym|
         @sections.store(file_sym, read_file(file_sym.to_s, relative_path))
       }
       @sections
