@@ -87,25 +87,23 @@ module MkResume
       trb_sht_now = nil
       lines.each do |l|
         case
-        when project?(l) then
-          proj[:project] = {}
         when tasks?(l) then
-          proj[:project][:tasks] = []
+          proj[:tasks] = []
           tasks_idx = lines.find_index { |l| tasks?(l) }
           trb_sht_idx = lines.find_index { |l| trouble_shooting?(l) }
           lines[tasks_idx + 1 .. trb_sht_idx - 1].each {|task|
-            proj[:project][:tasks] << task.strip!
+            proj[:tasks] << task.strip!
           }
         when trouble_shooting?(l) then
-          x = proj[:project]
+          x = proj
           x[:trouble_shooting] = [] if x[:trouble_shooting] == nil
           trb_sht_now = l.split(":", 2)[1].strip!
           x[:trouble_shooting] << {trb_sht_now => []}
         when details?(l) then
           trb_sht_detail_stt = lines.find_index { |l| details?(l) } + 1
           lines[trb_sht_detail_stt..-1].each {|detail|
-            idx = proj[:project][:trouble_shooting].find_index {|e| e[trb_sht_now] != nil}
-            proj[:project][:trouble_shooting][idx][trb_sht_now] << detail.strip!
+            idx = proj[:trouble_shooting].find_index {|e| e[trb_sht_now] != nil}
+            proj[:trouble_shooting][idx][trb_sht_now] << detail.strip!
           }
         else
           ""
@@ -114,9 +112,6 @@ module MkResume
       proj
     end
 
-    def project?(l)
-      l =~ /^\s*(project:)/
-    end
     def tasks?(l)
       l =~ /^\s*(tasks:)/
     end

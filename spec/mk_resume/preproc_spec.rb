@@ -100,12 +100,10 @@ describe MkResume::Preproc do
       src_path_sp = File.join(TEST_DATA_DIR, *%w[portfolio_proj])
 
       expected = {
-        :project => {
-          :tasks => ["x", "y"],
-          :trouble_shooting => [
-            {"z" => ["z1" ,"z2" ,"z3"]}
-          ]
-        }
+        :tasks => ["x", "y"],
+        :trouble_shooting => [
+          {"z" => ["z1" ,"z2" ,"z3"]}
+        ]
       }
 
       expect(@portfolio_proj.make(File.read(src_path_sp))).to eq(expected)
