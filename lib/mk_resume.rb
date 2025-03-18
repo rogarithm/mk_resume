@@ -56,6 +56,99 @@ class ResumePrinter
       end
       @layout_arranger.v_space(doc, 14.5)
 
+
+      @doc_writer.write_heading(
+        doc,
+        :portfolio.to_s.capitalize,
+        @formatting_config.portfolio(:heading, @font_manager)
+      )
+
+      portfolios = []
+      @preproc.segments_by_keyword(sections[:portfolio], "portfolio_nm").each do |portfolio|
+        portfolios << @preproc.make_obj(portfolio.join("\n"),
+          [:portfolio_nm, :desc, :repo_link, :service_link, :swagger_link, :tech_stack],
+          MkResume::PortfolioProjectMaker)
+      end
+
+      portfolios.each do |portfolio|
+        match = portfolio[:repo_link].match(/<link href='([^']*)'>([^<]*)<\/link>/)
+        link_url = match[1]
+        link_text = match[2]
+
+        @doc_writer.write_formatted_text(
+          doc,
+          [
+            { text: portfolio[:portfolio_nm], leading: 6 },
+            { text: " (" },
+            { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
+            { text: ")" },
+          ],
+          @formatting_config.portfolio(:project, @font_manager)
+        )
+        @layout_arranger.v_space(doc, 10)
+
+        @doc_writer.write_text(
+          doc,
+          portfolio[:desc],
+          @formatting_config.portfolio(:default, @font_manager)
+                            .merge!({:line_spacing_pt => 2})
+        )
+
+        @doc_writer.write_text(
+          doc,
+          "사용 기술: #{portfolio[:tech_stack]}",
+          @formatting_config.portfolio(:default, @font_manager)
+                            .merge!({:line_spacing_pt => 2})
+        )
+
+        @doc_writer.write_text(
+          doc,
+          "담당 작업",
+          @formatting_config.portfolio(:default, @font_manager)
+        )
+        portfolio[:project][:tasks].each do |task|
+          @doc_writer.write_indented_text(
+            doc,
+            "  ",
+            "- #{task}",
+            @formatting_config.portfolio(:default, @font_manager)
+              .merge!({:line_spacing_pt => 2})
+          )
+        end
+        @layout_arranger.v_space(doc, 2)
+
+        portfolio[:project][:trouble_shooting].each do |trb_sht_info|
+          trb_sht_info.each_key do |trb_sht_desc|
+            @doc_writer.write_text(
+              doc,
+              "해결한 문제: #{trb_sht_desc}",
+              @formatting_config.portfolio(:default, @font_manager)
+            )
+
+            trb_sht_info[trb_sht_desc].each do |trb_sht_detail|
+              @doc_writer.write_indented_text(
+                doc,
+                "  ",
+                "- #{trb_sht_detail}",
+                @formatting_config.portfolio(:default, @font_manager)
+                                  .merge!({:line_spacing_pt => 2})
+              )
+            end
+            @layout_arranger.v_space(doc, 2)
+            @layout_arranger.v_space(doc, 2)
+            @layout_arranger.v_space(doc, 2)
+
+          end
+        end
+
+        @layout_arranger.v_space(doc, 2)
+        @layout_arranger.v_space(doc, 2)
+        @layout_arranger.v_space(doc, 2)
+      end
+      @layout_arranger.v_space(doc, 2)
+      @layout_arranger.v_space(doc, 14.5)
+
+
       @doc_writer.write_heading(
         doc,
         :work_experience.to_s.split("_").map(&:capitalize).join(" "),
