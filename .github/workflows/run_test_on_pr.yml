@@ -1,0 +1,12 @@
+on:
+  pull_request:
+    types: [opened, edited, reopened]
+    branches: 'main'
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          ruby ./pre-push
