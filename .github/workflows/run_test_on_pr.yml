@@ -11,5 +11,12 @@ jobs:
         working-directory: ./.github/workflows
     steps:
       - uses: actions/checkout@v4
+      - name: setup ruby
+      - uses: ruby/setup-ruby@ec02537da5712d66d4d50a0f33b7eb52773b5ed1
+        with:
+          ruby-version: '2.7.2'
+      - name: install dependencies
+      - run: gem install prawn -v 2.4.0
+      - name: run tests
       - run: |
           ruby pre-push
