@@ -1,0 +1,41 @@
+portfolio_nm: Weddy
+desc: 결혼 준비를 도와주는 웹 서비스의 백엔드 서버
+repo_link: <link href='https://github.com/your-weddy/back/'>프로젝트 링크</link>
+service_link: https://weddy-smoky.vercel.app/
+swagger_link: https://your-weddy.pe.kr/swagger-ui/index.html
+tech_stack: EC2, S3, Java, Spring Boot, MyBatis, MySql, Gradle, Mockito, JUnit
+project:
+ tasks:
+ ERD 설계
+ CRUD, 필터링 API 구현
+ API 문서화
+ 인프라 구성
+ 테스트 작성
+ trouble_shooting: 자바 인터페이스를 활용한 작업 분배
+  details:
+  두 가지 리소스 각각에 대한 CRUD API를 구현해야 했음
+  리소스별 API 중 다른 리소스에 대한, 아직 구현하지 않은 서비스 로직을 써야 하는 것이 예상됨
+  한 사람이 모든 API를 맡아 구현하는 의견이 있었지만, 일정이 늦어져서 작업을 분배해야 했음
+  API 구현에 필요한 서비스 로직의 인터페이스를 먼저 논의
+  작업하면서 다른 리소스의 서비스 로직이 필요할 경우, 미리 정의한 인터페이스를 기준으로 작업
+  작업을 합치기 전까지 해당 서비스 로직의 반환값은 픽스쳐 데이터로 대신함
+
+portfolio_nm: Freesize
+desc: LoRA 학습에 사용하기 위한 이미지 전처리를 제공하는 웹 서비스의 백엔드 서버
+repo_link: <link href='https://github.com/rogarithm/freesize'>프로젝트 링크</link>
+service_link: https://freesize.vercel.app/
+tech_stack: EC2, S3, Java, Spring Boot, WebClient, Gradle, JUnit
+project:
+ tasks:
+ polling 방식 이미지 처리 API 구현
+ S3 파일 업로드 기능 구현
+ 인프라 구성
+ trouble_shooting: 쓰레드 블로킹 문제 해결
+  details:
+  한 번에 요청 여러 개를 보냈을 때 서버가 응답하지 않는 상황
+  외부 API 호출 후에 문제가 일어나고 있었는데, 로그로 확인했을 때 요청 자체는 다 보내지고 있었음
+  쓰레드 덤프와 visualvm 툴로 쓰레드 상태를 확인
+  일정 갯수 이상의 요청을 보낼 경우 한 쓰레드가 요청에 대한 응답을 받지 못해서 WAITING 상태가 지속
+  WAITING 상태가 된 쓰레드 때문에 다른 쓰레드가 블로킹되고 있었음
+  문제가 되는 쓰레드는 외부 API 호출 시 쓰는 WebClient 라이브러리와 관련된 쓰레드였음
+  외부 API 호출 시 동기 방식으로 호출하고 있어서 문제였고, 비동기 방식으로 변경해서 해결
