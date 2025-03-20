@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby
+
+require 'date'
+
+# Run RSpec before any commits
+# Adapted from https://gist.github.com/zewelor/2834349
+
+@no_push_message = """
+I cannot let you push these files
+ because of:
+"""
+@result_message = ""
+@test_status = {:rspec => "fail", :acceptance => "fail"}
+
+@date_time_now = DateTime.now.to_s
+  .sub(/T/,'_')
+  .gsub(/:/,'-')
+  .sub(/\+.*/,'')
+  .sub(/...$/,'')
+
+def run_rspec
+  file_path = ".tmp/#{@date_time_now}_pre_push_hook_result"
+  `touch #{file_path}`
+
+  puts 'Running RSpec'
+  `rspec -c -o #{file_path} spec/ 1> /dev/null 2>/dev/null`
+
+  # Check if there are errors found
+  results = open(file_path).read
+  examples = results.match(/(\d+) examples?/)[0].to_i rescue 0
+  failures = results.match(/(\d+) failures?/)[0].to_i rescue 0
+  pending = results.match(/(\d+) pending/)[0].to_i rescue 0
+
+  if failures.zero? && pending.zero?
+    puts "0 failures... #{examples} specs ran, #{pending} pending."
+    @test_status[:rspec] = "pass"
+  else
+    @result_message << """
+RSPEC TEST RESULT MESSAGE
+#{results}
+"""
+    @no_push_message << """
+RSPEC FAILURE
+Either you still have pending tests
+ waiting to be written
+ or worst, you still have failing tests
+ not yet fixed.
+So create or fix those tests first!
+OR you can run your commit with
+ the --no-verify option and you can
+ skip this process.
+"""
+  end
+end
+
+def run_acceptance_test
+  file_path = ".tmp/#{@date_time_now}_t"
+  `touch #{file_path}`
+
+  puts 'Running acceptance test'
+  `rake test > #{file_path}`
+  results = open(file_path).read
+
+  failure = results.match(/generated pdf is different from base pdf!/)[0].to_i rescue -1
+  success = results.match(/ok!/)[0].to_i rescue -1
+
+  if failure.zero? # 인수 테스트가 실패할 경우
+    @result_message << """
+ACCEPTANCE TEST RESULT MESSAGE
+#{results}
+"""
+    @no_push_message << """
+ACCEPTANCE TEST FAILURE
+this might because you've changed your resume,
+but did not updated spec/data/sample.pdf file
+to include the change
+OR you misimplemented or mischanged some logic
+in ruby scripts
+"""
+  elsif success.zero?  # 인수 테스트가 성공할 경우
+    @test_status[:acceptance] = "pass"
+  end
+end
+
+# run everything
+run_rspec
+run_acceptance_test
+
+if @test_status[:rspec] == "fail" or @test_status[:acceptance] == "fail"
+  puts @no_push_message
+  puts @result_message
+  exit 1
+end
+
