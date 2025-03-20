@@ -1,0 +1,22 @@
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches: 'main'
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./.github/workflows
+    steps:
+      - uses: actions/checkout@v4
+      - name: setup ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+      - name: install dependencies
+        run: gem install prawn -v 2.4.0
+      - name: run tests
+        run: |
+          ruby pre-push
