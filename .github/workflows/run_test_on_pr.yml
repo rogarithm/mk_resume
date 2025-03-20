@@ -6,7 +6,10 @@ on:
 jobs:
   run-tests:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./.github/workflows
     steps:
       - uses: actions/checkout@v4
       - run: |
-          ruby ./pre-push
+          ruby pre-push
