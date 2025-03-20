@@ -7,7 +7,7 @@ require 'date'
 
 @unable2push_msg = """
 I cannot let you push these files
- because of:
+  Because of:
 """
 @result_msg = ""
 @test_status = {:rspec => "fail", :acceptance => "fail"}
@@ -32,6 +32,7 @@ def run_rspec
   pending = results.match(/(\d+) pending/)[0].to_i rescue 0
 
   if failures.zero? && pending.zero?
+    puts "rspec test pass!"
     puts "0 failures... #{examples} specs ran, #{pending} pending."
     @test_status[:rspec] = "pass"
   else
@@ -40,15 +41,15 @@ RSPEC TEST RESULT MESSAGE
 #{results}
 """
     @unable2push_msg << """
-RSPEC FAILURE
-Either you still have pending tests
- waiting to be written
- or worst, you still have failing tests
- not yet fixed.
-So create or fix those tests first!
-OR you can run your commit with
- the --no-verify option and you can
- skip this process.
+  - Rspec failure
+  Either you still have pending tests
+  waiting to be written
+  or worst, you still have failing tests
+  not yet fixed.
+  So create or fix those tests first!
+  OR you can run your commit with
+  the --no-verify option and you can
+  skip this process.
 """
   end
 end
@@ -64,21 +65,22 @@ def run_acceptance_test
   failure = results.match(/generated pdf is different from base pdf!/)[0].to_i rescue -1
   success = results.match(/ok!/)[0].to_i rescue -1
 
-  if failure.zero? # 인수 테스트가 실패할 경우
+  if success.zero? # 인수 테스트가 성공할 경우
+    puts "acceptance test pass!"
+    @test_status[:acceptance] = "pass"
+  elsif failure.zero? # 인수 테스트가 실패할 경우
     @result_msg << """
 ACCEPTANCE TEST RESULT MESSAGE
 #{results}
 """
     @unable2push_msg << """
-ACCEPTANCE TEST FAILURE
-this might because you've changed your resume,
-but did not updated spec/data/sample.pdf file
-to include the change
-OR you misimplemented or mischanged some logic
-in ruby scripts
+  - Acceptance test failure
+  This might because you've changed your resume,
+  but did not updated spec/data/sample.pdf file
+  to include the change
+  OR you misimplemented or mischanged some logic
+  in ruby scripts
 """
-  elsif success.zero?  # 인수 테스트가 성공할 경우
-    @test_status[:acceptance] = "pass"
   end
 end
 
@@ -91,4 +93,3 @@ if @test_status[:rspec] == "fail" or @test_status[:acceptance] == "fail"
   puts @result_msg
   exit 1
 end
-
