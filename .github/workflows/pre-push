@@ -18,8 +18,8 @@ I cannot let you push these files
   .sub(/\+.*/,'')
   .sub(/...$/,'')
 
-def run_rspec
-  file_path = ".tmp/#{@date_time_now}_pre_push_hook_result"
+def run_rspec(base_dir = ".tmp")
+  file_path = "#{base_dir}/#{@date_time_now}_pre_push_hook_result"
   `touch #{file_path}`
 
   puts 'Running RSpec'
@@ -54,8 +54,8 @@ RSPEC TEST RESULT MESSAGE
   end
 end
 
-def run_acceptance_test
-  file_path = ".tmp/#{@date_time_now}_t"
+def run_acceptance_test(base_dir = ".tmp")
+  file_path = "#{base_dir}/#{@date_time_now}_t"
   `touch #{file_path}`
 
   puts 'Running acceptance test'
@@ -85,8 +85,8 @@ ACCEPTANCE TEST RESULT MESSAGE
 end
 
 # run everything
-run_rspec
-run_acceptance_test
+run_rspec("/tmp")
+run_acceptance_test("/tmp")
 
 if @test_status[:rspec] == "fail" or @test_status[:acceptance] == "fail"
   puts @unable2push_msg
