@@ -10,37 +10,36 @@ describe MkResume::Preproc do
 
   before(:each) do
     @pp = MkResume::Preproc.new
-    @basic_proj = MkResume::BasicProjectMaker.new
-    @portfolio_proj = MkResume::PortfolioProjectMaker.new
   end
 
   context "키워드를 기준으로 시맨틱 모델 하나를 만들 영역을 나눌 수 있다" do
     it "키워드명이 company_nm일 때" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[two_company_nm])
+      src_path = File.join(TEST_DATA_DIR, *%w[two_company_nm])
 
       expected = [
         ["company_nm: c1"],
         ["company_nm: c2"]
       ]
 
-      expect(@pp.segments_by_keyword(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.segments_by_keyword(File.read(src_path))).to eq(expected)
     end
 
     it "키워드명이 side_proj_nm일 때" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[two_side_proj_nm])
+      src_path = File.join(TEST_DATA_DIR, *%w[two_side_proj_nm])
 
       expected = [
         ["side_proj_nm: s1"],
         ["side_proj_nm: s2"]
       ]
 
-      expect(@pp.segments_by_keyword(File.read(src_path_sp), "side_proj_nm")).to eq(expected)
+      expect(@pp.segments_by_keyword(File.read(src_path), "side_proj_nm")).to eq(expected)
     end
   end
 
-  context "프로젝트 하위 항목을 그룹핑할 수 있다" do
+  context "업무 프로젝트에 대한 시맨틱 모델을 만들 수 있다" do
     it "업무 하나에 대한 상세 내용" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[one_task])
+      src_path = File.join(TEST_DATA_DIR, *%w[one_task])
+      basic_proj = MkResume::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -48,11 +47,12 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path_sp))).to eq(expected)
+      expect(basic_proj.make(File.read(src_path))).to eq(expected)
     end
 
     it "업무 둘에 대한 상세 내용" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[two_task])
+      src_path = File.join(TEST_DATA_DIR, *%w[two_task])
+      basic_proj = MkResume::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -61,11 +61,12 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path_sp))).to eq(expected)
+      expect(basic_proj.make(File.read(src_path))).to eq(expected)
     end
 
     it "두 프로젝트, 프로젝트별 업무가 하나" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[solves_1])
+      src_path = File.join(TEST_DATA_DIR, *%w[one_task_each])
+      basic_proj = MkResume::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -76,11 +77,12 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path_sp))).to eq(expected)
+      expect(basic_proj.make(File.read(src_path))).to eq(expected)
     end
 
     it "두 프로젝트, 프로젝트당 업무가 여러 개" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[solves_2])
+      src_path = File.join(TEST_DATA_DIR, *%w[two_tasks_each])
+      basic_proj = MkResume::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -93,11 +95,14 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path_sp))).to eq(expected)
+      expect(basic_proj.make(File.read(src_path))).to eq(expected)
     end
+  end
 
-    it "포트폴리오용 프로젝트 시맨틱 모델을 만들 수 있다" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[portfolio_proj])
+  context "포트폴리오 프로젝트에 대한 시맨틱 모델을 만들 수 있다" do
+    it "업무 상세 내용이 없고, 문제 해결 상세 내용이 있다" do
+      src_path = File.join(TEST_DATA_DIR, *%w[portfolio_proj])
+      portfolio_proj = MkResume::PortfolioProjectMaker.new
 
       expected = {
         :tasks => ["x", "y"],
@@ -106,11 +111,11 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@portfolio_proj.make(File.read(src_path_sp))).to eq(expected)
+      expect(portfolio_proj.make(File.read(src_path))).to eq(expected)
     end
   end
 
-  context "프로젝트 관련 정보와 회사 관련 정보를 함께 그룹핑할 수 있다" do
+  context "프로젝트 정보와 회사 관련 정보를 함께 시맨틱 모델로 만들 수 있다" do
 
     it "시맨틱 모델에 넣을 키워드를 메서드 인자로 쓸 수 있다" do
       kw_list = [:company_nm, :skill_set]
@@ -139,23 +144,24 @@ describe MkResume::Preproc do
       has_one_colon = "proj_link: x"
       split1 = has_one_colon.split(":", 2)
       expect(split1).to eq(["proj_link", " x"])
+
       has_multiple_colons = "proj_link: x:y"
       split2 = has_multiple_colons.split(":", 2)
       expect(split2).to eq(["proj_link", " x:y"])
     end
 
     it "회사명 하나" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[one_company_nm])
+      src_path = File.join(TEST_DATA_DIR, *%w[one_company_nm])
 
       expected = {
         :company_nm => "c1"
       }
 
-      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
     end
 
-    it "회사 하나에 대한 포트폴리오" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[one_portfolio])
+    it "한 회사에서의 경력 사항" do
+      src_path = File.join(TEST_DATA_DIR, *%w[one_work_exp])
 
       expected = {
         :company_nm => "c1 (f ~ t)",
@@ -167,11 +173,11 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
     end
 
-    it "task_desc가 없는 경우 기본값을 설정한다" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[no_task_desc])
+    it "회사 경력 사항 중 업무명이 명시되지 않았을 경우를 처리" do
+      src_path = File.join(TEST_DATA_DIR, *%w[no_task_desc])
 
       expected = {
         :project => {
@@ -181,11 +187,11 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
     end
 
     it "실제 데이터로 테스트한다" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[doit_portfolio])
+      src_path = File.join(TEST_DATA_DIR, *%w[doit_work_exp])
 
       expected = {
         :company_nm => "(주) 두잇 (2021.05 ~ 2022.05)",
@@ -218,7 +224,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
     end
   end
 end
