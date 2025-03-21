@@ -10,8 +10,6 @@ describe MkResume::Preproc do
 
   before(:each) do
     @pp = MkResume::Preproc.new
-    @basic_proj = MkResume::BasicProjectMaker.new
-    @portfolio_proj = MkResume::PortfolioProjectMaker.new
   end
 
   context "키워드를 기준으로 시맨틱 모델 하나를 만들 영역을 나눌 수 있다" do
@@ -41,6 +39,7 @@ describe MkResume::Preproc do
   context "업무 프로젝트에 대한 시맨틱 모델을 만들 수 있다" do
     it "업무 하나에 대한 상세 내용" do
       src_path = File.join(TEST_DATA_DIR, *%w[one_task])
+      basic_proj = MkResume::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -48,11 +47,12 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path))).to eq(expected)
+      expect(basic_proj.make(File.read(src_path))).to eq(expected)
     end
 
     it "업무 둘에 대한 상세 내용" do
       src_path = File.join(TEST_DATA_DIR, *%w[two_task])
+      basic_proj = MkResume::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -61,11 +61,12 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path))).to eq(expected)
+      expect(basic_proj.make(File.read(src_path))).to eq(expected)
     end
 
     it "두 프로젝트, 프로젝트별 업무가 하나" do
       src_path = File.join(TEST_DATA_DIR, *%w[one_task_each])
+      basic_proj = MkResume::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -76,11 +77,12 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path))).to eq(expected)
+      expect(basic_proj.make(File.read(src_path))).to eq(expected)
     end
 
     it "두 프로젝트, 프로젝트당 업무가 여러 개" do
       src_path = File.join(TEST_DATA_DIR, *%w[two_tasks_each])
+      basic_proj = MkResume::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -93,13 +95,14 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path))).to eq(expected)
+      expect(basic_proj.make(File.read(src_path))).to eq(expected)
     end
   end
 
   context "포트폴리오 프로젝트에 대한 시맨틱 모델을 만들 수 있다" do
     it "업무 상세 내용이 없고, 문제 해결 상세 내용이 있다" do
       src_path = File.join(TEST_DATA_DIR, *%w[portfolio_proj])
+      portfolio_proj = MkResume::PortfolioProjectMaker.new
 
       expected = {
         :tasks => ["x", "y"],
@@ -108,7 +111,7 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@portfolio_proj.make(File.read(src_path))).to eq(expected)
+      expect(portfolio_proj.make(File.read(src_path))).to eq(expected)
     end
   end
 
