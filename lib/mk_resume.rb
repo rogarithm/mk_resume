@@ -17,7 +17,7 @@ class ResumePrinter
     @parser = MkResume::SectionParser.new
   end
 
-  def run(relative_path)
+  def print(relative_path)
 
     sections = @doc_writer.read_sections(relative_path)
 
