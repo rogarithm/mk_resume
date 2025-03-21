@@ -1,5 +1,5 @@
 module MkResume
-  class Preproc
+  class SectionParser
     def segments_by_keyword objs_in_txt, obj_sep = "company_nm"
       lines = objs_in_txt.split("\n")
 
