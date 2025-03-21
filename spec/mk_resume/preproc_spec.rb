@@ -16,31 +16,31 @@ describe MkResume::Preproc do
 
   context "키워드를 기준으로 시맨틱 모델 하나를 만들 영역을 나눌 수 있다" do
     it "키워드명이 company_nm일 때" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[two_company_nm])
+      src_path = File.join(TEST_DATA_DIR, *%w[two_company_nm])
 
       expected = [
         ["company_nm: c1"],
         ["company_nm: c2"]
       ]
 
-      expect(@pp.segments_by_keyword(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.segments_by_keyword(File.read(src_path))).to eq(expected)
     end
 
     it "키워드명이 side_proj_nm일 때" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[two_side_proj_nm])
+      src_path = File.join(TEST_DATA_DIR, *%w[two_side_proj_nm])
 
       expected = [
         ["side_proj_nm: s1"],
         ["side_proj_nm: s2"]
       ]
 
-      expect(@pp.segments_by_keyword(File.read(src_path_sp), "side_proj_nm")).to eq(expected)
+      expect(@pp.segments_by_keyword(File.read(src_path), "side_proj_nm")).to eq(expected)
     end
   end
 
   context "업무 프로젝트에 대한 시맨틱 모델을 만들 수 있다" do
     it "업무 하나에 대한 상세 내용" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[one_task])
+      src_path = File.join(TEST_DATA_DIR, *%w[one_task])
 
       expected = {
         "p1" => [
@@ -48,11 +48,11 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path_sp))).to eq(expected)
+      expect(@basic_proj.make(File.read(src_path))).to eq(expected)
     end
 
     it "업무 둘에 대한 상세 내용" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[two_task])
+      src_path = File.join(TEST_DATA_DIR, *%w[two_task])
 
       expected = {
         "p1" => [
@@ -61,11 +61,11 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path_sp))).to eq(expected)
+      expect(@basic_proj.make(File.read(src_path))).to eq(expected)
     end
 
     it "두 프로젝트, 프로젝트별 업무가 하나" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[one_task_each])
+      src_path = File.join(TEST_DATA_DIR, *%w[one_task_each])
 
       expected = {
         "p1" => [
@@ -76,11 +76,11 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path_sp))).to eq(expected)
+      expect(@basic_proj.make(File.read(src_path))).to eq(expected)
     end
 
     it "두 프로젝트, 프로젝트당 업무가 여러 개" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[two_tasks_each])
+      src_path = File.join(TEST_DATA_DIR, *%w[two_tasks_each])
 
       expected = {
         "p1" => [
@@ -93,13 +93,13 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@basic_proj.make(File.read(src_path_sp))).to eq(expected)
+      expect(@basic_proj.make(File.read(src_path))).to eq(expected)
     end
   end
 
   context "포트폴리오 프로젝트에 대한 시맨틱 모델을 만들 수 있다" do
     it "업무 상세 내용이 없고, 문제 해결 상세 내용이 있다" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[portfolio_proj])
+      src_path = File.join(TEST_DATA_DIR, *%w[portfolio_proj])
 
       expected = {
         :tasks => ["x", "y"],
@@ -108,7 +108,7 @@ describe MkResume::Preproc do
         ]
       }
 
-      expect(@portfolio_proj.make(File.read(src_path_sp))).to eq(expected)
+      expect(@portfolio_proj.make(File.read(src_path))).to eq(expected)
     end
   end
 
@@ -148,17 +148,17 @@ describe MkResume::Preproc do
     end
 
     it "회사명 하나" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[one_company_nm])
+      src_path = File.join(TEST_DATA_DIR, *%w[one_company_nm])
 
       expected = {
         :company_nm => "c1"
       }
 
-      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
     end
 
     it "한 회사에서의 경력 사항" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[one_work_exp])
+      src_path = File.join(TEST_DATA_DIR, *%w[one_work_exp])
 
       expected = {
         :company_nm => "c1 (f ~ t)",
@@ -170,11 +170,11 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
     end
 
     it "회사 경력 사항 중 업무명이 명시되지 않았을 경우를 처리" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[no_task_desc])
+      src_path = File.join(TEST_DATA_DIR, *%w[no_task_desc])
 
       expected = {
         :project => {
@@ -184,11 +184,11 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
     end
 
     it "실제 데이터로 테스트한다" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[doit_work_exp])
+      src_path = File.join(TEST_DATA_DIR, *%w[doit_work_exp])
 
       expected = {
         :company_nm => "(주) 두잇 (2021.05 ~ 2022.05)",
@@ -221,7 +221,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.make_obj(File.read(src_path_sp))).to eq(expected)
+      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
     end
   end
 end
