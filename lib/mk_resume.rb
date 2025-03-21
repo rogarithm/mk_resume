@@ -1,6 +1,6 @@
 require 'prawn'
 require 'prawn/measurement_extensions'
-require_relative 'mk_resume/preproc'
+require_relative 'mk_resume/section_parser'
 require_relative 'mk_resume/font_manager'
 require_relative 'mk_resume/document_writer'
 require_relative 'mk_resume/layout_arranger'
@@ -14,10 +14,10 @@ class ResumePrinter
     @font_manager = MkResume::FontManager.new
     @formatting_config = MkResume::FormattingConfig.new
     @doc_writer = MkResume::DocumentWriter.new
-    @preproc = MkResume::Preproc.new
+    @parser = MkResume::SectionParser.new
   end
 
-  def run(relative_path)
+  def print(relative_path)
 
     sections = @doc_writer.read_sections(relative_path)
 
@@ -64,8 +64,8 @@ class ResumePrinter
       )
 
       portfolios = []
-      @preproc.segments_by_keyword(sections[:portfolio], "portfolio_nm").each do |portfolio|
-        portfolios << @preproc.make_obj(portfolio.join("\n"),
+      @parser.segments_by_keyword(sections[:portfolio], "portfolio_nm").each do |portfolio|
+        portfolios << @parser.make_obj(portfolio.join("\n"),
           [:portfolio_nm, :desc, :repo_link, :service_link, :swagger_link, :tech_stack],
           MkResume::PortfolioProjectMaker)
       end
@@ -156,8 +156,8 @@ class ResumePrinter
       )
 
       work_exps = []
-      @preproc.segments_by_keyword(sections[:work_experience]).each do |work_exp|
-        work_exps << @preproc.make_obj(work_exp.join("\n"))
+      @parser.segments_by_keyword(sections[:work_experience]).each do |work_exp|
+        work_exps << @parser.make_obj(work_exp.join("\n"))
       end
 
       work_exps.each do |work_exp|
@@ -217,8 +217,8 @@ class ResumePrinter
       )
 
       side_projs = []
-      @preproc.segments_by_keyword(sections[:side_project], "side_proj_nm").each do |side_proj|
-        side_projs << @preproc.make_obj(side_proj.join("\n"), [:side_proj_nm, :proj_link, :proj_desc])
+      @parser.segments_by_keyword(sections[:side_project], "side_proj_nm").each do |side_proj|
+        side_projs << @parser.make_obj(side_proj.join("\n"), [:side_proj_nm, :proj_link, :proj_desc])
       end
 
       side_projs.each do |side_proj|

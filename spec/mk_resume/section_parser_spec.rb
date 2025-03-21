@@ -1,6 +1,6 @@
-require_relative "../../lib/mk_resume/preproc"
+require_relative "../../lib/mk_resume/section_parser"
 
-describe MkResume::Preproc do
+describe MkResume::SectionParser do
   RSpec.configure do |config|
     config.filter_run_when_matching(focus: true)
     config.example_status_persistence_file_path = 'spec/pass_fail_history'
@@ -9,7 +9,7 @@ describe MkResume::Preproc do
   TEST_DATA_DIR = File.join(File.dirname(__FILE__), *%w[.. data])
 
   before(:each) do
-    @pp = MkResume::Preproc.new
+    @parser = MkResume::SectionParser.new
   end
 
   context "키워드를 기준으로 시맨틱 모델 하나를 만들 영역을 나눌 수 있다" do
@@ -21,7 +21,7 @@ describe MkResume::Preproc do
         ["company_nm: c2"]
       ]
 
-      expect(@pp.segments_by_keyword(File.read(src_path))).to eq(expected)
+      expect(@parser.segments_by_keyword(File.read(src_path))).to eq(expected)
     end
 
     it "키워드명이 side_proj_nm일 때" do
@@ -32,7 +32,7 @@ describe MkResume::Preproc do
         ["side_proj_nm: s2"]
       ]
 
-      expect(@pp.segments_by_keyword(File.read(src_path), "side_proj_nm")).to eq(expected)
+      expect(@parser.segments_by_keyword(File.read(src_path), "side_proj_nm")).to eq(expected)
     end
   end
 
@@ -157,7 +157,7 @@ describe MkResume::Preproc do
         :company_nm => "c1"
       }
 
-      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
+      expect(@parser.make_obj(File.read(src_path))).to eq(expected)
     end
 
     it "한 회사에서의 경력 사항" do
@@ -173,7 +173,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
+      expect(@parser.make_obj(File.read(src_path))).to eq(expected)
     end
 
     it "회사 경력 사항 중 업무명이 명시되지 않았을 경우를 처리" do
@@ -187,7 +187,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
+      expect(@parser.make_obj(File.read(src_path))).to eq(expected)
     end
 
     it "실제 데이터로 테스트한다" do
@@ -224,7 +224,7 @@ describe MkResume::Preproc do
         }
       }
 
-      expect(@pp.make_obj(File.read(src_path))).to eq(expected)
+      expect(@parser.make_obj(File.read(src_path))).to eq(expected)
     end
   end
 end
