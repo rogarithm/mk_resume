@@ -65,7 +65,7 @@ describe MkResume::Preproc do
     end
 
     it "두 프로젝트, 프로젝트별 업무가 하나" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[solves_1])
+      src_path_sp = File.join(TEST_DATA_DIR, *%w[one_task_each])
 
       expected = {
         "p1" => [
@@ -80,7 +80,7 @@ describe MkResume::Preproc do
     end
 
     it "두 프로젝트, 프로젝트당 업무가 여러 개" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[solves_2])
+      src_path_sp = File.join(TEST_DATA_DIR, *%w[two_tasks_each])
 
       expected = {
         "p1" => [
@@ -158,7 +158,7 @@ describe MkResume::Preproc do
     end
 
     it "한 회사에서의 경력 사항" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[one_portfolio])
+      src_path_sp = File.join(TEST_DATA_DIR, *%w[one_work_exp])
 
       expected = {
         :company_nm => "c1 (f ~ t)",
@@ -188,7 +188,7 @@ describe MkResume::Preproc do
     end
 
     it "실제 데이터로 테스트한다" do
-      src_path_sp = File.join(TEST_DATA_DIR, *%w[doit_portfolio])
+      src_path_sp = File.join(TEST_DATA_DIR, *%w[doit_work_exp])
 
       expected = {
         :company_nm => "(주) 두잇 (2021.05 ~ 2022.05)",
