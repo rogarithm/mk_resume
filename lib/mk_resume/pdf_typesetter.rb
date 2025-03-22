@@ -5,14 +5,27 @@ module MkResume
     end
 
     def find_strategy section_txt
-      self.strategy_list.reduce([]) { |result, strategy_nm|
+      matching_strategy = self.strategy_list.reduce([]) {|result, strategy_nm|
         strategy = Object::const_get(strategy_nm).new
-        if strategy.can_handle? section_txt
-          result << strategy_nm
-        end
-      }.first
+        result << strategy_nm if strategy.can_handle?(section_txt)
+      }
+
+      validate_search_result matching_strategy
+
+      matching_strategy.first
+    end
+
+    def validate_search_result matching_strategy
+      if matching_strategy.nil?
+        raise TypesetStrategyFindError.new("unable to find typeset strategy that can handle given section text!")
+      end
+      if matching_strategy.size > 1
+        raise TypesetStrategyFindError.new("found more than one typeset strategy to handle given section text!")
+      end
     end
   end
+
+  class TypesetStrategyFindError < StandardError; end
 
   module TypesetStrategy
     def can_handle? section_txt

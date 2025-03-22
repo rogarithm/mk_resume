@@ -25,5 +25,17 @@ describe MkResume::PdfTypesetter do
 
       expect(typesetter.find_strategy(File.read(src_path))).to eq(MkResume::WorkExpTypesetStrategy.name)
     end
+
+    it "일치하는 전략 객체가 없을 때" do
+      expect {
+        typesetter.validate_search_result(nil)
+      }.to raise_error(MkResume::TypesetStrategyFindError)
+    end
+
+    it "일치하는 전략 객체가 두 개 이상일 때" do
+      expect {
+        typesetter.validate_search_result(["WorkExpTypesetStrategy", "AnotherTypesetStrategy"])
+      }.to raise_error(MkResume::TypesetStrategyFindError)
+    end
   end
 end
