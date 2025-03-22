@@ -1,7 +1,12 @@
 module MkResume
   class PdfTypesetter
     def strategy_list
-      [WorkExpTypesetStrategy.name, PortfolioTypesetStrategy.name, ListTypesetStrategy.name, TwoColumnsTypesetStrategy.name]
+      [
+        WorkExpTypesetStrategy.name,
+        PortfolioTypesetStrategy.name,
+        ListTypesetStrategy.name,
+        TwoColumnsTypesetStrategy.name
+      ]
     end
 
     def find_strategy section_txt
