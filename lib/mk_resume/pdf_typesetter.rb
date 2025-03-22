@@ -8,6 +8,7 @@ module MkResume
       matching_strategy = self.strategy_list.reduce([]) {|result, strategy_nm|
         strategy = Object::const_get(strategy_nm).new
         result << strategy_nm if strategy.can_handle?(section_txt)
+        result
       }
 
       validate_search_result matching_strategy
