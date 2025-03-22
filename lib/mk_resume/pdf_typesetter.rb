@@ -1,7 +1,7 @@
 module MkResume
   class PdfTypesetter
     def strategy_list
-      [WorkExpTypesetStrategy.name, PortfolioTypesetStrategy.name]
+      [WorkExpTypesetStrategy.name, PortfolioTypesetStrategy.name, ListTypesetStrategy.name]
     end
 
     def find_strategy section_txt
@@ -47,6 +47,15 @@ module MkResume
 
     def can_handle? section_txt
       section_txt.split("\n").first.match(/^portfolio_nm:.*$/)
+    end
+  end
+
+  class ListTypesetStrategy
+    include TypesetStrategy
+
+    def can_handle? section_txt
+      lines = section_txt.split("\n")
+      lines.size == lines.filter {|l| l.match(/^\s*-\s+.*$/)}.size
     end
   end
 end
