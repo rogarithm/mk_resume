@@ -23,7 +23,7 @@ module MkResume
 
     def validate_search_result matching_strategy
       if matching_strategy.nil?
-        raise TypesetStrategyFindError.new("unable to find typeset strategy that can handle given section text!")
+        return DefaultTypesetStrategy.name
       end
       if matching_strategy.size > 1
         raise TypesetStrategyFindError.new("found more than one typeset strategy to handle given section text!")
@@ -70,6 +70,14 @@ module MkResume
     def can_handle? section_txt
       lines = section_txt.split("\n")
       lines.size == lines.filter { |l| l.match(/^.*\s*\|\s*.*$/) }.size
+    end
+  end
+
+  class DefaultTypesetStrategy
+    include TypesetStrategy
+
+    def can_handle? section_txt
+      true
     end
   end
 end
