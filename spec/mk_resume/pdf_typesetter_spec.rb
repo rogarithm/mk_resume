@@ -38,6 +38,12 @@ describe MkResume::PdfTypesetter do
       expect(typesetter.find_strategy(File.read(src_path))).to eq(MkResume::ListTypesetStrategy.name)
     end
 
+    it "2열 형식 섹션" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[two_columns_section])
+
+      expect(typesetter.find_strategy(File.read(src_path))).to eq(MkResume::TwoColumnsTypesetStrategy.name)
+    end
+
     it "일치하는 전략 객체가 없을 때" do
       expect {
         typesetter.validate_search_result(nil)
