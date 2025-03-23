@@ -65,5 +65,11 @@ describe MkResume::PdfTypesetter do
 
       expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
     end
+
+    it "2열 형식 섹션" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[education])
+
+      expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
+    end
   end
 end
