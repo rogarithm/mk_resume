@@ -55,6 +55,62 @@ module MkResume
     def can_handle? section_txt
       section_txt.split("\n").first.match(/^company_nm:.*$/)
     end
+
+    def handler
+      lambda {|section_txt, opts|
+        work_exps = []
+        opts[:parser].segments_by_keyword(section_txt).each do |work_exp|
+          work_exps << opts[:parser].make_obj(work_exp.join("\n"))
+        end
+
+        work_exps.each do |work_exp|
+          opts[:doc_writer].write_text(
+            opts[:doc],
+            work_exp[:company_nm],
+            opts[:formatting_config].work_experience(:default, opts[:font_manager])
+                              .merge!({:line_spacing_pt => 2})
+          )
+          opts[:doc_writer].write_text(
+            opts[:doc],
+            "사용기술: #{work_exp[:skill_set]}",
+            opts[:formatting_config].work_experience(:long_leading, opts[:font_manager])
+                              .merge!({:line_spacing_pt => 2})
+          ) if work_exp[:skill_set]
+
+          work_exp[:project].keys.each do |task|
+            opts[:doc_writer].write_text(
+              opts[:doc],
+              task,
+              opts[:formatting_config].work_experience(:default, opts[:font_manager])
+            )
+
+            work_exp[:project][task].each do |task_info|
+              task_info.each_key {|task_desc|
+                opts[:doc_writer].write_indented_text(
+                  opts[:doc],
+                  "      ",
+                  task_desc,
+                  opts[:formatting_config].work_experience(:default, opts[:font_manager])
+                ) if task_desc != :EMPTY_TASK_DESC
+                task_details = task_info[task_desc]
+                task_details.each do |task_detail|
+                  opts[:doc_writer].write_indented_text(
+                    opts[:doc],
+                    "      ",
+                    "- #{task_detail}",
+                    opts[:formatting_config].work_experience(:default, opts[:font_manager])
+                                      .merge!({:line_spacing_pt => 2})
+                  )
+                end
+                opts[:layout_arranger].v_space(opts[:doc], 2)
+                opts[:layout_arranger].v_space(opts[:doc], 2)
+                opts[:layout_arranger].v_space(opts[:doc], 2)
+              }
+            end
+          end
+        end
+      }
+    end
   end
 
   class PortfolioTypesetStrategy
