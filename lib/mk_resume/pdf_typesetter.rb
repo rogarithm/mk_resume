@@ -58,6 +58,12 @@ module MkResume
 
     def handler
       lambda {|section_txt, opts|
+        opts[:doc_writer].write_heading(
+          opts[:doc],
+          :side_project.to_s.split("_").map(&:capitalize).join(" "),
+          opts[:formatting_config].side_project(:heading, opts[:font_manager])
+        )
+
         side_projs = []
         opts[:parser].segments_by_keyword(section_txt, "side_proj_nm").each do |side_proj|
           side_projs << opts[:parser].make_obj(side_proj.join("\n"), [:side_proj_nm, :proj_link, :proj_desc])
@@ -91,6 +97,9 @@ module MkResume
           opts[:layout_arranger].v_space(opts[:doc], 2)
           opts[:layout_arranger].v_space(opts[:doc], 2)
         end
+
+        opts[:layout_arranger].v_space(opts[:doc], 2)
+        opts[:layout_arranger].v_space(opts[:doc], 14.5)
       }
     end
   end
@@ -104,6 +113,12 @@ module MkResume
 
     def handler
       lambda {|section_txt, opts|
+        opts[:doc_writer].write_heading(
+          opts[:doc],
+          :work_experience.to_s.split("_").map(&:capitalize).join(" "),
+          opts[:formatting_config].work_experience(:heading, opts[:font_manager])
+        )
+
         work_exps = []
         opts[:parser].segments_by_keyword(section_txt).each do |work_exp|
           work_exps << opts[:parser].make_obj(work_exp.join("\n"))
@@ -155,6 +170,9 @@ module MkResume
             end
           end
         end
+
+        opts[:layout_arranger].v_space(opts[:doc], 2)
+        opts[:layout_arranger].v_space(opts[:doc], 14.5)
       }
     end
   end
@@ -168,6 +186,12 @@ module MkResume
 
     def handler
       lambda {|section_txt, opts|
+        opts[:doc_writer].write_heading(
+          opts[:doc],
+          :portfolio.to_s.capitalize,
+          opts[:formatting_config].portfolio(:heading, opts[:font_manager])
+        )
+
         portfolios = []
         opts[:parser].segments_by_keyword(section_txt, "portfolio_nm").each do |portfolio|
           portfolios << opts[:parser].make_obj(portfolio.join("\n"),
@@ -250,6 +274,9 @@ module MkResume
           opts[:layout_arranger].v_space(opts[:doc], 2)
           opts[:layout_arranger].v_space(opts[:doc], 2)
         end
+
+        opts[:layout_arranger].v_space(opts[:doc], 2)
+        opts[:layout_arranger].v_space(opts[:doc], 14.5)
       }
     end
   end
@@ -264,6 +291,12 @@ module MkResume
 
     def handler
       lambda {|section_txt, opts|
+        opts[:doc_writer].write_heading(
+          opts[:doc],
+          :introduction.to_s.capitalize,
+          opts[:formatting_config].introduction(:heading, opts[:font_manager])
+        )
+
         section_txt.split("\n").each do |txt|
           opts[:doc_writer].write_indented_text(
             opts[:doc],
@@ -273,6 +306,8 @@ module MkResume
                               .merge!({:line_spacing_pt => 2})
           )
         end
+
+        opts[:layout_arranger].v_space(opts[:doc], 14.5)
       }
     end
   end
@@ -287,6 +322,12 @@ module MkResume
 
     def handler
       lambda {|section_txt, opts|
+        opts[:doc_writer].write_heading(
+          opts[:doc],
+          :education.to_s.capitalize,
+          opts[:formatting_config].education(:heading, opts[:font_manager], opts[:doc])
+        )
+
         section_txt.split("\n")
                             .map! { |cols|
                               cols.split("|")
@@ -326,6 +367,7 @@ module MkResume
             opts[:formatting_config].personal_info(idx, opts[:font_manager])
           )
         end
+        opts[:layout_arranger].v_space(opts[:doc], 14.5)
       }
     end
   end
