@@ -119,6 +119,93 @@ module MkResume
     def can_handle? section_txt
       section_txt.split("\n").first.match(/^portfolio_nm:.*$/)
     end
+
+    def handler
+      lambda {|section_txt, opts|
+        portfolios = []
+        opts[:parser].segments_by_keyword(section_txt, "portfolio_nm").each do |portfolio|
+          portfolios << opts[:parser].make_obj(portfolio.join("\n"),
+            [:portfolio_nm, :desc, :repo_link, :service_link, :swagger_link, :tech_stack],
+            MkResume::PortfolioProjectMaker)
+        end
+
+        portfolios.each do |portfolio|
+          match = portfolio[:repo_link].match(/<link href='([^']*)'>([^<]*)<\/link>/)
+          link_url = match[1]
+          link_text = match[2]
+
+          opts[:doc_writer].write_formatted_text(
+            opts[:doc],
+            [
+              { text: portfolio[:portfolio_nm], leading: 6 },
+              { text: " (" },
+              { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
+              { text: ")" },
+            ],
+            opts[:formatting_config].portfolio(:project, opts[:font_manager])
+          )
+          opts[:layout_arranger].v_space(opts[:doc], 10)
+
+          opts[:doc_writer].write_text(
+            opts[:doc],
+            portfolio[:desc],
+            opts[:formatting_config].portfolio(:default, opts[:font_manager])
+                                    .merge!({:line_spacing_pt => 2})
+          )
+
+          opts[:doc_writer].write_text(
+            opts[:doc],
+            "사용 기술: #{portfolio[:tech_stack]}",
+            opts[:formatting_config].portfolio(:default, opts[:font_manager])
+                                    .merge!({:line_spacing_pt => 2})
+          )
+
+          opts[:doc_writer].write_text(
+            opts[:doc],
+            "담당 작업",
+            opts[:formatting_config].portfolio(:default, opts[:font_manager])
+          )
+          portfolio[:project][:tasks].each do |task|
+            opts[:doc_writer].write_indented_text(
+              opts[:doc],
+              "  ",
+              "- #{task}",
+              opts[:formatting_config].portfolio(:default, opts[:font_manager])
+                                      .merge!({:line_spacing_pt => 2})
+            )
+          end
+          opts[:layout_arranger].v_space(opts[:doc], 2)
+
+          portfolio[:project][:trouble_shooting].each do |trb_sht_info|
+            trb_sht_info.each_key do |trb_sht_desc|
+              opts[:doc_writer].write_text(
+                opts[:doc],
+                "해결한 문제: #{trb_sht_desc}",
+                opts[:formatting_config].portfolio(:default, opts[:font_manager])
+              )
+
+              trb_sht_info[trb_sht_desc].each do |trb_sht_detail|
+                opts[:doc_writer].write_indented_text(
+                  opts[:doc],
+                  "  ",
+                  "- #{trb_sht_detail}",
+                  opts[:formatting_config].portfolio(:default, opts[:font_manager])
+                                          .merge!({:line_spacing_pt => 2})
+                )
+              end
+              opts[:layout_arranger].v_space(opts[:doc], 2)
+              opts[:layout_arranger].v_space(opts[:doc], 2)
+              opts[:layout_arranger].v_space(opts[:doc], 2)
+
+            end
+          end
+
+          opts[:layout_arranger].v_space(opts[:doc], 2)
+          opts[:layout_arranger].v_space(opts[:doc], 2)
+          opts[:layout_arranger].v_space(opts[:doc], 2)
+        end
+      }
+    end
   end
 
   class ListTypesetStrategy
