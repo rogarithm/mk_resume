@@ -83,5 +83,11 @@ describe MkResume::PdfTypesetter do
 
       expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
     end
+
+    it "일치하는 전략 객체가 없을 때" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[personal_info])
+
+      expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
+    end
   end
 end

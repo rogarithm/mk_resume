@@ -269,5 +269,17 @@ module MkResume
     def can_handle? section_txt
       true
     end
+
+    def handler
+      lambda {|section_txt, opts|
+        section_txt.split("\n")[0..4].each.with_index do |text, idx|
+          opts[:doc_writer].write_text(
+            opts[:doc],
+            text,
+            opts[:formatting_config].personal_info(idx, opts[:font_manager])
+          )
+        end
+      }
+    end
   end
 end
