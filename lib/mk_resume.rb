@@ -261,7 +261,7 @@ class ResumePrinter
 
       sections[:education].split("\n")
         .map! { |cols|
-          cols.split(",")
+          cols.split("|")
             .each { |col| col.strip! }
         }.each do |left_text, right_text|
           # Draw left column text
