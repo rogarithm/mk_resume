@@ -96,40 +96,10 @@ class ResumePrinter
         @formatting_config.side_project(:heading, @font_manager)
       )
 
-      side_projs = []
-      @parser.segments_by_keyword(sections[:side_project], "side_proj_nm").each do |side_proj|
-        side_projs << @parser.make_obj(side_proj.join("\n"), [:side_proj_nm, :proj_link, :proj_desc])
-      end
-
-      side_projs.each do |side_proj|
-
-        match = side_proj[:proj_link].match(/<link href='([^']*)'>([^<]*)<\/link>/)
-        link_url = match[1]
-        link_text = match[2]
-
-        @doc_writer.write_formatted_text(
-          doc,
-          [
-            { text: side_proj[:side_proj_nm], leading: 6 },
-            { text: " (" },
-            { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
-            { text: ")" },
-          ],
-          @formatting_config.side_project(:project, @font_manager)
-        )
-
-        @layout_arranger.v_space(doc, 2)
-
-        @doc_writer.write_indented_text(
-          doc,
-          "      ",
-          side_proj[:proj_desc],
-          @formatting_config.side_project(:default, @font_manager)
-        )
-        @layout_arranger.v_space(doc, 2)
-        @layout_arranger.v_space(doc, 2)
-        @layout_arranger.v_space(doc, 2)
-      end
+      typesetter.handler(sections[:side_project]).call(
+        sections[:side_project],
+        typeset_opts
+      )
       @layout_arranger.v_space(doc, 2)
       @layout_arranger.v_space(doc, 14.5)
 
