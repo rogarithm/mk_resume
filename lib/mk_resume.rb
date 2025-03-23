@@ -5,6 +5,7 @@ require_relative 'mk_resume/font_manager'
 require_relative 'mk_resume/document_writer'
 require_relative 'mk_resume/layout_arranger'
 require_relative 'mk_resume/formatting_config'
+require_relative 'mk_resume/pdf_typesetter'
 
 # 플레인 텍스트 형식으로 적은 이력서를 pdf로 변환하기 위한 스크립트
 
@@ -45,15 +46,18 @@ class ResumePrinter
         @formatting_config.introduction(:heading, @font_manager)
       )
 
-      sections[:introduction].split("\n").each do |text|
-        @doc_writer.write_indented_text(
-          doc,
-          "- ",
-          text,
-          @formatting_config.introduction(:default, @font_manager)
-            .merge!({:line_spacing_pt => 2})
-        )
-      end
+      typesetter = MkResume::PdfTypesetter.new
+      typeset_opts = {
+        :doc_writer => @doc_writer,
+        :doc => doc,
+        :formatting_config => @formatting_config,
+        :font_manager => @font_manager
+      }
+      typesetter.handler(sections[:introduction]).call(
+        sections[:introduction],
+        typeset_opts
+      )
+
       @layout_arranger.v_space(doc, 14.5)
 
 
