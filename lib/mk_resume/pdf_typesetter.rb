@@ -22,18 +22,17 @@ module MkResume
         result
       }
 
-      validate_search_result matching_strategy
-
-      matching_strategy.first
+      validate_search_result(matching_strategy)
     end
 
     def validate_search_result matching_strategy
-      if matching_strategy.nil?
+      if matching_strategy.size == 0
         return DefaultTypesetStrategy.name
       end
       if matching_strategy.size > 1
         raise TypesetStrategyFindError.new("found more than one typeset strategy to handle given section text!")
       end
+      matching_strategy.first
     end
   end
 

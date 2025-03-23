@@ -46,7 +46,7 @@ describe MkResume::PdfTypesetter do
 
     it "일치하는 전략 객체가 없을 때" do
       expect(
-        typesetter.validate_search_result(nil)
+        typesetter.validate_search_result([])
       ).to eq(MkResume::DefaultTypesetStrategy.name)
     end
 
