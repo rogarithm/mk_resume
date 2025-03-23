@@ -52,7 +52,8 @@ class ResumePrinter
         :doc => doc,
         :formatting_config => @formatting_config,
         :font_manager => @font_manager,
-        :layout_arranger => @layout_arranger
+        :layout_arranger => @layout_arranger,
+        :parser => @parser
       }
       typesetter.handler(sections[:introduction]).call(
         sections[:introduction],
@@ -160,57 +161,10 @@ class ResumePrinter
         @formatting_config.work_experience(:heading, @font_manager)
       )
 
-      work_exps = []
-      @parser.segments_by_keyword(sections[:work_experience]).each do |work_exp|
-        work_exps << @parser.make_obj(work_exp.join("\n"))
-      end
-
-      work_exps.each do |work_exp|
-        @doc_writer.write_text(
-          doc,
-          work_exp[:company_nm],
-          @formatting_config.work_experience(:default, @font_manager)
-          .merge!({:line_spacing_pt => 2})
-        )
-        @doc_writer.write_text(
-          doc,
-          "사용기술: #{work_exp[:skill_set]}",
-          @formatting_config.work_experience(:long_leading, @font_manager)
-            .merge!({:line_spacing_pt => 2})
-        ) if work_exp[:skill_set]
-
-        work_exp[:project].keys.each do |task|
-          @doc_writer.write_text(
-            doc,
-            task,
-            @formatting_config.work_experience(:default, @font_manager)
-          )
-
-          work_exp[:project][task].each do |task_info|
-            task_info.each_key {|task_desc|
-              @doc_writer.write_indented_text(
-                doc,
-                "      ",
-                task_desc,
-                @formatting_config.work_experience(:default, @font_manager)
-              ) if task_desc != :EMPTY_TASK_DESC
-              task_details = task_info[task_desc]
-              task_details.each do |task_detail|
-                @doc_writer.write_indented_text(
-                  doc,
-                  "      ",
-                  "- #{task_detail}",
-                  @formatting_config.work_experience(:default, @font_manager)
-                    .merge!({:line_spacing_pt => 2})
-                )
-              end
-              @layout_arranger.v_space(doc, 2)
-              @layout_arranger.v_space(doc, 2)
-              @layout_arranger.v_space(doc, 2)
-            }
-          end
-        end
-      end
+      typesetter.handler(sections[:work_experience]).call(
+        sections[:work_experience],
+        typeset_opts
+      )
       @layout_arranger.v_space(doc, 2)
       @layout_arranger.v_space(doc, 14.5)
 
