@@ -49,7 +49,7 @@ class ResumePrinter
         @doc_writer.write_indented_text(
           doc,
           "- ",
-          "- #{text}",
+          text,
           @formatting_config.introduction(:default, @font_manager)
             .merge!({:line_spacing_pt => 2})
         )
