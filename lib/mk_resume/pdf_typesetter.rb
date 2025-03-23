@@ -9,6 +9,12 @@ module MkResume
       ]
     end
 
+    def handler section_txt
+      strategy_nm = find_strategy(section_txt)
+      strategy = Object::const_get(strategy_nm).new
+      strategy.handler
+    end
+
     def find_strategy section_txt
       matching_strategy = self.strategy_list.reduce([]) {|result, strategy_nm|
         strategy = Object::const_get(strategy_nm).new
@@ -37,6 +43,10 @@ module MkResume
     def can_handle? section_txt
       raise "Not implemented"
     end
+
+    def handler
+      raise "Not implemented"
+    end
   end
 
   class WorkExpTypesetStrategy
@@ -61,6 +71,20 @@ module MkResume
     def can_handle? section_txt
       lines = section_txt.split("\n")
       lines.size == lines.filter {|l| l.match(/^\s*-\s+.*$/)}.size
+    end
+
+    def handler
+      lambda {|section_txt, opts|
+        section_txt.split("\n").each do |txt|
+          opts[:doc_writer].write_indented_text(
+            opts[:doc],
+            "- ",
+            txt,
+            opts[:formatting_config].introduction(:default, opts[:font_manager])
+                              .merge!({:line_spacing_pt => 2})
+          )
+        end
+      }
     end
   end
 

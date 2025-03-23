@@ -56,4 +56,14 @@ describe MkResume::PdfTypesetter do
       }.to raise_error(MkResume::TypesetStrategyFindError)
     end
   end
+
+  context "주어진 섹션 플레인 텍스트를 조판할 수 있는 방법을 알 수 있다" do
+    typesetter = MkResume::PdfTypesetter.new
+
+    it "목록 형식 섹션" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[introduction])
+
+      expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
+    end
+  end
 end
