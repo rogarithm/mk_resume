@@ -55,6 +55,44 @@ module MkResume
     def can_handle? section_txt
       section_txt.split("\n").first.match(/^side_proj_nm:.*$/)
     end
+
+    def handler
+      lambda {|section_txt, opts|
+        side_projs = []
+        opts[:parser].segments_by_keyword(section_txt, "side_proj_nm").each do |side_proj|
+          side_projs << opts[:parser].make_obj(side_proj.join("\n"), [:side_proj_nm, :proj_link, :proj_desc])
+        end
+
+        side_projs.each do |side_proj|
+          match = side_proj[:proj_link].match(/<link href='([^']*)'>([^<]*)<\/link>/)
+          link_url = match[1]
+          link_text = match[2]
+
+          opts[:doc_writer].write_formatted_text(
+            opts[:doc],
+            [
+              { text: side_proj[:side_proj_nm], leading: 6 },
+              { text: " (" },
+              { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
+              { text: ")" },
+            ],
+            opts[:formatting_config].side_project(:project, opts[:font_manager])
+          )
+
+          opts[:layout_arranger].v_space(opts[:doc], 2)
+
+          opts[:doc_writer].write_indented_text(
+            opts[:doc],
+            "      ",
+            side_proj[:proj_desc],
+            opts[:formatting_config].side_project(:default, opts[:font_manager])
+          )
+          opts[:layout_arranger].v_space(opts[:doc], 2)
+          opts[:layout_arranger].v_space(opts[:doc], 2)
+          opts[:layout_arranger].v_space(opts[:doc], 2)
+        end
+      }
+    end
   end
 
   class WorkExpTypesetStrategy
