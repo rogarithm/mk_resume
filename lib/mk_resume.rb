@@ -49,7 +49,7 @@ class ResumePrinter
         @doc_writer.write_indented_text(
           doc,
           "- ",
-          "- #{text}",
+          text,
           @formatting_config.introduction(:default, @font_manager)
             .merge!({:line_spacing_pt => 2})
         )
@@ -261,7 +261,7 @@ class ResumePrinter
 
       sections[:education].split("\n")
         .map! { |cols|
-          cols.split(",")
+          cols.split("|")
             .each { |col| col.strip! }
         }.each do |left_text, right_text|
           # Draw left column text
