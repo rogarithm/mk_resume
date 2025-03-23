@@ -51,7 +51,8 @@ class ResumePrinter
         :doc_writer => @doc_writer,
         :doc => doc,
         :formatting_config => @formatting_config,
-        :font_manager => @font_manager
+        :font_manager => @font_manager,
+        :layout_arranger => @layout_arranger
       }
       typesetter.handler(sections[:introduction]).call(
         sections[:introduction],
@@ -263,27 +264,10 @@ class ResumePrinter
         @formatting_config.education(:heading, @font_manager, doc)
       )
 
-      sections[:education].split("\n")
-        .map! { |cols|
-          cols.split("|")
-            .each { |col| col.strip! }
-        }.each do |left_text, right_text|
-          # Draw left column text
-          @doc_writer.write_text_box(
-            doc,
-            left_text,
-            @formatting_config.education(:left, @font_manager, doc)
-          )
-
-          # Draw right column text, positioned to start at the right_col_start
-          @doc_writer.write_text_box(
-            doc,
-            right_text,
-            @formatting_config.education(:right, @font_manager, doc)
-          )
-
-          @layout_arranger.v_space(doc, 15) # Space between rows; adjust as needed
-        end
+      typesetter.handler(sections[:education]).call(
+        sections[:education],
+        typeset_opts
+      )
     end
   end
 end
