@@ -20,8 +20,6 @@ class ResumePrinter
 
   def print(relative_path)
 
-    sections = @doc_writer.read_sections(relative_path)
-
     Prawn::Document.generate(
       "output.pdf",
       page_size: "A4",
@@ -40,35 +38,16 @@ class ResumePrinter
         :parser => @parser
       }
 
-      typesetter.handler(sections[:personal_info]).call(
-        sections[:personal_info],
-        typeset_opts
-      )
-
-      typesetter.handler(sections[:introduction]).call(
-        sections[:introduction],
-        typeset_opts
-      )
-
-      typesetter.handler(sections[:portfolio]).call(
-        sections[:portfolio],
-        typeset_opts
-      )
-
-      typesetter.handler(sections[:work_experience]).call(
-        sections[:work_experience],
-        typeset_opts
-      )
-
-      typesetter.handler(sections[:side_project]).call(
-        sections[:side_project],
-        typeset_opts
-      )
-
-      typesetter.handler(sections[:education]).call(
-        sections[:education],
-        typeset_opts
-      )
+      sections = @doc_writer.read_sections(relative_path)
+      [
+        :personal_info, :introduction, :portfolio,
+        :work_experience, :side_project, :education
+      ].each { |section_nm|
+        typesetter.handler(sections[section_nm]).call(
+          sections[section_nm],
+          typeset_opts
+        )
+      }
     end
   end
 end
