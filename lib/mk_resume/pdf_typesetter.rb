@@ -5,7 +5,8 @@ module MkResume
         WorkExpTypesetStrategy.name,
         PortfolioTypesetStrategy.name,
         ListTypesetStrategy.name,
-        TwoColumnsTypesetStrategy.name
+        TwoColumnsTypesetStrategy.name,
+        SideProjTypesetStrategy.name
       ]
     end
 
@@ -45,6 +46,14 @@ module MkResume
 
     def handler
       raise "Not implemented"
+    end
+  end
+
+  class SideProjTypesetStrategy
+    include TypesetStrategy
+
+    def can_handle? section_txt
+      section_txt.split("\n").first.match(/^side_proj_nm:.*$/)
     end
   end
 

@@ -32,6 +32,12 @@ describe MkResume::PdfTypesetter do
       expect(typesetter.find_strategy(File.read(src_path))).to eq(MkResume::PortfolioTypesetStrategy.name)
     end
 
+    it "사이드 프로젝트 섹션" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[side_project])
+
+      expect(typesetter.find_strategy(File.read(src_path))).to eq(MkResume::SideProjTypesetStrategy.name)
+    end
+
     it "목록 형식 섹션" do
       src_path = File.join(SECTION_DATA_DIR, *%w[list_section])
 
