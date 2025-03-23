@@ -30,22 +30,6 @@ class ResumePrinter
 
       @font_manager.load_font(doc)
 
-      sections[:personal_info].split("\n")[0..4].each.with_index do |text, idx|
-        @doc_writer.write_text(
-          doc,
-          text,
-          @formatting_config.personal_info(idx, @font_manager)
-        )
-      end
-      @layout_arranger.v_space(doc, 14.5)
-
-
-      @doc_writer.write_heading(
-        doc,
-        :introduction.to_s.capitalize,
-        @formatting_config.introduction(:heading, @font_manager)
-      )
-
       typesetter = MkResume::PdfTypesetter.new
       typeset_opts = {
         :doc_writer => @doc_writer,
@@ -55,6 +39,21 @@ class ResumePrinter
         :layout_arranger => @layout_arranger,
         :parser => @parser
       }
+
+      typesetter.handler(sections[:personal_info]).call(
+        sections[:personal_info],
+        typeset_opts
+      )
+
+      @layout_arranger.v_space(doc, 14.5)
+
+
+      @doc_writer.write_heading(
+        doc,
+        :introduction.to_s.capitalize,
+        @formatting_config.introduction(:heading, @font_manager)
+      )
+
       typesetter.handler(sections[:introduction]).call(
         sections[:introduction],
         typeset_opts
