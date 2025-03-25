@@ -1,27 +1,33 @@
 module MkResume
   class FormattingConfig
-    def personal_info line_no, font_manager
+    FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
+
+    def find_font_size usage
+      FONT_SIZE[usage]
+    end
+
+    def personal_info line_no
       formatting_config = [
         {
-          size: font_manager.find_font_size(:name),
+          size: find_font_size(:name),
           style: :bold,
           leading: 8
         },
         {
-          size: font_manager.find_font_size(:channel),
+          size: find_font_size(:channel),
           leading: 5
         },
         {
-          size: font_manager.find_font_size(:channel),
+          size: find_font_size(:channel),
           leading: 5
         },
         {
-          size: font_manager.find_font_size(:channel),
+          size: find_font_size(:channel),
           leading: 5,
           inline_format: true
         },
         {
-          size: font_manager.find_font_size(:channel),
+          size: find_font_size(:channel),
           leading: 5,
           inline_format: true
         }
@@ -29,17 +35,17 @@ module MkResume
       formatting_config[line_no]
     end
 
-    def introduction usage, font_manager
+    def introduction usage
       line_height = 1.45
 
       formatting_config = {
         :heading => {
-          size: font_manager.find_font_size(:heading),
+          size: find_font_size(:heading),
           style: :bold,
-          leading: line_height * font_manager.find_font_size(:heading)
+          leading: line_height * find_font_size(:heading)
         },
         :default => {
-          size: font_manager.find_font_size(:body),
+          size: find_font_size(:body),
           leading: 6,
           indent_paragraphs: 0
         }
@@ -48,22 +54,22 @@ module MkResume
       formatting_config[usage]
     end
 
-    def work_experience usage, font_manager
+    def work_experience usage
       line_height = 1.45
 
       formatting_config = {
         :heading => {
-          size: font_manager.find_font_size(:heading),
+          size: find_font_size(:heading),
           style: :bold,
-          leading: line_height * font_manager.find_font_size(:heading)
+          leading: line_height * find_font_size(:heading)
         },
         :default => {
-          size: font_manager.find_font_size(:body),
+          size: find_font_size(:body),
           leading: 6,
           indent_paragraphs: 0
         },
         :long_leading => {
-          size: font_manager.find_font_size(:body),
+          size: find_font_size(:body),
           leading: 12,
           indent_paragraphs: 0
         }
@@ -72,21 +78,21 @@ module MkResume
       formatting_config[usage]
     end
 
-    def side_project usage, font_manager
+    def side_project usage
       line_height = 1.45
 
       formatting_config = {
         :heading => {
-          size: font_manager.find_font_size(:heading),
+          size: find_font_size(:heading),
           style: :bold,
-          leading: line_height * font_manager.find_font_size(:heading)
+          leading: line_height * find_font_size(:heading)
         },
         :project => {
-          size: font_manager.find_font_size(:body),
+          size: find_font_size(:body),
           indent_paragraphs: 0
         },
         :default => {
-          size: font_manager.find_font_size(:body),
+          size: find_font_size(:body),
           leading: 6,
           indent_paragraphs: 0
         }
@@ -95,21 +101,21 @@ module MkResume
       formatting_config[usage]
     end
 
-    def portfolio usage, font_manager
+    def portfolio usage
       line_height = 1.45
 
       formatting_config = {
         :heading => {
-          size: font_manager.find_font_size(:heading),
+          size: find_font_size(:heading),
           style: :bold,
-          leading: line_height * font_manager.find_font_size(:heading)
+          leading: line_height * find_font_size(:heading)
         },
         :project => {
-          size: font_manager.find_font_size(:body),
+          size: find_font_size(:body),
           indent_paragraphs: 0
         },
         :default => {
-          size: font_manager.find_font_size(:body),
+          size: find_font_size(:body),
           leading: 6,
           indent_paragraphs: 0
         }
@@ -118,25 +124,25 @@ module MkResume
       formatting_config[usage]
     end
 
-    def education usage, font_manager, doc
+    def education usage, doc
       line_height = 1.45
       left_col_width = 180 # Adjust based on content and page layout needs
       right_col_start = left_col_width + 10 # Spacing between columns
 
       formatting_config = {
         :heading => {
-          size: font_manager.find_font_size(:heading),
+          size: find_font_size(:heading),
           style: :bold,
-          leading: line_height * font_manager.find_font_size(:heading)
+          leading: line_height * find_font_size(:heading)
         },
         :left => {
-          size: font_manager.find_font_size(:body),
+          size: find_font_size(:body),
           at: [0, y_position(doc)],
           width: left_col_width,
           align: :left
         },
         :right => {
-          size: font_manager.find_font_size(:body),
+          size: find_font_size(:body),
           at: [right_col_start, y_position(doc)],
           width: bound_width(doc) - right_col_start,
           align: :left
