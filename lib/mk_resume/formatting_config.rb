@@ -152,6 +152,13 @@ module MkResume
       formatting_config[usage]
     end
 
+    def method_missing(symbol, *args)
+      raise FormattingConfigNotExistsError.new(
+        "Formatting config for '#{symbol.to_s}' doesn't exist.
+You may have forgot to add config for newly added section"
+      )
+    end
+
     def width_of_bounding_box(pdf_doc)
       pdf_doc.bounds.width
     end
@@ -164,4 +171,6 @@ module MkResume
 
     alias_method :y_position, :y_position_of_bounding_box
   end
+
+  class FormattingConfigNotExistsError < StandardError; end
 end

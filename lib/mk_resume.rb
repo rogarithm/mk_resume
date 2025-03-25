@@ -18,7 +18,10 @@ class ResumePrinter
     @parser = MkResume::SectionParser.new
   end
 
-  def print(relative_path)
+  def print(relative_path, section_order = [
+      :personal_info, :introduction, :portfolio,
+      :work_experience, :side_project, :education
+    ])
 
     Prawn::Document.generate(
       "output.pdf",
@@ -38,10 +41,7 @@ class ResumePrinter
       }
 
       sections = @doc_writer.read_sections(relative_path)
-      [
-        :personal_info, :introduction, :portfolio,
-        :work_experience, :side_project, :education
-      ].each { |section_nm|
+      section_order.each { |section_nm|
         typesetter.handler(sections[section_nm]).call(
           section_nm,
           sections[section_nm],
