@@ -57,11 +57,11 @@ module MkResume
     end
 
     def handler
-      lambda {|section_txt, opts|
+      lambda {|section_nm, section_txt, opts|
         opts[:doc_writer].write_heading(
           opts[:doc],
           :side_project,
-          opts[:formatting_config].side_project(:heading)
+          opts[:formatting_config].send(section_nm, :heading)
         )
 
         side_projs = []
@@ -82,7 +82,7 @@ module MkResume
               { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
               { text: ")" },
             ],
-            opts[:formatting_config].side_project(:project)
+            opts[:formatting_config].send(section_nm, :project)
           )
 
           opts[:layout_arranger].v_space(opts[:doc], 2)
@@ -91,7 +91,7 @@ module MkResume
             opts[:doc],
             "      ",
             side_proj[:proj_desc],
-            opts[:formatting_config].side_project(:default)
+            opts[:formatting_config].send(section_nm, :default)
           )
           opts[:layout_arranger].v_space(opts[:doc], 2)
           opts[:layout_arranger].v_space(opts[:doc], 2)
@@ -112,11 +112,11 @@ module MkResume
     end
 
     def handler
-      lambda {|section_txt, opts|
+      lambda {|section_nm, section_txt, opts|
         opts[:doc_writer].write_heading(
           opts[:doc],
           :work_experience,
-          opts[:formatting_config].work_experience(:heading)
+          opts[:formatting_config].send(section_nm, :heading)
         )
 
         work_exps = []
@@ -128,13 +128,13 @@ module MkResume
           opts[:doc_writer].write_text(
             opts[:doc],
             work_exp[:company_nm],
-            opts[:formatting_config].work_experience(:default)
+            opts[:formatting_config].send(section_nm, :default)
                               .merge!({:line_spacing_pt => 2})
           )
           opts[:doc_writer].write_text(
             opts[:doc],
             "사용기술: #{work_exp[:skill_set]}",
-            opts[:formatting_config].work_experience(:long_leading)
+            opts[:formatting_config].send(section_nm, :long_leading)
                               .merge!({:line_spacing_pt => 2})
           ) if work_exp[:skill_set]
 
@@ -142,7 +142,7 @@ module MkResume
             opts[:doc_writer].write_text(
               opts[:doc],
               task,
-              opts[:formatting_config].work_experience(:default)
+              opts[:formatting_config].send(section_nm, :default)
             )
 
             work_exp[:project][task].each do |task_info|
@@ -151,7 +151,7 @@ module MkResume
                   opts[:doc],
                   "      ",
                   task_desc,
-                  opts[:formatting_config].work_experience(:default)
+                  opts[:formatting_config].send(section_nm, :default)
                 ) if task_desc != :EMPTY_TASK_DESC
                 task_details = task_info[task_desc]
                 task_details.each do |task_detail|
@@ -159,7 +159,7 @@ module MkResume
                     opts[:doc],
                     "      ",
                     "- #{task_detail}",
-                    opts[:formatting_config].work_experience(:default)
+                    opts[:formatting_config].send(section_nm, :default)
                                       .merge!({:line_spacing_pt => 2})
                   )
                 end
@@ -185,11 +185,11 @@ module MkResume
     end
 
     def handler
-      lambda {|section_txt, opts|
+      lambda {|section_nm, section_txt, opts|
         opts[:doc_writer].write_heading(
           opts[:doc],
           :portfolio,
-          opts[:formatting_config].portfolio(:heading)
+          opts[:formatting_config].send(section_nm, :heading)
         )
 
         portfolios = []
@@ -212,35 +212,35 @@ module MkResume
               { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
               { text: ")" },
             ],
-            opts[:formatting_config].portfolio(:project)
+            opts[:formatting_config].send(section_nm, :project)
           )
           opts[:layout_arranger].v_space(opts[:doc], 10)
 
           opts[:doc_writer].write_text(
             opts[:doc],
             portfolio[:desc],
-            opts[:formatting_config].portfolio(:default)
+            opts[:formatting_config].send(section_nm, :default)
                                     .merge!({:line_spacing_pt => 2})
           )
 
           opts[:doc_writer].write_text(
             opts[:doc],
             "사용 기술: #{portfolio[:tech_stack]}",
-            opts[:formatting_config].portfolio(:default)
+            opts[:formatting_config].send(section_nm, :default)
                                     .merge!({:line_spacing_pt => 2})
           )
 
           opts[:doc_writer].write_text(
             opts[:doc],
             "담당 작업",
-            opts[:formatting_config].portfolio(:default)
+            opts[:formatting_config].send(section_nm, :default)
           )
           portfolio[:project][:tasks].each do |task|
             opts[:doc_writer].write_indented_text(
               opts[:doc],
               "  ",
               "- #{task}",
-              opts[:formatting_config].portfolio(:default)
+              opts[:formatting_config].send(section_nm, :default)
                                       .merge!({:line_spacing_pt => 2})
             )
           end
@@ -251,7 +251,7 @@ module MkResume
               opts[:doc_writer].write_text(
                 opts[:doc],
                 "해결한 문제: #{trb_sht_desc}",
-                opts[:formatting_config].portfolio(:default)
+                opts[:formatting_config].send(section_nm, :default)
               )
 
               trb_sht_info[trb_sht_desc].each do |trb_sht_detail|
@@ -259,7 +259,7 @@ module MkResume
                   opts[:doc],
                   "  ",
                   "- #{trb_sht_detail}",
-                  opts[:formatting_config].portfolio(:default)
+                  opts[:formatting_config].send(section_nm, :default)
                                           .merge!({:line_spacing_pt => 2})
                 )
               end
@@ -290,11 +290,11 @@ module MkResume
     end
 
     def handler
-      lambda {|section_txt, opts|
+      lambda {|section_nm, section_txt, opts|
         opts[:doc_writer].write_heading(
           opts[:doc],
           :introduction,
-          opts[:formatting_config].introduction(:heading)
+          opts[:formatting_config].send(section_nm, :heading)
         )
 
         section_txt.split("\n").each do |txt|
@@ -302,7 +302,7 @@ module MkResume
             opts[:doc],
             "- ",
             txt,
-            opts[:formatting_config].introduction(:default)
+            opts[:formatting_config].send(section_nm, :default)
                               .merge!({:line_spacing_pt => 2})
           )
         end
@@ -321,11 +321,11 @@ module MkResume
     end
 
     def handler
-      lambda {|section_txt, opts|
+      lambda {|section_nm, section_txt, opts|
         opts[:doc_writer].write_heading(
           opts[:doc],
           :education,
-          opts[:formatting_config].education(:heading, opts[:doc])
+          opts[:formatting_config].send(section_nm, :heading, opts[:doc])
         )
 
         section_txt.split("\n")
@@ -336,13 +336,13 @@ module MkResume
           opts[:doc_writer].write_text_box(
             opts[:doc],
             left_text,
-            opts[:formatting_config].education(:left, opts[:doc])
+            opts[:formatting_config].send(section_nm, :left, opts[:doc])
           )
 
           opts[:doc_writer].write_text_box(
             opts[:doc],
             right_text,
-            opts[:formatting_config].education(:right, opts[:doc])
+            opts[:formatting_config].send(section_nm, :right, opts[:doc])
           )
 
           opts[:layout_arranger].v_space(opts[:doc], 15)
@@ -359,12 +359,12 @@ module MkResume
     end
 
     def handler
-      lambda {|section_txt, opts|
+      lambda {|section_nm, section_txt, opts|
         section_txt.split("\n")[0..4].each.with_index do |text, idx|
           opts[:doc_writer].write_text(
             opts[:doc],
             text,
-            opts[:formatting_config].personal_info(idx)
+            opts[:formatting_config].send(section_nm, idx)
           )
         end
         opts[:layout_arranger].v_space(opts[:doc], 14.5)
