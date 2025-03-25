@@ -1,6 +1,6 @@
 module MkResume
   class FormattingConfig
-    FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
+    FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5, :detail => 9}
 
     def find_font_size usage
       FONT_SIZE[usage]
@@ -72,6 +72,11 @@ module MkResume
           size: find_font_size(:body),
           leading: 12,
           indent_paragraphs: 0
+        },
+        :detail => {
+          size: find_font_size(:detail),
+          leading: 6,
+          indent_paragraphs: 0
         }
       }
 
@@ -95,7 +100,12 @@ module MkResume
           size: find_font_size(:body),
           leading: 6,
           indent_paragraphs: 0
-        }
+        },
+        :detail => {
+          size: find_font_size(:detail),
+          leading: 6,
+          indent_paragraphs: 0
+        },
       }
 
       formatting_config[usage]
@@ -116,6 +126,11 @@ module MkResume
         },
         :default => {
           size: find_font_size(:body),
+          leading: 6,
+          indent_paragraphs: 0
+        },
+        :detail => {
+          size: find_font_size(:detail),
           leading: 6,
           indent_paragraphs: 0
         }
