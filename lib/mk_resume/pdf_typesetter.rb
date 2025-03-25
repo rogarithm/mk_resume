@@ -60,7 +60,7 @@ module MkResume
       lambda {|section_txt, opts|
         opts[:doc_writer].write_heading(
           opts[:doc],
-          :side_project.to_s.split("_").map(&:capitalize).join(" "),
+          :side_project,
           opts[:formatting_config].side_project(:heading, opts[:font_manager])
         )
 
@@ -115,7 +115,7 @@ module MkResume
       lambda {|section_txt, opts|
         opts[:doc_writer].write_heading(
           opts[:doc],
-          :work_experience.to_s.split("_").map(&:capitalize).join(" "),
+          :work_experience,
           opts[:formatting_config].work_experience(:heading, opts[:font_manager])
         )
 
@@ -188,7 +188,7 @@ module MkResume
       lambda {|section_txt, opts|
         opts[:doc_writer].write_heading(
           opts[:doc],
-          :portfolio.to_s.capitalize,
+          :portfolio,
           opts[:formatting_config].portfolio(:heading, opts[:font_manager])
         )
 
@@ -293,7 +293,7 @@ module MkResume
       lambda {|section_txt, opts|
         opts[:doc_writer].write_heading(
           opts[:doc],
-          :introduction.to_s.capitalize,
+          :introduction,
           opts[:formatting_config].introduction(:heading, opts[:font_manager])
         )
 
@@ -324,7 +324,7 @@ module MkResume
       lambda {|section_txt, opts|
         opts[:doc_writer].write_heading(
           opts[:doc],
-          :education.to_s.capitalize,
+          :education,
           opts[:formatting_config].education(:heading, opts[:font_manager], opts[:doc])
         )
 

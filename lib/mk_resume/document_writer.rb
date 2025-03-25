@@ -19,14 +19,24 @@ module MkResume
       File.read(File.join(File.dirname(__FILE__), *relative_path, *%W[#{file_nm}]))
     end
 
-    def write_heading(pdf_doc, txt, options = {})
+    def write_heading(pdf_doc, heading_sym, options = {})
       h_rule(pdf_doc)
       line_spacing(pdf_doc, 9.5)
       write_text(
         pdf_doc,
-        txt,
+        capitalize(heading_sym),
         options
       )
+    end
+
+    def capitalize(section_title_sym)
+      section_title = section_title_sym.to_s
+
+      if section_title.match?(/.*_.*/) == false
+        section_title.capitalize
+      end
+
+      section_title.split("_").map(&:capitalize).join(" ")
     end
 
     def draw_horizontal_rule(pdf_doc)
