@@ -1,6 +1,6 @@
 module MkResume
   class FormattingConfig
-    FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5}
+    FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5, :detail => 9}
 
     def find_font_size usage
       FONT_SIZE[usage]
