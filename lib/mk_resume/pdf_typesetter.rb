@@ -133,8 +133,8 @@ module MkResume
           opts[:doc_writer].write_text(
             opts[:doc],
             "사용기술: #{work_exp[:skill_set]}",
-            opts[:formatting_config].send(section_nm, :long_leading)
-                              .merge!({:line_spacing_pt => 2})
+            opts[:formatting_config].send(section_nm, :default)
+                              .merge!({:line_spacing_pt => 4})
           ) if work_exp[:skill_set]
 
           work_exp[:project].keys.each do |task|
@@ -142,32 +142,33 @@ module MkResume
               opts[:doc],
               task,
               opts[:formatting_config].send(section_nm, :default)
+                .merge!({:line_spacing_pt => 2})
             )
 
             work_exp[:project][task].each do |task_info|
               task_info.each_key {|task_desc|
                 opts[:doc_writer].write_indented_text(
                   opts[:doc],
-                  "      ",
+                  "    ",
                   task_desc,
-                  opts[:formatting_config].send(section_nm, :default)
+                  opts[:formatting_config].send(section_nm, :detail)
+                    .merge!({:line_spacing_pt => 1})
                 ) if task_desc != :EMPTY_TASK_DESC
                 task_details = task_info[task_desc]
                 task_details.each do |task_detail|
                   opts[:doc_writer].write_indented_text(
                     opts[:doc],
-                    "      ",
-                    "– #{task_detail}",
-                    opts[:formatting_config].send(section_nm, :default)
-                                      .merge!({:line_spacing_pt => 2})
+                    "    ",
+                    "–  #{task_detail}",
+                    opts[:formatting_config].send(section_nm, :detail)
                   )
                 end
-                opts[:layout_arranger].v_space(opts[:doc], 2)
-                opts[:layout_arranger].v_space(opts[:doc], 2)
-                opts[:layout_arranger].v_space(opts[:doc], 2)
+                opts[:layout_arranger].v_space(opts[:doc], 3)
               }
             end
+            opts[:layout_arranger].v_space(opts[:doc], 3)
           end
+          opts[:layout_arranger].v_space(opts[:doc], 8)
         end
 
         opts[:layout_arranger].v_space(opts[:doc], 2)

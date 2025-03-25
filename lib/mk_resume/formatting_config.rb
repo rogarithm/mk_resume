@@ -72,6 +72,11 @@ module MkResume
           size: find_font_size(:body),
           leading: 12,
           indent_paragraphs: 0
+        },
+        :detail => {
+          size: find_font_size(:detail),
+          leading: 6,
+          indent_paragraphs: 0
         }
       }
 
