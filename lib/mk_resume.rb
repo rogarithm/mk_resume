@@ -33,7 +33,6 @@ class ResumePrinter
         :doc_writer => @doc_writer,
         :doc => doc,
         :formatting_config => @formatting_config,
-        :font_manager => @font_manager,
         :layout_arranger => @layout_arranger,
         :parser => @parser
       }
