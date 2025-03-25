@@ -158,7 +158,7 @@ module MkResume
                   opts[:doc_writer].write_indented_text(
                     opts[:doc],
                     "      ",
-                    "- #{task_detail}",
+                    "– #{task_detail}",
                     opts[:formatting_config].send(section_nm, :default)
                                       .merge!({:line_spacing_pt => 2})
                   )
@@ -239,7 +239,7 @@ module MkResume
             opts[:doc_writer].write_indented_text(
               opts[:doc],
               "  ",
-              "- #{task}",
+              "– #{task}",
               opts[:formatting_config].send(section_nm, :default)
                                       .merge!({:line_spacing_pt => 2})
             )
@@ -258,7 +258,7 @@ module MkResume
                 opts[:doc_writer].write_indented_text(
                   opts[:doc],
                   "  ",
-                  "- #{trb_sht_detail}",
+                  "– #{trb_sht_detail}",
                   opts[:formatting_config].send(section_nm, :default)
                                           .merge!({:line_spacing_pt => 2})
                 )
@@ -286,7 +286,7 @@ module MkResume
 
     def can_handle? section_txt
       lines = section_txt.split("\n")
-      lines.size == lines.filter {|l| l.match(/^\s*-\s+.*$/)}.size
+      lines.size == lines.filter {|l| l.match(/^\s*([-–])\s+.*$/)}.size
     end
 
     def handler
