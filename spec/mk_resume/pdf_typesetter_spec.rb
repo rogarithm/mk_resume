@@ -32,6 +32,12 @@ describe MkResume::PdfTypesetter do
       expect(typesetter.find_strategy(File.read(src_path))).to eq(MkResume::PortfolioTypesetStrategy.name)
     end
 
+    it "사이드 프로젝트 섹션" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[side_project])
+
+      expect(typesetter.find_strategy(File.read(src_path))).to eq(MkResume::SideProjTypesetStrategy.name)
+    end
+
     it "목록 형식 섹션" do
       src_path = File.join(SECTION_DATA_DIR, *%w[list_section])
 
@@ -46,7 +52,7 @@ describe MkResume::PdfTypesetter do
 
     it "일치하는 전략 객체가 없을 때" do
       expect(
-        typesetter.validate_search_result(nil)
+        typesetter.validate_search_result([])
       ).to eq(MkResume::DefaultTypesetStrategy.name)
     end
 
@@ -54,6 +60,46 @@ describe MkResume::PdfTypesetter do
       expect {
         typesetter.validate_search_result(["WorkExpTypesetStrategy", "AnotherTypesetStrategy"])
       }.to raise_error(MkResume::TypesetStrategyFindError)
+    end
+  end
+
+  context "주어진 섹션 플레인 텍스트를 조판할 수 있는 방법을 알 수 있다" do
+    typesetter = MkResume::PdfTypesetter.new
+
+    it "업무 경력 섹션" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[work_experience])
+
+      expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
+    end
+
+    it "포트폴리오 섹션" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[portfolio])
+
+      expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
+    end
+
+    it "사이드 프로젝트 섹션" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[side_project])
+
+      expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
+    end
+
+    it "목록 형식 섹션" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[introduction])
+
+      expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
+    end
+
+    it "2열 형식 섹션" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[education])
+
+      expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
+    end
+
+    it "일치하는 전략 객체가 없을 때" do
+      src_path = File.join(SECTION_DATA_DIR, *%w[personal_info])
+
+      expect(typesetter.handler(File.read(src_path)).lambda?).to eq(true)
     end
   end
 end

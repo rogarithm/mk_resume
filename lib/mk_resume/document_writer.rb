@@ -7,9 +7,11 @@ module MkResume
     end
 
     def read_sections(relative_path)
-      [:personal_info, :introduction, :work_experience, :side_project, :education, :portfolio].each {|file_sym|
-        @sections.store(file_sym, read_file(file_sym.to_s, relative_path))
-      }
+      Dir.entries(File.join(File.dirname(__FILE__), *relative_path))
+         .reject {|entry| entry.match?(/^\..*$/)} # 반환값 중 필요 없는 ., .., .DS_Store 를 제외한다
+         .map {|entry| entry.to_sym}
+         .each {|file_sym| @sections.store(file_sym, read_file(file_sym.to_s, relative_path))}
+
       @sections
     end
 
