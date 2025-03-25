@@ -220,7 +220,7 @@ module MkResume
             opts[:doc],
             portfolio[:desc],
             opts[:formatting_config].send(section_nm, :default)
-                                    .merge!({:line_spacing_pt => 2})
+              .merge!({:line_spacing_pt => 1})
           )
 
           opts[:doc_writer].write_text(
@@ -236,15 +236,13 @@ module MkResume
             opts[:formatting_config].send(section_nm, :default)
           )
           portfolio[:project][:tasks].each do |task|
-            opts[:doc_writer].write_indented_text(
+            opts[:doc_writer].write_text(
               opts[:doc],
-              "  ",
-              "– #{task}",
-              opts[:formatting_config].send(section_nm, :default)
-                                      .merge!({:line_spacing_pt => 2})
+              "–  #{task}",
+              opts[:formatting_config].send(section_nm, :detail)
             )
           end
-          opts[:layout_arranger].v_space(opts[:doc], 2)
+          opts[:layout_arranger].v_space(opts[:doc], 4)
 
           portfolio[:project][:trouble_shooting].each do |trb_sht_info|
             trb_sht_info.each_key do |trb_sht_desc|
@@ -255,18 +253,15 @@ module MkResume
               )
 
               trb_sht_info[trb_sht_desc].each do |trb_sht_detail|
-                opts[:doc_writer].write_indented_text(
+                opts[:doc_writer].write_text(
                   opts[:doc],
-                  "  ",
-                  "– #{trb_sht_detail}",
-                  opts[:formatting_config].send(section_nm, :default)
-                                          .merge!({:line_spacing_pt => 2})
+                  "–  #{trb_sht_detail}",
+                  opts[:formatting_config].send(section_nm, :detail)
                 )
               end
               opts[:layout_arranger].v_space(opts[:doc], 2)
               opts[:layout_arranger].v_space(opts[:doc], 2)
               opts[:layout_arranger].v_space(opts[:doc], 2)
-
             end
           end
 
