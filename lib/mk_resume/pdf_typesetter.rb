@@ -85,15 +85,14 @@ module MkResume
             opts[:formatting_config].send(section_nm, :project)
           )
 
-          opts[:layout_arranger].v_space(opts[:doc], 2)
+          opts[:layout_arranger].v_space(opts[:doc], 5)
 
           opts[:doc_writer].write_indented_text(
             opts[:doc],
             "      ",
             side_proj[:proj_desc],
-            opts[:formatting_config].send(section_nm, :default)
+            opts[:formatting_config].send(section_nm, :detail)
           )
-          opts[:layout_arranger].v_space(opts[:doc], 2)
           opts[:layout_arranger].v_space(opts[:doc], 2)
           opts[:layout_arranger].v_space(opts[:doc], 2)
         end
