@@ -43,6 +43,7 @@ class ResumePrinter
         :work_experience, :side_project, :education
       ].each { |section_nm|
         typesetter.handler(sections[section_nm]).call(
+          section_nm,
           sections[section_nm],
           typeset_opts
         )
