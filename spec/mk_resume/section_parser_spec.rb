@@ -39,7 +39,7 @@ describe MkResume::SectionParser do
   context "업무 프로젝트에 대한 시맨틱 모델을 만들 수 있다" do
     it "업무 하나에 대한 상세 내용" do
       src_path = File.join(TEST_DATA_DIR, *%w[one_task])
-      basic_proj = MkResume::BasicProjectMaker.new
+      basic_proj = MkResume::Model::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -52,7 +52,7 @@ describe MkResume::SectionParser do
 
     it "업무 둘에 대한 상세 내용" do
       src_path = File.join(TEST_DATA_DIR, *%w[two_task])
-      basic_proj = MkResume::BasicProjectMaker.new
+      basic_proj = MkResume::Model::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -66,7 +66,7 @@ describe MkResume::SectionParser do
 
     it "두 프로젝트, 프로젝트별 업무가 하나" do
       src_path = File.join(TEST_DATA_DIR, *%w[one_task_each])
-      basic_proj = MkResume::BasicProjectMaker.new
+      basic_proj = MkResume::Model::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -82,7 +82,7 @@ describe MkResume::SectionParser do
 
     it "두 프로젝트, 프로젝트당 업무가 여러 개" do
       src_path = File.join(TEST_DATA_DIR, *%w[two_tasks_each])
-      basic_proj = MkResume::BasicProjectMaker.new
+      basic_proj = MkResume::Model::BasicProjectMaker.new
 
       expected = {
         "p1" => [
@@ -102,7 +102,7 @@ describe MkResume::SectionParser do
   context "포트폴리오 프로젝트에 대한 시맨틱 모델을 만들 수 있다" do
     it "업무 상세 내용이 없고, 문제 해결 상세 내용이 있다" do
       src_path = File.join(TEST_DATA_DIR, *%w[portfolio_proj])
-      portfolio_proj = MkResume::PortfolioProjectMaker.new
+      portfolio_proj = MkResume::Model::PortfolioProjectMaker.new
 
       expected = {
         :tasks => ["x", "y"],
