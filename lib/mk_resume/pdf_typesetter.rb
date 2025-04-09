@@ -196,7 +196,7 @@ module MkResume
         opts[:parser].segments_by_keyword(section_txt, "portfolio_nm").each do |portfolio|
           portfolios << opts[:parser].make_obj(portfolio.join("\n"),
             [:portfolio_nm, :desc, :repo_link, :service_link, :swagger_link, :tech_stack],
-            MkResume::PortfolioProjectMaker)
+            MkResume::Model::PortfolioProjectMaker)
         end
 
         portfolios.each do |portfolio|
