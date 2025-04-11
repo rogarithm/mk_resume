@@ -51,6 +51,25 @@ module MkResume
       end
     end
 
+    def find_txt_type(text)
+      txt_type = {
+        :simple_text => false,
+        :only_link => false,
+        :text_link_combined => false
+      }
+      link_regex = /<link href='([^']*)'>([^<]*)<\/link>/
+      text_match = text.match(link_regex)
+
+      if text_match.nil?
+        txt_type[:simple_text] = true
+        return txt_type
+      end
+
+      txt_type[:only_link] = true if text_match[0] == text
+      txt_type[:text_link_combined] = true if text_match[0] != text
+      txt_type
+    end
+
     def write_text(pdf_doc, txt, options = {})
       txt = wrap_link(txt)
       pdf_doc.text(txt, options)
