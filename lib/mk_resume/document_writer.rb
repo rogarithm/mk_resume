@@ -80,7 +80,13 @@ module MkResume
         pdf_doc.text(txt, options)
       end
       if txt_type[:text_link_combined]
+        wrapped_txt = wrap_link_n_txt txt
 
+        write_formatted_text(
+          pdf_doc,
+          wrapped_txt,
+          options
+        )
       end
 
       if options[:line_spacing_pt] == nil
@@ -99,6 +105,16 @@ module MkResume
       link_regex = /<link href='([^']*)'>([^<]*)<\/link>/
 
       text.match(link_regex) ? link_style % text : text
+    end
+
+    def wrap_link_n_txt txt
+      captures = txt.match(/^(.*)<link href='([^']*)'>([^<]*)<\/link>(.*)$/).captures
+      [
+        { text: captures[0].strip!, leading: 6 },
+        { text: " (" },
+        { text: captures[2], leading: 6, styles: [:underline], color: "888888", link: captures[1] },
+        { text: ")" }
+      ]
     end
 
     def indent(pdf_doc, left_width, &text_writer)

@@ -65,6 +65,29 @@ describe MkResume::DocumentWriter do
       expect(fake_doc.method_calls[:text]).to eq(1)
       fake_doc.clear
     end
+
+    it "링크 텍스트와 일반 텍스트가 모두 있을 경우 링크 형식과 그렇지 않은 형식을 따로 구분한다" do
+      dw = MkResume::DocumentWriter.new
+      link_n_txt = "blah <link href='url'>url_txt</link>"
+      expect(dw.wrap_link_n_txt link_n_txt)
+        .to eq([
+                 { text: "blah ", leading: 6 },
+                 { text: " (" },
+                 { text: "url_txt", leading: 6, styles: [:underline], color: "888888", link: "url" },
+                 { text: ")" }
+               ])
+    end
+
+    it "링크 텍스트와 일반 텍스트가 모두 있을 경우 write_formatted_text를 호출한다" do
+      dw = MkResume::DocumentWriter.new
+      fake_doc = FakePrawn.new
+
+      link_n_txt = "blah <link href='url'>url_txt</link>"
+      dw.write_text(fake_doc, link_n_txt)
+      expect(fake_doc.txt_args).to eq([dw.wrap_link_n_txt(link_n_txt)])
+      expect(fake_doc.method_calls[:formatted_text]).to eq(1)
+      fake_doc.clear
+    end
   end
 
   class FakePrawn
@@ -80,6 +103,10 @@ describe MkResume::DocumentWriter do
     def text(txt, options)
       @txt_args << txt
       @method_calls[:text] = @method_calls[:text] + 1
+    end
+    def formatted_text(txts, options)
+      @txt_args << txts
+      @method_calls[:formatted_text] = @method_calls[:formatted_text] + 1
     end
     def clear
       @txt_args.clear
