@@ -43,5 +43,48 @@ describe MkResume::DocumentWriter do
       expect(txt_type_3[:text_link_combined]).to eq(true)
     end
   end
+
+  context "링크 텍스트 포함 여부에 따라 링크를 자동으로 포맷팅한다" do
+    it "링크 텍스트가 없을 경우 text를 따로 포맷팅하지 않고, prawn#text를 호출한다" do
+      dw = MkResume::DocumentWriter.new
+      fake_doc = FakePrawn.new
+
+      dw.write_text(fake_doc, "sample text")
+      expect(fake_doc.txt_args).to eq(["sample text"])
+      expect(fake_doc.method_calls[:text]).to eq(1)
+      fake_doc.clear
+    end
+
+    it "링크 텍스트만 있을 경우 wrap_link를 호출해서 text를 link 형식으로 포맷팅하고, prawn#text를 호출한다" do
+      dw = MkResume::DocumentWriter.new
+      fake_doc = FakePrawn.new
+
+      link_txt = "<link href='url'>url_txt</link>"
+      dw.write_text(fake_doc, link_txt)
+      expect(fake_doc.txt_args).to eq([dw.wrap_link(link_txt)])
+      expect(fake_doc.method_calls[:text]).to eq(1)
+      fake_doc.clear
+    end
+  end
+
+  class FakePrawn
+    attr_reader :txt_args, :method_calls
+
+    def initialize
+      @txt_args = []
+      @method_calls = Hash.new(0)
+    end
+
+    def stroke_horizontal_rule; end
+    def move_down point; end
+    def text(txt, options)
+      @txt_args << txt
+      @method_calls[:text] = @method_calls[:text] + 1
+    end
+    def clear
+      @txt_args.clear
+      @method_calls.clear
+    end
+  end
 end
 

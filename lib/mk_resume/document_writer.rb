@@ -71,8 +71,17 @@ module MkResume
     end
 
     def write_text(pdf_doc, txt, options = {})
-      txt = wrap_link(txt)
-      pdf_doc.text(txt, options)
+      txt_type = find_txt_type(txt)
+      if txt_type[:simple_text]
+        pdf_doc.text(txt, options)
+      end
+      if txt_type[:only_link]
+        txt = wrap_link(txt)
+        pdf_doc.text(txt, options)
+      end
+      if txt_type[:text_link_combined]
+
+      end
 
       if options[:line_spacing_pt] == nil
         line_spacing(pdf_doc, 0)
