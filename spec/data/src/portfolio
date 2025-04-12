@@ -1,6 +1,5 @@
-portfolio_nm: Weddy
+portfolio_nm: Weddy <link href='https://github.com/your-weddy/back/'>프로젝트 링크</link>
 desc: 결혼 준비를 도와주는 웹 서비스의 백엔드 서버
-repo_link: <link href='https://github.com/your-weddy/back/'>프로젝트 링크</link>
 service_link: https://weddy-smoky.vercel.app/
 swagger_link: https://your-weddy.pe.kr/swagger-ui/index.html
 tech_stack: EC2, S3, Java, Spring Boot, MyBatis, MySql, Gradle, Mockito, JUnit
@@ -20,9 +19,8 @@ project:
   작업하면서 다른 리소스의 서비스 로직이 필요할 경우, 미리 정의한 인터페이스를 기준으로 작업
   작업을 합치기 전까지 해당 서비스 로직의 반환값은 픽스쳐 데이터로 대신함
 
-portfolio_nm: Freesize
+portfolio_nm: Freesize <link href='https://github.com/rogarithm/freesize'>프로젝트 링크</link>
 desc: LoRA 학습에 사용하기 위한 이미지 전처리를 제공하는 웹 서비스의 백엔드 서버
-repo_link: <link href='https://github.com/rogarithm/freesize'>프로젝트 링크</link>
 service_link: https://freesize.vercel.app/
 tech_stack: EC2, S3, Java, Spring Boot, WebClient, Gradle, JUnit
 project:
