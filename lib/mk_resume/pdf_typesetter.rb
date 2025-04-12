@@ -200,18 +200,9 @@ module MkResume
         end
 
         portfolios.each do |portfolio|
-          match = portfolio[:repo_link].match(/<link href='([^']*)'>([^<]*)<\/link>/)
-          link_url = match[1]
-          link_text = match[2]
-
-          opts[:doc_writer].write_formatted_text(
+          opts[:doc_writer].write_text(
             opts[:doc],
-            [
-              { text: portfolio[:portfolio_nm], leading: 6 },
-              { text: " (" },
-              { text: "#{link_text}", leading: 6, styles: [:underline], color: "888888", link: link_url },
-              { text: ")" },
-            ],
+            portfolio[:portfolio_nm],
             opts[:formatting_config].send(section_nm, :project)
           )
           opts[:layout_arranger].v_space(opts[:doc], 10)

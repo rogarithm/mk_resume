@@ -51,9 +51,43 @@ module MkResume
       end
     end
 
+    def find_txt_type(text)
+      txt_type = {
+        :simple_text => false,
+        :only_link => false,
+        :text_link_combined => false
+      }
+      link_regex = /<link href='([^']*)'>([^<]*)<\/link>/
+      text_match = text.match(link_regex)
+
+      if text_match.nil?
+        txt_type[:simple_text] = true
+        return txt_type
+      end
+
+      txt_type[:only_link] = true if text_match[0] == text
+      txt_type[:text_link_combined] = true if text_match[0] != text
+      txt_type
+    end
+
     def write_text(pdf_doc, txt, options = {})
-      txt = wrap_link(txt)
-      pdf_doc.text(txt, options)
+      txt_type = find_txt_type(txt)
+      if txt_type[:simple_text]
+        pdf_doc.text(txt, options)
+      end
+      if txt_type[:only_link]
+        txt = wrap_link(txt)
+        pdf_doc.text(txt, options)
+      end
+      if txt_type[:text_link_combined]
+        wrapped_txt = wrap_link_n_txt txt
+
+        write_formatted_text(
+          pdf_doc,
+          wrapped_txt,
+          options
+        )
+      end
 
       if options[:line_spacing_pt] == nil
         line_spacing(pdf_doc, 0)
@@ -71,6 +105,16 @@ module MkResume
       link_regex = /<link href='([^']*)'>([^<]*)<\/link>/
 
       text.match(link_regex) ? link_style % text : text
+    end
+
+    def wrap_link_n_txt txt
+      captures = txt.match(/^(.*)<link href='([^']*)'>([^<]*)<\/link>(.*)$/).captures
+      [
+        { text: captures[0].strip!, leading: 6 },
+        { text: " (" },
+        { text: captures[2], leading: 6, styles: [:underline], color: "888888", link: captures[1] },
+        { text: ")" }
+      ]
     end
 
     def indent(pdf_doc, left_width, &text_writer)
