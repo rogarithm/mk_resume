@@ -20,3 +20,37 @@ task :test do
     puts 'ok!'
   end
 end
+
+desc "비교 기준이 될 섹션 하나에 대한 pdf를 생성한다"
+task :base_only do
+  [
+    :personal_info, :introduction, :portfolio,
+    :work_experience, :side_project, :education
+  ].each do |section_nm|
+    ResumePrinter.new.print(
+      %W[.. .. spec data src],
+      [section_nm],
+      "./test/base_data/sample_#{section_nm}"
+    )
+  end
+end
+
+desc "생성 결과가 달라지지 않았는지 확인한다"
+task :test_only, [:section_nm] do |ignore, args|
+  if args[:section_nm].nil?
+    abort("empty section name. abort...")
+  end
+
+  section_nm = args[:section_nm].to_sym
+  ResumePrinter.new.print(
+    %W[.. .. spec data src],
+    [section_nm],
+    "temp_#{section_nm}"
+  )
+  x = `git diff --no-index ./temp_#{section_nm}.pdf ./test/base_data/sample_#{section_nm}.pdf`
+  if x.strip != ""
+    puts 'generated pdf is different from base pdf!'
+  else
+    puts 'ok!'
+  end
+end
