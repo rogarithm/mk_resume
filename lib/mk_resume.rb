@@ -21,10 +21,10 @@ class ResumePrinter
   def print(relative_path, section_order = [
       :personal_info, :introduction, :portfolio,
       :work_experience, :side_project, :education
-    ])
+    ], output_nm = "output") # output_nm에 ./spec/t 같이 디렉토리 형식을 넣으면 해당 디렉토리에 결과 파일이 생성된다
 
     Prawn::Document.generate(
-      "output.pdf",
+      "#{output_nm}.pdf",
       page_size: "A4",
       margin: @layout_arranger.doc_margins
     ) do |doc|
