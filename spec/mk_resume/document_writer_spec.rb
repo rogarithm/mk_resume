@@ -88,6 +88,32 @@ describe MkResume::DocumentWriter do
       expect(fake_doc.method_calls[:formatted_text]).to eq(1)
       fake_doc.clear
     end
+
+    # it "여러 개의 링크를 가질 경우 모든 링크를 pdf로 변환할 수 있다" do
+    #   dw = MkResume::DocumentWriter.new
+    #   fake_doc = FakePrawn.new
+    #
+    #   link_n_txt = "blah <link href='url'>url_txt</link> asdf <link href='another_url'>another_url_txt</link>"
+    #   link_n_txt.match(/<link href='([^']*)'>([^<]*)<\/link>/)
+    #   dw.write_text(fake_doc, link_n_txt)
+    #
+    #   [
+    #     { text: "blah " },
+    #     { text: "url_txt", link: "url" },
+    #     { text: " asdf " },
+    #     { text: "another_url_txt", link: "another_url" },
+    #   ]
+    #   expect(dw.wrap_link_n_txt(link_n_txt))
+    #     .to eq(
+    #           [
+    #             { text: "blah " },
+    #             { text: "url_txt", styles: [:underline], color: "888888", link: "url" },
+    #             { text: " asdf " },
+    #             { text: "another_url_txt", styles: [:underline], color: "888888", link: "another_url" },
+    #           ]
+    #         )
+    #   fake_doc.clear
+    # end
   end
 
   class FakePrawn

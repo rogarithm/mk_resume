@@ -173,6 +173,7 @@ module MkResume
 
         opts[:layout_arranger].v_space(opts[:doc], 2)
         opts[:layout_arranger].v_space(opts[:doc], 14.5)
+        opts[:layout_arranger].v_space(opts[:doc], 14.5)
       }
     end
   end
@@ -254,7 +255,7 @@ module MkResume
               opts[:layout_arranger].v_space(opts[:doc], 2)
               opts[:layout_arranger].v_space(opts[:doc], 2)
             end
-          end
+          end if portfolio[:project][:trouble_shooting][0]["EMPTY"] != []
 
           opts[:layout_arranger].v_space(opts[:doc], 2)
           opts[:layout_arranger].v_space(opts[:doc], 2)
