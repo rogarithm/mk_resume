@@ -50,15 +50,15 @@ describe MkResume::MarkdownParser do
       expect(result[0][:level]).to eq(0)
     end
 
-    it "2칸 들여쓰기 (레벨 1)" do
-      text = "  - 아이템"
+    it "1칸 들여쓰기 (레벨 1)" do
+      text = " - 아이템"
       result = @parser.parse(text)
 
       expect(result[0][:level]).to eq(1)
     end
 
-    it "4칸 들여쓰기 (레벨 2)" do
-      text = "    - 아이템"
+    it "2칸 들여쓰기 (레벨 2)" do
+      text = "  - 아이템"
       result = @parser.parse(text)
 
       expect(result[0][:level]).to eq(2)
@@ -69,7 +69,7 @@ describe MkResume::MarkdownParser do
     it "2단 리스트 구조" do
       text = <<~MD
         - 첫 번째
-          - 중첩된 아이템
+         - 중첩된 아이템
       MD
 
       result = @parser.parse(text)
@@ -83,8 +83,8 @@ describe MkResume::MarkdownParser do
     it "3단 리스트 구조" do
       text = <<~MD
         - 레벨 0
-          - 레벨 1
-            - 레벨 2
+         - 레벨 1
+          - 레벨 2
       MD
 
       result = @parser.parse(text)
@@ -117,10 +117,10 @@ describe MkResume::MarkdownParser do
     it "여러 부모 아래 여러 자식" do
       text = <<~MD
         - 첫 번째 부모
-          - 자식 1-1
-          - 자식 1-2
+         - 자식 1-1
+         - 자식 1-2
         - 두 번째 부모
-          - 자식 2-1
+         - 자식 2-1
       MD
 
       result = @parser.parse(text)

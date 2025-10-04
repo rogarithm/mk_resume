@@ -65,9 +65,8 @@ module MkResume
     end
 
     def calculate_indent_level(line)
-      # 2칸 공백 = 레벨 1
-      leading_spaces = line.match(/^(\s*)/)[1].length
-      leading_spaces / 2
+      # 1칸 공백 = 레벨 1
+      line.match(/^(\s*)/)[1].length
     end
   end
 end
