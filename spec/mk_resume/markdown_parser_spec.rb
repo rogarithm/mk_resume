@@ -10,35 +10,42 @@ describe MkResume::MarkdownParser do
     @parser = MkResume::MarkdownParser.new
   end
 
+  def node(*params)
+    type, content, level, children = params
+    {
+      type: type,
+      content: content,
+      level: level || 0,
+      children: children ? mk_nodes(children) : []
+    }
+  end
+
+  def mk_nodes(nodes)
+    nodes.map do |params|
+      node(*params)
+    end
+  end
+
   context "마크다운 요소를 파싱한다" do
     it "헤딩" do
       text = "# 제목"
       result = @parser.parse(text)
 
-      expect(result.size).to eq(1)
-      expect(result[0][:type]).to eq(:heading)
-      expect(result[0][:content]).to eq("제목")
-      expect(result[0][:level]).to eq(0)
+      expect(result).to eq(mk_nodes [[:heading, "제목"]])
     end
 
     it "리스트 아이템" do
       text = "- 첫 번째 아이템"
       result = @parser.parse(text)
 
-      expect(result.size).to eq(1)
-      expect(result[0][:type]).to eq(:list_item)
-      expect(result[0][:content]).to eq("첫 번째 아이템")
-      expect(result[0][:level]).to eq(0)
+      expect(result).to eq(mk_nodes [[:list_item, "첫 번째 아이템", 0]])
     end
 
     it "일반 텍스트" do
       text = "일반 텍스트"
       result = @parser.parse(text)
 
-      expect(result.size).to eq(1)
-      expect(result[0][:type]).to eq(:text)
-      expect(result[0][:content]).to eq("일반 텍스트")
-      expect(result[0][:level]).to eq(0)
+      expect(result).to eq(mk_nodes [[:text, "일반 텍스트", 0]])
     end
   end
 
@@ -74,10 +81,9 @@ describe MkResume::MarkdownParser do
 
       result = @parser.parse(text)
 
-      expect(result.size).to eq(1)
-      expect(result[0][:content]).to eq("첫 번째")
-      expect(result[0][:children].size).to eq(1)
-      expect(result[0][:children][0][:content]).to eq("중첩된 아이템")
+      expect(result).to eq(mk_nodes [[:list_item, "첫 번째", 0,
+                                      [[:list_item, "중첩된 아이템", 1]]
+                                     ]])
     end
 
     it "3단 리스트 구조" do
@@ -89,12 +95,11 @@ describe MkResume::MarkdownParser do
 
       result = @parser.parse(text)
 
-      expect(result.size).to eq(1)
-      expect(result[0][:content]).to eq("레벨 0")
-      expect(result[0][:children].size).to eq(1)
-      expect(result[0][:children][0][:content]).to eq("레벨 1")
-      expect(result[0][:children][0][:children].size).to eq(1)
-      expect(result[0][:children][0][:children][0][:content]).to eq("레벨 2")
+      expect(result).to eq(mk_nodes [[:list_item, "레벨 0", 0,
+                                      [[:list_item, "레벨 1", 1,
+                                        [[:list_item, "레벨 2", 2]]
+                                       ]]
+                                     ]])
     end
 
     it "같은 레벨의 여러 아이템" do
@@ -106,10 +111,9 @@ describe MkResume::MarkdownParser do
 
       result = @parser.parse(text)
 
-      expect(result.size).to eq(3)
-      expect(result[0][:content]).to eq("첫 번째")
-      expect(result[1][:content]).to eq("두 번째")
-      expect(result[2][:content]).to eq("세 번째")
+      expect(result).to eq(mk_nodes [[:list_item, "첫 번째", 0],
+                                     [:list_item, "두 번째", 0],
+                                     [:list_item, "세 번째", 0]])
     end
   end
 
@@ -125,12 +129,13 @@ describe MkResume::MarkdownParser do
 
       result = @parser.parse(text)
 
-      expect(result.size).to eq(2)
-      expect(result[0][:children].size).to eq(2)
-      expect(result[0][:children][0][:content]).to eq("자식 1-1")
-      expect(result[0][:children][1][:content]).to eq("자식 1-2")
-      expect(result[1][:children].size).to eq(1)
-      expect(result[1][:children][0][:content]).to eq("자식 2-1")
+      expect(result).to eq(mk_nodes [[:list_item, "첫 번째 부모", 0,
+                                      [[:list_item, "자식 1-1", 1],
+                                       [:list_item, "자식 1-2", 1]]
+                                     ],
+                                     [:list_item, "두 번째 부모", 0,
+                                      [[:list_item, "자식 2-1", 1]]
+                                     ]])
     end
 
     it "헤딩과 리스트 혼합" do
@@ -142,11 +147,10 @@ describe MkResume::MarkdownParser do
 
       result = @parser.parse(text)
 
-      expect(result.size).to eq(3)
-      expect(result[0][:type]).to eq(:heading)
-      expect(result[0][:children].size).to eq(0)
-      expect(result[1][:type]).to eq(:list_item)
-      expect(result[2][:type]).to eq(:list_item)
+      expect(result).to eq(mk_nodes [[:heading, "섹션 제목", 0],
+                                     [:list_item, "첫 번째 아이템", 0],
+                                     [:list_item, "두 번째 아이템", 0]
+                                    ])
     end
   end
 
@@ -161,9 +165,9 @@ describe MkResume::MarkdownParser do
 
       result = @parser.parse(text)
 
-      expect(result.size).to eq(2)
-      expect(result[0][:content]).to eq("첫 번째")
-      expect(result[1][:content]).to eq("두 번째")
+      expect(result).to eq(mk_nodes [[:list_item, "첫 번째", 0],
+                                     [:list_item, "두 번째", 0]
+                                    ])
     end
   end
 end
