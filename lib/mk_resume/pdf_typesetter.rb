@@ -370,6 +370,7 @@ module MkResume
     def handler
       lambda {|section_nm, section_txt, opts|
         require_relative './markdown_parser'
+        require_relative './node_formatter'
 
         # "markdown:" 마커 제거
         content = section_txt.split("\n")[1..-1].join("\n")
@@ -395,6 +396,8 @@ module MkResume
     private
 
     def render_nodes(nodes, section_nm, opts, level = 0)
+      formatter = NodeFormatter.new
+
       nodes.each do |node|
         # 동적으로 노드 타입에서 스타일 키 추출
         style_key = node[:type]
@@ -422,11 +425,12 @@ module MkResume
           )
 
         when :list_item
+          params = formatter.format_list_item(node, style)
           opts[:doc_writer].write_indented_text(
             opts[:doc],
-            "- ",
-            node[:content],
-            style
+            params[:indent],
+            params[:text],
+            params[:style]
           )
 
         when :text
