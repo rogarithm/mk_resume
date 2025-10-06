@@ -111,9 +111,7 @@ module MkResume
       captures = txt.match(/^(.*)\[([^\]]+)\]\(([^)]+)\)(.*)$/).captures
       [
         { text: captures[0], leading: 6 },
-        { text: " (" },
         { text: captures[1], leading: 6, styles: [:underline], color: "888888", link: captures[2] },
-        { text: ")" },
         { text: captures[3] }
       ]
     end

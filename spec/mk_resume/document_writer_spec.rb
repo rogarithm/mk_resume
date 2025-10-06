@@ -72,9 +72,7 @@ describe MkResume::DocumentWriter do
       expect(dw.wrap_link_n_txt link_n_txt)
         .to eq([
                  { text: "blah ", leading: 6 },
-                 { text: " (" },
                  { text: "url_txt", leading: 6, styles: [:underline], color: "888888", link: "url" },
-                 { text: ")" },
                  { text: "" }
                ])
     end

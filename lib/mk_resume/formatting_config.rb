@@ -1,6 +1,6 @@
 module MkResume
   class FormattingConfig
-    FONT_SIZE = {:name => 11, :channel => 10, :heading => 9.5, :body => 9.5, :detail => 9}
+    FONT_SIZE = {:heading => 9.5, :body => 9.5, :detail => 9}
 
     def find_font_size usage
       FONT_SIZE[usage]
@@ -16,19 +16,17 @@ module MkResume
           leading: line_height * find_font_size(:heading)
         },
         :h1 => {
-          size: 11,
-          style: :bold,
+          size: find_font_size(:heading),
           leading: 6,
           indent_paragraphs: 0
         },
         :h2 => {
-          size: 10,
+          size: find_font_size(:heading),
           leading: 6,
           indent_paragraphs: 0
         },
         :h3 => {
           size: 9,
-          style: :bold,
           leading: 6,
           indent_paragraphs: 0
         },

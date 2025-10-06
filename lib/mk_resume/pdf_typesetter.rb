@@ -132,28 +132,33 @@ module MkResume
           opts[:formatting_config].send("markdown", :heading)
         )
 
-        # h1 노드 기준으로 그룹화
-        groups = group_by_h1(nodes)
+        # 문서 첫 노드의 h 레벨 기준으로 그룹화
+        groups = group_by_h(nodes)
 
         # 각 그룹 렌더링 (그룹 사이에 큰 간격)
         groups.each_with_index do |group, idx|
           render_nodes(group, "markdown", opts)
-          opts[:layout_arranger].v_space(opts[:doc], 20) if idx < groups.size - 1
+          opts[:layout_arranger].v_space(opts[:doc], 10) if idx < groups.size - 1
         end
 
-        opts[:layout_arranger].v_space(opts[:doc], 14.5)
+        opts[:layout_arranger].v_space(opts[:doc], 15)
       }
     end
 
     private
 
-    def group_by_h1(nodes)
+    def group_by_h(nodes)
+      return [nodes] if nodes.empty?
+
+      # 첫 번째 헤딩 타입을 그룹 구분 기준으로 사용
+      separator_type = nodes.find { |n| heading?(n) }&.fetch(:type)
+      return [nodes] unless separator_type  # 헤딩이 없으면 전체를 하나의 그룹으로
+
       groups = []
       group_now = []
 
       nodes.each do |node|
-        if node[:type] == :h1 && !group_now.empty?
-          # 새 h1을 만나면 이전 그룹 저장하고 새 그룹 시작
+        if node[:type] == separator_type && !group_now.empty?
           groups << group_now
           group_now = [node]
         else
@@ -161,10 +166,12 @@ module MkResume
         end
       end
 
-      # 마지막 그룹 추가
-      groups << group_now unless group_now.empty?
-
+      groups << group_now if not group_now.empty?
       groups
+    end
+
+    def heading?(node)
+      node[:type].to_s.match?(/^h[1-6]$/)
     end
 
     def render_nodes(nodes, section_nm, opts, level = 0)
