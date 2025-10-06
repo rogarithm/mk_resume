@@ -61,11 +61,32 @@ module MkResume
     end
 
     def create_node(type, content, lvl)
+      # 마크다운 링크가 포함된 경우 link_data 추가
+      if content.match(/\[([^\]]+)\]\(([^)]+)\)/)
+        {
+          type: type,
+          content: content,
+          level: lvl,
+          children: [],
+          link_data: parse_link_in_content(content)
+        }
+      else
+        {
+          type: type,
+          content: content,
+          level: lvl,
+          children: []
+        }
+      end
+    end
+
+    def parse_link_in_content(content)
+      match = content.match(/^(.*)\[([^\]]+)\]\(([^)]+)\)(.*)$/)
       {
-        type: type,
-        content: content,
-        level: lvl,
-        children: []
+        before_text: match[1],
+        link_text: match[2],
+        link_url: match[3],
+        after_text: match[4]
       }
     end
 
