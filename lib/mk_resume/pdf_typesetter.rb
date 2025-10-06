@@ -386,14 +386,40 @@ module MkResume
           opts[:formatting_config].send(section_nm, :heading)
         )
 
-        # 노드 렌더링
-        render_nodes(nodes, section_nm, opts)
+        # h1 노드 기준으로 그룹화
+        groups = group_by_h1(nodes)
+
+        # 각 그룹 렌더링 (그룹 사이에 큰 간격)
+        groups.each_with_index do |group, idx|
+          render_nodes(group, section_nm, opts)
+          opts[:layout_arranger].v_space(opts[:doc], 20) if idx < groups.size - 1
+        end
 
         opts[:layout_arranger].v_space(opts[:doc], 14.5)
       }
     end
 
     private
+
+    def group_by_h1(nodes)
+      groups = []
+      group_now = []
+
+      nodes.each do |node|
+        if node[:type] == :h1 && !group_now.empty?
+          # 새 h1을 만나면 이전 그룹 저장하고 새 그룹 시작
+          groups << group_now
+          group_now = [node]
+        else
+          group_now << node
+        end
+      end
+
+      # 마지막 그룹 추가
+      groups << group_now unless group_now.empty?
+
+      groups
+    end
 
     def render_nodes(nodes, section_nm, opts, level = 0)
       formatter = NodeFormatter.new
