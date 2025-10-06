@@ -31,7 +31,7 @@ describe MkResume::MarkdownParser do
       text = "# 제목"
       result = @parser.parse(text)
 
-      expect(result).to eq(mk_nodes [[:heading, "제목"]])
+      expect(result).to eq(mk_nodes [[:h1, "제목"]])
     end
 
     it "리스트 아이템" do
@@ -147,7 +147,7 @@ describe MkResume::MarkdownParser do
 
       result = @parser.parse(text)
 
-      expect(result).to eq(mk_nodes [[:heading, "섹션 제목", 0],
+      expect(result).to eq(mk_nodes [[:h1, "섹션 제목", 0],
                                      [:list_item, "첫 번째 아이템", 0],
                                      [:list_item, "두 번째 아이템", 0]
                                     ])
