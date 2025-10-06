@@ -129,7 +129,7 @@ module MkResume
         opts[:doc_writer].write_heading(
           opts[:doc],
           section_nm,
-          opts[:formatting_config].send(section_nm, :heading)
+          opts[:formatting_config].send("markdown", :heading)
         )
 
         # h1 노드 기준으로 그룹화
@@ -137,7 +137,7 @@ module MkResume
 
         # 각 그룹 렌더링 (그룹 사이에 큰 간격)
         groups.each_with_index do |group, idx|
-          render_nodes(group, section_nm, opts)
+          render_nodes(group, "markdown", opts)
           opts[:layout_arranger].v_space(opts[:doc], 20) if idx < groups.size - 1
         end
 
