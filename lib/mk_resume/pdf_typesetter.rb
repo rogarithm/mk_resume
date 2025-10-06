@@ -2,12 +2,12 @@ module MkResume
   class PdfTypesetter
     def strategy_list
       [
-        WorkExpTypesetStrategy.name,
-        PortfolioTypesetStrategy.name,
-        ListTypesetStrategy.name,
-        TwoColumnsTypesetStrategy.name,
-        SideProjTypesetStrategy.name,
-        MarkdownTypesetStrategy.name
+        MarkdownTypesetStrategy.name,
+        # WorkExpTypesetStrategy.name,
+        # PortfolioTypesetStrategy.name,
+        # ListTypesetStrategy.name,
+        # TwoColumnsTypesetStrategy.name,
+        # SideProjTypesetStrategy.name
       ]
     end
 
@@ -429,10 +429,10 @@ module MkResume
         style_key = node[:type]
 
         # 스타일 가져오기 (nil 체크)
-        style = opts[:formatting_config].send(section_nm, style_key)
+        style = opts[:formatting_config].send("markdown", style_key)
         if style.nil?
           pp "WARNING: No style for section=#{section_nm}, key=#{style_key}, node_type=#{node[:type]}"
-          style = opts[:formatting_config].send(section_nm, :default)
+          style = opts[:formatting_config].send("markdown", :default)
         end
 
         case node[:type]
