@@ -46,9 +46,13 @@ module MkResume
       lvl = indent_lvl(line)
       stripped = line.strip
 
+      h_ch = "#"
       case stripped
-      when /^#\s+(.+)$/  # 헤딩: # 제목
-        create_node(:heading, $1, lvl)
+      when /^(#{h_ch}{1,6})\s+(.+)$/  # 헤딩: # ~ ###### (동적)
+        heading_level = $1.length
+        create_node("h#{heading_level}".to_sym, $2, lvl)
+      when /^\*\*(.+?)\*\*$/  # 볼드: **text**
+        create_node(:bold, $1, lvl)
       when /^-\s+(.+)$/  # 리스트 아이템: - 내용
         create_node(:list_item, $1, lvl)
       else  # 일반 텍스트

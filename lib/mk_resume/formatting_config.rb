@@ -167,6 +167,47 @@ module MkResume
       formatting_config[usage]
     end
 
+    def markdown usage
+      line_height = 1.45
+
+      formatting_config = {
+        :heading => {
+          size: find_font_size(:heading),
+          style: :bold,
+          leading: line_height * find_font_size(:heading)
+        },
+        :h1 => {
+          size: 11,
+          style: :bold,
+          leading: 6,
+          indent_paragraphs: 0
+        },
+        :h2 => {
+          size: 10,
+          leading: 6,
+          indent_paragraphs: 0
+        },
+        :h3 => {
+          size: 9,
+          style: :bold,
+          leading: 6,
+          indent_paragraphs: 0
+        },
+        :text => {
+          size: find_font_size(:body),
+          leading: 6,
+          indent_paragraphs: 0
+        },
+        :list_item => {
+          size: find_font_size(:detail),
+          leading: 4,
+          indent_paragraphs: 0
+        }
+      }
+
+      formatting_config[usage]
+    end
+
     def method_missing(symbol, *args)
       raise FormattingConfigNotExistsError.new(
         "Formatting config for '#{symbol.to_s}' doesn't exist.

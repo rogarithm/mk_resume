@@ -6,7 +6,8 @@ module MkResume
         PortfolioTypesetStrategy.name,
         ListTypesetStrategy.name,
         TwoColumnsTypesetStrategy.name,
-        SideProjTypesetStrategy.name
+        SideProjTypesetStrategy.name,
+        MarkdownTypesetStrategy.name
       ]
     end
 
@@ -356,6 +357,94 @@ module MkResume
         end
         opts[:layout_arranger].v_space(opts[:doc], 14.5)
       }
+    end
+  end
+
+  class MarkdownTypesetStrategy
+    include TypesetStrategy
+
+    def can_handle? section_txt
+      section_txt.split("\n").first.match(/^markdown.*$/)
+    end
+
+    def handler
+      lambda {|section_nm, section_txt, opts|
+        require_relative './markdown_parser'
+
+        # "markdown:" 마커 제거
+        content = section_txt.split("\n")[1..-1].join("\n")
+
+        # 마크다운 파싱
+        parser = MkResume::MarkdownParser.new
+        nodes = parser.parse(content)
+
+        # 섹션 헤딩 렌더링 (섹션명 자동 생성)
+        opts[:doc_writer].write_heading(
+          opts[:doc],
+          section_nm,
+          opts[:formatting_config].send(section_nm, :heading)
+        )
+
+        # 노드 렌더링
+        render_nodes(nodes, section_nm, opts)
+
+        opts[:layout_arranger].v_space(opts[:doc], 14.5)
+      }
+    end
+
+    private
+
+    def render_nodes(nodes, section_nm, opts, level = 0)
+      nodes.each do |node|
+        # 동적으로 노드 타입에서 스타일 키 추출
+        style_key = node[:type]
+
+        # 스타일 가져오기 (nil 체크)
+        style = opts[:formatting_config].send(section_nm, style_key)
+        if style.nil?
+          pp "WARNING: No style for section=#{section_nm}, key=#{style_key}, node_type=#{node[:type]}"
+          style = opts[:formatting_config].send(section_nm, :default)
+        end
+
+        case node[:type]
+        when :h1, :h2, :h3
+          opts[:doc_writer].write_text(
+            opts[:doc],
+            node[:content],
+            style
+          )
+
+        when :bold
+          opts[:doc_writer].write_text(
+            opts[:doc],
+            node[:content],
+            style
+          )
+
+        when :list_item
+          opts[:doc_writer].write_indented_text(
+            opts[:doc],
+            "- ",
+            node[:content],
+            style
+          )
+
+        when :text
+          text_style = opts[:formatting_config].send(section_nm, :default)
+          if text_style.nil?
+            pp "WARNING: No default style for section=#{section_nm}"
+            text_style = {}
+          end
+          opts[:doc_writer].write_text(
+            opts[:doc],
+            node[:content],
+            text_style
+          )
+        end
+
+        # children 재귀 렌더링
+        render_nodes(node[:children], section_nm, opts, level + 1) unless node[:children].empty?
+      end
     end
   end
 end
