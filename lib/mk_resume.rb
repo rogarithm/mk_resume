@@ -1,6 +1,5 @@
 require 'prawn'
 require 'prawn/measurement_extensions'
-require_relative 'mk_resume/section_parser'
 require_relative 'mk_resume/font_manager'
 require_relative 'mk_resume/document_writer'
 require_relative 'mk_resume/layout_arranger'
@@ -15,7 +14,6 @@ class ResumePrinter
     @font_manager = MkResume::FontManager.new
     @formatting_config = MkResume::FormattingConfig.new
     @doc_writer = MkResume::DocumentWriter.new
-    @parser = MkResume::SectionParser.new
   end
 
   def print(relative_path, section_order = [
@@ -36,8 +34,7 @@ class ResumePrinter
         :doc_writer => @doc_writer,
         :doc => doc,
         :formatting_config => @formatting_config,
-        :layout_arranger => @layout_arranger,
-        :parser => @parser
+        :layout_arranger => @layout_arranger
       }
 
       sections = @doc_writer.read_sections(relative_path)

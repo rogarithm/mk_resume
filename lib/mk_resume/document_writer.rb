@@ -57,7 +57,7 @@ module MkResume
         :only_link => false,
         :text_link_combined => false
       }
-      link_regex = /<link href='([^']*)'>([^<]*)<\/link>/
+      link_regex = /\[([^\]]+)\]\(([^)]+)\)/
       text_match = text.match(link_regex)
 
       if text_match.nil?
@@ -102,18 +102,17 @@ module MkResume
 
     def wrap_link text
       link_style = "<color rgb='888888'><u>%s</u></color>"
-      link_regex = /<link href='([^']*)'>([^<]*)<\/link>/
+      link_regex = /\[([^\]]+)\]\(([^)]+)\)/
 
       text.match(link_regex) ? link_style % text : text
     end
 
     def wrap_link_n_txt txt
-      captures = txt.match(/^(.*)<link href='([^']*)'>([^<]*)<\/link>(.*)$/).captures
+      captures = txt.match(/^(.*)\[([^\]]+)\]\(([^)]+)\)(.*)$/).captures
       [
-        { text: captures[0].strip!, leading: 6 },
-        { text: " (" },
-        { text: captures[2], leading: 6, styles: [:underline], color: "888888", link: captures[1] },
-        { text: ")" }
+        { text: captures[0], leading: 6 },
+        { text: captures[1], leading: 6, styles: [:underline], color: "888888", link: captures[2] },
+        { text: captures[3] }
       ]
     end
 

@@ -33,13 +33,13 @@ describe MkResume::DocumentWriter do
 
     it "링크 텍스트만 있는 경우" do
       dw = MkResume::DocumentWriter.new
-      txt_type_2 = dw.find_txt_type "<link href='url'>url_txt</link>"
+      txt_type_2 = dw.find_txt_type "[url_txt](url)"
       expect(txt_type_2[:only_link]).to eq(true)
     end
 
     it "링크 텍스트와 일반 텍스트 둘 다 있는 경우" do
       dw = MkResume::DocumentWriter.new
-      txt_type_3 = dw.find_txt_type "blah <link href='url'>url_txt</link> clah"
+      txt_type_3 = dw.find_txt_type "blah [url_txt](url) clah"
       expect(txt_type_3[:text_link_combined]).to eq(true)
     end
   end
@@ -68,13 +68,12 @@ describe MkResume::DocumentWriter do
 
     it "링크 텍스트와 일반 텍스트가 모두 있을 경우 링크 형식과 그렇지 않은 형식을 따로 구분한다" do
       dw = MkResume::DocumentWriter.new
-      link_n_txt = "blah <link href='url'>url_txt</link>"
+      link_n_txt = "blah [url_txt](url)"
       expect(dw.wrap_link_n_txt link_n_txt)
         .to eq([
-                 { text: "blah", leading: 6 },
-                 { text: " (" },
+                 { text: "blah ", leading: 6 },
                  { text: "url_txt", leading: 6, styles: [:underline], color: "888888", link: "url" },
-                 { text: ")" }
+                 { text: "" }
                ])
     end
 
@@ -82,12 +81,38 @@ describe MkResume::DocumentWriter do
       dw = MkResume::DocumentWriter.new
       fake_doc = FakePrawn.new
 
-      link_n_txt = "blah <link href='url'>url_txt</link>"
+      link_n_txt = "blah [url_txt](url)"
       dw.write_text(fake_doc, link_n_txt)
       expect(fake_doc.txt_args).to eq([dw.wrap_link_n_txt(link_n_txt)])
       expect(fake_doc.method_calls[:formatted_text]).to eq(1)
       fake_doc.clear
     end
+
+    # it "여러 개의 링크를 가질 경우 모든 링크를 pdf로 변환할 수 있다" do
+    #   dw = MkResume::DocumentWriter.new
+    #   fake_doc = FakePrawn.new
+    #
+    #   link_n_txt = "blah <link href='url'>url_txt</link> asdf <link href='another_url'>another_url_txt</link>"
+    #   link_n_txt.match(/<link href='([^']*)'>([^<]*)<\/link>/)
+    #   dw.write_text(fake_doc, link_n_txt)
+    #
+    #   [
+    #     { text: "blah " },
+    #     { text: "url_txt", link: "url" },
+    #     { text: " asdf " },
+    #     { text: "another_url_txt", link: "another_url" },
+    #   ]
+    #   expect(dw.wrap_link_n_txt(link_n_txt))
+    #     .to eq(
+    #           [
+    #             { text: "blah " },
+    #             { text: "url_txt", styles: [:underline], color: "888888", link: "url" },
+    #             { text: " asdf " },
+    #             { text: "another_url_txt", styles: [:underline], color: "888888", link: "another_url" },
+    #           ]
+    #         )
+    #   fake_doc.clear
+    # end
   end
 
   class FakePrawn
