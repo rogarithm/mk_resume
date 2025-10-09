@@ -184,7 +184,7 @@ module MkResume
         # 스타일 가져오기 (nil 체크)
         style = opts[:formatting_config].send("markdown", style_key)
         if style.nil?
-          pp "WARNING: No style for section=#{section_nm}, key=#{style_key}, node_type=#{node[:type]}"
+          warn "WARNING: No style for section=#{section_nm}, key=#{style_key}, node_type=#{node[:type]}"
           style = opts[:formatting_config].send("markdown", :default)
         end
 
@@ -215,7 +215,7 @@ module MkResume
         when :text
           text_style = opts[:formatting_config].send(section_nm, :default)
           if text_style.nil?
-            pp "WARNING: No default style for section=#{section_nm}"
+            warn "WARNING: No default style for section=#{section_nm}"
             text_style = {}
           end
           opts[:doc_writer].write_text(
