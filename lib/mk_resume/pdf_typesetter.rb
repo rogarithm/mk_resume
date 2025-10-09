@@ -2,8 +2,7 @@ module MkResume
   class PdfTypesetter
     def strategy_list
       [
-        MarkdownTypesetStrategy.name,
-        TwoColumnsTypesetStrategy.name
+        MarkdownTypesetStrategy.name
       ]
     end
 
@@ -43,45 +42,6 @@ module MkResume
 
     def handler
       raise "Not implemented"
-    end
-  end
-
-  class TwoColumnsTypesetStrategy
-    include TypesetStrategy
-
-    def can_handle? section_txt
-      lines = section_txt.split("\n")
-      lines.size == lines.filter { |l| l.match(/^.*\s*\|\s*.*$/) }.size
-    end
-
-    def handler
-      lambda {|section_nm, section_txt, opts|
-        opts[:doc_writer].write_heading(
-          opts[:doc],
-          :education,
-          opts[:formatting_config].send(section_nm, :heading, opts[:doc])
-        )
-
-        section_txt.split("\n")
-                            .map! { |cols|
-                              cols.split("|")
-                                  .each { |col| col.strip! }
-                            }.each do |left_text, right_text|
-          opts[:doc_writer].write_text_box(
-            opts[:doc],
-            left_text,
-            opts[:formatting_config].send(section_nm, :left, opts[:doc])
-          )
-
-          opts[:doc_writer].write_text_box(
-            opts[:doc],
-            right_text,
-            opts[:formatting_config].send(section_nm, :right, opts[:doc])
-          )
-
-          opts[:layout_arranger].v_space(opts[:doc], 15)
-        end
-      }
     end
   end
 
