@@ -149,7 +149,7 @@ module MkResume
         end
 
         case node[:type]
-        when :h1, :h2, :h3
+        when /h\d{1}/
           opts[:doc_writer].write_text(
             opts[:doc],
             node[:content],
