@@ -18,27 +18,38 @@ module MkResume
         :h1 => {
           size: find_font_size(:heading),
           leading: 6,
-          indent_paragraphs: 0
+          indent_paragraphs: 0,
+          line_spacing_pt: 5
         },
         :h2 => {
           size: find_font_size(:heading),
           leading: 6,
-          indent_paragraphs: 0
+          indent_paragraphs: 0,
+          line_spacing_pt: 3
         },
         :h3 => {
-          size: 9,
+          size: 9.5,
           leading: 6,
-          indent_paragraphs: 0
+          indent_paragraphs: 0,
+          line_spacing_pt: 2
+        },
+        :h4 => {
+          size: find_font_size(:body),
+          leading: 6,
+          indent_paragraphs: 0,
+          line_spacing_pt: 2
         },
         :text => {
           size: find_font_size(:body),
           leading: 6,
-          indent_paragraphs: 0
+          indent_paragraphs: 0,
+          line_spacing_pt: 2
         },
         :list_item => {
           size: find_font_size(:detail),
           leading: 4,
-          indent_paragraphs: 0
+          indent_paragraphs: 0,
+          line_spacing_pt: 2
         }
       }
 

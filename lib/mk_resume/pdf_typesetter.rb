@@ -101,7 +101,7 @@ module MkResume
           opts[:layout_arranger].v_space(opts[:doc], 10) if idx < groups.size - 1
         end
 
-        opts[:layout_arranger].v_space(opts[:doc], 15)
+        opts[:layout_arranger].v_space(opts[:doc], 10)
       }
     end
 
