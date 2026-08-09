@@ -58,15 +58,19 @@ module MkResume
         :text_link_combined => false
       }
       link_regex = /\[([^\]]+)\]\(([^)]+)\)/
-      text_match = text.match(link_regex)
 
-      if text_match.nil?
+      # scan을 사용해서 모든 링크 매칭 확인
+      matches = text.scan(link_regex)
+
+      if matches.empty?
         txt_type[:simple_text] = true
         return txt_type
       end
 
-      txt_type[:only_link] = true if text_match[0] == text
-      txt_type[:text_link_combined] = true if text_match[0] != text
+      # 모든 링크를 제거한 텍스트가 비어있으면 링크만 있는 것
+      text_without_links = text.gsub(link_regex, '')
+      txt_type[:only_link] = true if text_without_links.strip.empty?
+      txt_type[:text_link_combined] = true if !text_without_links.strip.empty?
       txt_type
     end
 
@@ -108,12 +112,37 @@ module MkResume
     end
 
     def wrap_link_n_txt txt
-      captures = txt.match(/^(.*)\[([^\]]+)\]\(([^)]+)\)(.*)$/).captures
-      [
-        { text: captures[0], leading: 6 },
-        { text: captures[1], leading: 6, styles: [:underline], color: "888888", link: captures[2] },
-        { text: captures[3] }
-      ]
+      result = []
+      link_regex = /\[([^\]]+)\]\(([^)]+)\)/
+      remaining_text = txt
+
+      # 텍스트를 순회하면서 모든 링크를 찾아 처리
+      while match = remaining_text.match(link_regex)
+        # 링크 앞의 텍스트가 있으면 추가
+        before_text = match.pre_match
+        if !before_text.empty?
+          result << { text: before_text, leading: 6 }
+        end
+
+        # 링크 추가
+        result << {
+          text: match[1],  # 링크 텍스트
+          leading: 6,
+          styles: [:underline],
+          color: "888888",
+          link: match[2]  # 링크 URL
+        }
+
+        # 나머지 텍스트로 계속 진행
+        remaining_text = match.post_match
+      end
+
+      # 마지막 링크 이후의 텍스트가 있으면 추가
+      if !remaining_text.empty?
+        result << { text: remaining_text, leading: 6 }
+      end
+
+      result
     end
 
     def indent(pdf_doc, left_width, &text_writer)

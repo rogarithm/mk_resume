@@ -42,6 +42,18 @@ describe MkResume::DocumentWriter do
       txt_type_3 = dw.find_txt_type "blah [url_txt](url) clah"
       expect(txt_type_3[:text_link_combined]).to eq(true)
     end
+
+    it "여러 개의 링크만 있는 경우" do
+      dw = MkResume::DocumentWriter.new
+      txt_type_4 = dw.find_txt_type "[첫번째](url1)[두번째](url2)"
+      expect(txt_type_4[:only_link]).to eq(true)
+    end
+
+    it "여러 개의 링크와 일반 텍스트가 섞여 있는 경우" do
+      dw = MkResume::DocumentWriter.new
+      txt_type_5 = dw.find_txt_type "텍스트 [링크1](url1) 중간 [링크2](url2) 끝"
+      expect(txt_type_5[:text_link_combined]).to eq(true)
+    end
   end
 
   context "링크 텍스트 포함 여부에 따라 링크를 자동으로 포맷팅한다" do
@@ -72,8 +84,7 @@ describe MkResume::DocumentWriter do
       expect(dw.wrap_link_n_txt link_n_txt)
         .to eq([
                  { text: "blah ", leading: 6 },
-                 { text: "url_txt", leading: 6, styles: [:underline], color: "888888", link: "url" },
-                 { text: "" }
+                 { text: "url_txt", leading: 6, styles: [:underline], color: "888888", link: "url" }
                ])
     end
 
@@ -88,31 +99,64 @@ describe MkResume::DocumentWriter do
       fake_doc.clear
     end
 
-    # it "여러 개의 링크를 가질 경우 모든 링크를 pdf로 변환할 수 있다" do
-    #   dw = MkResume::DocumentWriter.new
-    #   fake_doc = FakePrawn.new
-    #
-    #   link_n_txt = "blah <link href='url'>url_txt</link> asdf <link href='another_url'>another_url_txt</link>"
-    #   link_n_txt.match(/<link href='([^']*)'>([^<]*)<\/link>/)
-    #   dw.write_text(fake_doc, link_n_txt)
-    #
-    #   [
-    #     { text: "blah " },
-    #     { text: "url_txt", link: "url" },
-    #     { text: " asdf " },
-    #     { text: "another_url_txt", link: "another_url" },
-    #   ]
-    #   expect(dw.wrap_link_n_txt(link_n_txt))
-    #     .to eq(
-    #           [
-    #             { text: "blah " },
-    #             { text: "url_txt", styles: [:underline], color: "888888", link: "url" },
-    #             { text: " asdf " },
-    #             { text: "another_url_txt", styles: [:underline], color: "888888", link: "another_url" },
-    #           ]
-    #         )
-    #   fake_doc.clear
-    # end
+    it "여러 개의 링크를 가질 경우 모든 링크를 pdf로 변환할 수 있다" do
+      dw = MkResume::DocumentWriter.new
+      fake_doc = FakePrawn.new
+
+      link_n_txt = "blah [url_txt](url) asdf [another_url_txt](another_url)"
+      dw.write_text(fake_doc, link_n_txt)
+
+      expect(dw.wrap_link_n_txt(link_n_txt))
+        .to eq(
+              [
+                { text: "blah ", leading: 6 },
+                { text: "url_txt", leading: 6, styles: [:underline], color: "888888", link: "url" },
+                { text: " asdf ", leading: 6 },
+                { text: "another_url_txt", leading: 6, styles: [:underline], color: "888888", link: "another_url" },
+              ]
+            )
+      expect(fake_doc.method_calls[:formatted_text]).to eq(1)
+      fake_doc.clear
+    end
+
+    it "여러 개의 링크가 연속으로 있을 경우에도 모든 링크를 변환할 수 있다" do
+      dw = MkResume::DocumentWriter.new
+      link_n_txt = "[첫번째](url1)[두번째](url2)"
+
+      expect(dw.wrap_link_n_txt(link_n_txt))
+        .to eq(
+              [
+                { text: "첫번째", leading: 6, styles: [:underline], color: "888888", link: "url1" },
+                { text: "두번째", leading: 6, styles: [:underline], color: "888888", link: "url2" },
+              ]
+            )
+    end
+
+    it "링크로 시작하고 일반 텍스트로 끝나는 경우" do
+      dw = MkResume::DocumentWriter.new
+      link_n_txt = "[링크](url) 뒤에 텍스트"
+
+      expect(dw.wrap_link_n_txt(link_n_txt))
+        .to eq(
+              [
+                { text: "링크", leading: 6, styles: [:underline], color: "888888", link: "url" },
+                { text: " 뒤에 텍스트", leading: 6 },
+              ]
+            )
+    end
+
+    it "일반 텍스트로 시작하고 링크로 끝나는 경우" do
+      dw = MkResume::DocumentWriter.new
+      link_n_txt = "앞에 텍스트 [링크](url)"
+
+      expect(dw.wrap_link_n_txt(link_n_txt))
+        .to eq(
+              [
+                { text: "앞에 텍스트 ", leading: 6 },
+                { text: "링크", leading: 6, styles: [:underline], color: "888888", link: "url" },
+              ]
+            )
+    end
   end
 
   class FakePrawn
