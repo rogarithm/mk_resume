@@ -152,6 +152,19 @@ describe MkResume::MarkdownParser do
                                      [:list_item, "두 번째 아이템", 0]
                                     ])
     end
+
+    it "여러 개의 헤딩" do
+      text = <<~MD
+        ### level 3
+        #### level 4
+      MD
+
+      result = @parser.parse(text)
+
+      expect(result).to eq(mk_nodes [[:h3, "level 3", 0],
+                                     [:h4, "level 4", 0]
+                                    ])
+    end
   end
 
   context "빈 줄을 무시한다" do
